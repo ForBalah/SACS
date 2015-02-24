@@ -20,6 +20,18 @@ namespace SACS.Implementation
 
         #endregion
 
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceAppBase"/> class.
+        /// </summary>
+        public ServiceAppBase()
+        {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -42,6 +54,16 @@ namespace SACS.Implementation
         public void ServiceAppBase_DomainUnload(object sender, EventArgs e)
         {
             this.IsLoaded = false;
+        }
+
+        /// <summary>
+        /// Handles the UnhandledException event of the CurrentDomain control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            this.SendError(e.ExceptionObject as Exception);
         }
 
         #endregion

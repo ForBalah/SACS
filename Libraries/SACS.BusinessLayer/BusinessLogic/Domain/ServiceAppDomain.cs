@@ -257,6 +257,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._appDomain = AppDomain.CreateDomain(string.Format("ServiceApp.{0}", this.ServiceApp.Name), null, ads);
         }
 
+        /// <summary>
+        /// Logs the unhandled exception.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        private void LogUnhandledException(Message message)
+        {
+            this._log.Error(message.Value);
+        }
+
         #endregion
     }
 }

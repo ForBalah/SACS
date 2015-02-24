@@ -25,11 +25,17 @@ namespace SACS.Implementation
             AddMessageListener();
         }
 
+        /// <summary>
+        /// Adds the message listener.
+        /// </summary>
         public void AddMessageListener()
         {
             this._serviceAppBase.LogMessage += ServiceAppBase_LogMessage;
         }
 
+        /// <summary>
+        /// Removes the message listener.
+        /// </summary>
         public void RemoveMessageListener()
         {
             this._serviceAppBase.LogMessage -= ServiceAppBase_LogMessage;

@@ -50,6 +50,7 @@
     <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
       <Link>AssemblyVersion.cs</Link>
     </Compile>
+    <Compile Include="DomainMessageProxy.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="MessageProxy.cs" />

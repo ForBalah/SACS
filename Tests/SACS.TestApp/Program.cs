@@ -51,6 +51,13 @@ namespace SACS.TestApp
             Console.WriteLine(ConfigurationManager.AppSettings["Message"]);
             Console.WriteLine(string.Format("Test App ran at {0:F} as user: {1}", DateTime.Now, WindowsIdentity.GetCurrent().Name));
             this.SendMessage("Test app has sent this message to the log successfully");
+
+            bool throwException;
+
+            if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwException) && throwException)
+            {
+                throw new InvalidOperationException("Shows that happens when an unhandled exception is thrown");
+            }
         }
 
         /// <summary>
