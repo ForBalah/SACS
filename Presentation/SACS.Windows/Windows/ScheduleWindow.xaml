@@ -1,0 +1,98 @@
+﻿<Window xmlns:ExtentedControls="clr-namespace:SACS.Windows.ExtentedControls"  x:Class="SACS.Windows.Windows.ScheduleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:MultiSelectComboBox"
+        Title="Choose Schedule" Height="700" Width="395" ResizeMode="NoResize">
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+                <Button Name="SaveButton" Width="100" Content="OK" Style="{StaticResource ButtonStyle}" ToolTip="Save the schedule changes" Click="SaveButton_Click"  />
+                <Button Name="CancelButton" Width="100" Content="Cancel" Style="{StaticResource ButtonStyle}" ToolTip="Cancel changes" Click="CancelButton_Click" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Time:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The hour and minute range for the schedule" />
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <StackPanel Margin="0,0,20,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Hours:" />
+                            <controls:MultiSelectComboBox x:Name="HourMultiSelect" Width="100" DropDownClosed="HourMultiSelect_DropDownClosed" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="HourRadioGroup" Name="AtHourRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked">
+                                <Label Content="At" />
+                            </RadioButton>
+                            <RadioButton GroupName="HourRadioGroup" Name="EveryHourRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked">
+                                <Label Content="Every" />
+                            </RadioButton>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Minutes:" />
+                            <controls:MultiSelectComboBox x:Name="MinuteMultiSelect" Width="100" DropDownClosed="MinuteMultiSelect_DropDownClosed" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="MinuteRadioGroup" Name="AtMinuteRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked" >
+                                <Label Content="At" />
+                            </RadioButton>
+                            <RadioButton GroupName="MinuteRadioGroup" Name="EveryMinuteRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked">
+                                <Label Content="Every" />
+                            </RadioButton>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                <Label Content="Day:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The days of the week to select" />
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <RadioButton GroupName="DayRadioGroup" Name="AtDayRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked" >
+                        <Label Content="On" />
+                    </RadioButton>
+                    <RadioButton GroupName="DayRadioGroup" Name="EveryDayRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked">
+                        <Label Content="Every" />
+                    </RadioButton>
+                    <controls:MultiSelectComboBox x:Name="DayMultiSelect" Width="100" DropDownClosed="DayMultiSelect_DropDownClosed" />
+                    <Label Content="Days" />
+                </StackPanel>
+                <Label Content="Month:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The days of the week to select" />
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <RadioButton GroupName="MonthRadioGroup" Name="AtMonthRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked" >
+                        <Label Content="In" />
+                    </RadioButton>
+                    <RadioButton GroupName="MonthRadioGroup" Name="EveryMonthRadioButton" Margin="10,0,0,0" Checked="RadioButton_Checked">
+                        <Label Content="Every" />
+                    </RadioButton>
+                    <controls:MultiSelectComboBox x:Name="MonthMultiSelect" Width="150" DropDownClosed="MonthMultiSelect_DropDownClosed" />
+                    <Label Content="Months" />
+                </StackPanel>
+                <Label Content="Repeat on these days:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The days of the week to seelct" />
+                <WrapPanel Margin="10,10,5,10">
+                    <CheckBox Name="MondayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Monday" Width="75" />
+                    </CheckBox>
+                    <CheckBox Name="TuesdayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Tuesday" Width="75" />
+                    </CheckBox>
+                    <CheckBox Name="WednesdayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Wednesday" Width="75" />
+                    </CheckBox>
+                    <CheckBox Name="ThursdayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Thursday" Width="65" />
+                    </CheckBox>
+                    <CheckBox Name="FridayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Friday" Width="75" />
+                    </CheckBox>
+                    <CheckBox Name="SaturdayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Saturday" Width="75" />
+                    </CheckBox>
+                    <CheckBox Name="SundayCheckBox" Click="DayCheckBox_Click">
+                        <Label Content="Sunday" Width="75" />
+                    </CheckBox>
+                </WrapPanel>
+                <Label Content="Description:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The schedule description" />
+                <TextBlock Name="DescriptionLabel" Margin="10,0,0,10" TextWrapping="Wrap" />
+                <ExtentedControls:ScheduleCalendar x:Name="ScheduleCalendar" Margin="10,0,0,10" SelectedDateChanged="ScheduleCalendar_SelectedDateChanged" />
+                <Label Content="Validation:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The schedule description" />
+                <TextBlock Name="ValidationMessagesTextBlock" Foreground="#FFC10808" FontWeight="Bold" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>

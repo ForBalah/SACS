@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F3F5E00D-B176-4572-A841-C87655D033CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SACS.BusinessLayer</RootNamespace>
+    <AssemblyName>SACS.BusinessLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Standards\CodeAnalysis\SACSCustomRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Standards\CodeAnalysis\SACSCustomRules.ruleset</CodeAnalysisRuleSet>
+    <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="NCrontab">
+      <HintPath>..\..\packages\ncrontab.2.0.0\lib\net20\NCrontab.dll</HintPath>
+    </Reference>
+    <Reference Include="StyleCop">
+      <HintPath>..\..\packages\StyleCop.4.7.49.0\lib\net35\StyleCop.dll</HintPath>
+    </Reference>
+    <Reference Include="StyleCop.CSharp">
+      <HintPath>..\..\packages\StyleCop.4.7.49.0\lib\net35\StyleCop.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
+      <Link>AssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="BusinessLogic\Application\AppManager.cs" />
+    <Compile Include="BusinessLogic\Application\IAppManager.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppDomainComparer.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppDomain.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppDomainCollection.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppDomainState.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppJobWrapper.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppMessages.cs" />
+    <Compile Include="BusinessLogic\Email\EmailMessage.cs" />
+    <Compile Include="BusinessLogic\Email\EmailProvider.cs" />
+    <Compile Include="BusinessLogic\Email\EmailTemplateProvider.cs" />
+    <Compile Include="BusinessLogic\Email\HtmlEmailTemplateProvider.cs" />
+    <Compile Include="BusinessLogic\Export\ServiceAppListExporter.cs" />
+    <Compile Include="BusinessLogic\Loader\Interfaces\IServiceAppSchedulingService.cs" />
+    <Compile Include="BusinessLogic\Loader\ServiceAppSchedulingService.cs" />
+    <Compile Include="BusinessLogic\Loader\DomainInitializer.cs" />
+    <Compile Include="BusinessLogic\Logs\LogLoader.cs" />
+    <Compile Include="BusinessLogic\Schedule\DayLogic.cs" />
+    <Compile Include="BusinessLogic\Schedule\DayOfWeekLogic.cs" />
+    <Compile Include="BusinessLogic\Schedule\DescriptionDirective.cs" />
+    <Compile Include="BusinessLogic\Schedule\FieldLogic.cs" />
+    <Compile Include="BusinessLogic\Schedule\HourLogic.cs" />
+    <Compile Include="BusinessLogic\Schedule\MinuteLogic.cs" />
+    <Compile Include="BusinessLogic\Schedule\MonthLogic.cs" />
+    <Compile Include="BusinessLogic\Schedule\ScheduleBuildResult.cs" />
+    <Compile Include="BusinessLogic\Schedule\ScheduleUtility.cs" />
+    <Compile Include="BusinessLogic\Security\Impersonator.cs" />
+    <Compile Include="BusinessLogic\Security\ServiceAppImpersonator.cs" />
+    <Compile Include="BusinessLogic\Security\StringCipher.cs" />
+    <Compile Include="BusinessLogic\Validation\ServiceAppValidator.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\SecureStringExtensions.cs" />
+    <Compile Include="Presenters\AnalyticsPresenter.cs" />
+    <Compile Include="Presenters\LogDetailPresenter.cs" />
+    <Compile Include="Presenters\LogOverviewPresenter.cs" />
+    <Compile Include="Presenters\PresenterBase.cs" />
+    <Compile Include="Presenters\ScheduleSelectorPresenter.cs" />
+    <Compile Include="Presenters\ServerPerformancePresenter.cs" />
+    <Compile Include="Presenters\ServerStatusPresenter.cs" />
+    <Compile Include="Presenters\ServiceAppPresenter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\IAnalyticsView.cs" />
+    <Compile Include="Views\ILogDetailView.cs" />
+    <Compile Include="Views\ILogOverviewView.cs" />
+    <Compile Include="Views\IScheduleSelectorView.cs" />
+    <Compile Include="Views\IServerPerformanceView.cs" />
+    <Compile Include="Views\IServerStatusView.cs" />
+    <Compile Include="Views\IServiceAppView.cs" />
+    <Compile Include="Views\IViewBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\SACS.DataAccessLayer.Models.ServiceApp.datasource" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SACS.Common\SACS.Common.csproj">
+      <Project>{766dc86e-6e2d-438d-86cf-11ebef2a456e}</Project>
+      <Name>SACS.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SACS.DataAccessLayer\SACS.DataAccessLayer.csproj">
+      <Project>{1b505841-5594-4aed-87b8-403a78c6da1d}</Project>
+      <Name>SACS.DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SACS.Implementation\SACS.Implementation.csproj">
+      <Project>{ef46e159-c1de-4e63-a306-80579728b548}</Project>
+      <Name>SACS.Implementation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SACS.Scheduler\SACS.Scheduler.csproj">
+      <Project>{60d32251-1be4-4a40-8366-0a2584becef0}</Project>
+      <Name>SACS.Scheduler</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Import Project="..\..\Standards\StyleCop\StyleCop.targets" />
+</Project>

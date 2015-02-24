@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1B505841-5594-4AED-87B8-403A78C6DA1D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SACS.DataAccessLayer</RootNamespace>
+    <AssemblyName>SACS.DataAccessLayer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Standards\CodeAnalysis\SACSCustomRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Standards\CodeAnalysis\SACSCustomRules.ruleset</CodeAnalysisRuleSet>
+    <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="NCrontab">
+      <HintPath>..\..\packages\ncrontab.2.0.0\lib\net20\NCrontab.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StyleCop">
+      <HintPath>..\..\packages\StyleCop.4.7.49.0\lib\net35\StyleCop.dll</HintPath>
+    </Reference>
+    <Reference Include="StyleCop.CSharp">
+      <HintPath>..\..\packages\StyleCop.4.7.49.0\lib\net35\StyleCop.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
+      <Link>AssemblyVersion.cs</Link>
+    </Compile>
+    <Compile Include="DataAccess\AppListDao.cs" />
+    <Compile Include="DataAccess\AppPerformanceDao.cs" />
+    <Compile Include="DataAccess\DaoBase.cs" />
+    <Compile Include="DataAccess\GenericDao.cs" />
+    <Compile Include="DataAccess\Interfaces\IAppListDao.cs" />
+    <Compile Include="DataAccess\Interfaces\IAppPerformanceDao.cs" />
+    <Compile Include="DataAccess\Interfaces\IDao.cs" />
+    <Compile Include="DataAccess\Interfaces\IGenericDao.cs" />
+    <Compile Include="DataAccess\Interfaces\IServiceAppDao.cs" />
+    <Compile Include="DataAccess\Interfaces\ISystemDao.cs" />
+    <Compile Include="DataAccess\ServiceAppDao.cs" />
+    <Compile Include="DataAccess\SystemDao.cs" />
+    <Compile Include="Entitites\AuditType.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\SACSEntities.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SACSEntities.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\SACSEntities.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\SACSEntities.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SACSEntities.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\ServiceApplication.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\ServiceApplicationAudit.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\ServiceApplicationHistory.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\ServiceApplicationPerfomance.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\StartupType.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entitites\SystemAudit.cs">
+      <DependentUpon>SACSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\XElementExtensions.cs" />
+    <Compile Include="Factories\DaoFactory.cs" />
+    <Compile Include="Factories\Interfaces\IRestClientFactory.cs" />
+    <Compile Include="Factories\WebApiClientFactory.cs" />
+    <Compile Include="Models\AppPerformance.cs" />
+    <Compile Include="Models\LogEntry.cs" />
+    <Compile Include="Models\ServiceApp.cs" />
+    <Compile Include="Models\SystemPerformance.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAPI\AnalyticsClient.cs" />
+    <Compile Include="WebAPI\Interfaces\IAnalyticsClient.cs" />
+    <Compile Include="WebAPI\Interfaces\ILogsClient.cs" />
+    <Compile Include="WebAPI\Interfaces\IServiceAppClient.cs" />
+    <Compile Include="WebAPI\Interfaces\IWebApiClient.cs" />
+    <Compile Include="WebAPI\LogsClient.cs" />
+    <Compile Include="WebAPI\ServiceAppClient.cs" />
+    <Compile Include="WebAPI\WebApiClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EntityDeploy Include="Entitites\SACSEntities.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SACSEntities.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Entitites\SACSEntities.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SACSEntities.Context.cs</LastGenOutput>
+      <DependentUpon>SACSEntities.edmx</DependentUpon>
+    </None>
+    <None Include="Entitites\SACSEntities.edmx.diagram">
+      <DependentUpon>SACSEntities.edmx</DependentUpon>
+    </None>
+    <None Include="Entitites\SACSEntities.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SACSEntities.cs</LastGenOutput>
+      <DependentUpon>SACSEntities.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SACS.Common\SACS.Common.csproj">
+      <Project>{766dc86e-6e2d-438d-86cf-11ebef2a456e}</Project>
+      <Name>SACS.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Entitites\SACSEntities.edmx.sql" />
+    <Content Include="SACS.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SACS_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>SACS.mdf</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <Import Project="..\..\Standards\StyleCop\StyleCop.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

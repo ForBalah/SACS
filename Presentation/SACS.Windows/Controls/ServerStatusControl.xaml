@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="SACS.Windows.Controls.ServerStatusControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="115" d:DesignWidth="500" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF3399FF"/>
+                                <Setter Property="Background" TargetName="Bd" Value="#FFC2E0FF"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF3399FF"/>
+                                <Setter Property="Background" TargetName="Bd" Value="#FFC2E0FF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FF3399FF"/>
+                                <Setter Property="Background" TargetName="Bd" Value="#FF99CCFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="24" />
+            <RowDefinition Height="24" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Ellipse x:Name="ServerStatusEllipse" Fill="Black" Grid.ColumnSpan="1" Grid.Row="0" Grid.Column="0" Height="24" />
+        <Label Name="StatusDescription" Grid.Row="0" Grid.Column="1" Margin="0,0,10,5" />
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <Label Content="Up Time: " />
+            <Label Name="UpTimeLabel" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <Label Name="StartupTypeLabel" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" >
+            <Button Name="StartServerButton" Width="100"  HorizontalAlignment="Left" Click="StartServerButton_Click" Style="{StaticResource ButtonStyle}" ToolTip="Sends the command to start the server">
+                Start Server
+            </Button>
+            <Button Name="StopServerButton" Width="100" HorizontalAlignment="Left" Click="StopServerButton_Click" Style="{StaticResource ButtonStyle}" ToolTip="Sends the command to stop the server">
+                Stop Server
+            </Button>
+            <Button Name="RefreshButton" Width="75" HorizontalAlignment="Left" Click="RefreshButton_Click" IsHitTestVisible="True" Style="{StaticResource ButtonStyle}">
+                Refresh
+            </Button>
+            <Button Name="ViewExceptionButton" Width="100" HorizontalAlignment="Left" Style="{StaticResource ButtonStyle}" Click="ViewExceptionButton_Click">
+                View Exception
+            </Button>
+            <Popup Name="ExceptionPopup" PlacementTarget="{Binding ElementName=ViewExceptionButton}" Placement="Bottom" PopupAnimation="Slide" StaysOpen="False" AllowsTransparency="True">
+                <Popup.Effect>
+                    <DropShadowEffect/>
+                </Popup.Effect>
+                <StackPanel>
+                    <Button x:Name="PopupCloseButton" Click="PopupCloseButton_Click">x</Button>
+                    <TextBox x:Name="ExceptionPopupTextBox" Width="500" Height="200" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"></TextBox>
+                </StackPanel>
+            </Popup>
+        </StackPanel>
+    </Grid>
+</UserControl>

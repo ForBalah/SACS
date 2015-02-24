@@ -1,0 +1,147 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SACS.Common.Configuration
+{
+    /// <summary>
+    /// Main concrete implementation of Application Configuration
+    /// </summary>
+    public class ApplicationSettings : IApplicationSettings
+    {
+        #region Fields
+
+        /// <summary>
+        /// The AppList.xml location
+        /// </summary>
+        private const string AppListLocationKey = "AppListLocation";
+
+        private static object _syncRoot = new object();
+        private static IApplicationSettings _Instance;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ApplicationSettings"/> class from being created.
+        /// </summary>
+        private ApplicationSettings()
+        {
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the current instance of the application configuration
+        /// </summary>
+        public static IApplicationSettings Current
+        {
+            get
+            {
+                lock (_syncRoot)
+                {
+                    if (_Instance == null)
+                    {
+                        _Instance = new ApplicationSettings();
+                    }
+                }
+
+                return _Instance;
+            }
+
+            internal set
+            {
+                _Instance = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the application list location.
+        /// </summary>
+        /// <value>
+        /// The application list location.
+        /// </value>
+        public string AppListLocation
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings[AppListLocationKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the service.
+        /// </summary>
+        /// <value>
+        /// The name of the service.
+        /// </value>
+        public string ServiceName
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ServiceName"];
+            }
+        }
+
+        /// <summary>
+        /// Gets the support email template path.
+        /// </summary>
+        /// <value>
+        /// The support email template path.
+        /// </value>
+        public string SupportEmailTemplatePath
+        {
+            get
+            {
+                return "Templates/Email/SupportEmailTemplate.html";
+            }
+        }
+
+        /// <summary>
+        /// Gets the support email address.
+        /// </summary>
+        /// <value>
+        /// The support email address.
+        /// </value>
+        public string SupportEmailAddress
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["SupportEmailAddress"];
+            }
+        }
+
+        /// <summary>
+        /// Gets the Web API base address
+        /// </summary>
+        public string WebApiBaseAddress
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["WebAPI.BaseAddress"];
+            }
+        }
+
+        /// <summary>
+        /// Gets the encryption key.
+        /// </summary>
+        /// <value>
+        /// The encryption key.
+        /// </value>
+        public string EncryptionSecretKey
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["Security.EncryptionSecretKey"];
+            }
+        }
+
+        #endregion
+    }
+}

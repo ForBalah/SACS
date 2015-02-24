@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="SACS.Windows.ExtentedControls.ScheduleCalendar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="165" d:DesignWidth="350" Loaded="UserControl_Loaded">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Name="ScheduleCalendarPanel">
+            <Calendar Name="DayCalendar"
+                      DisplayDateChanged="DayCalendar_DisplayDateChanged"
+                      SelectedDatesChanged="DayCalendar_SelectedDatesChanged" />
+            <DockPanel LastChildFill="True" Margin="5,0,0,0">
+                <Label Content="Hour" DockPanel.Dock="Top" />
+                <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Content="00:00" Grid.Row="0" FontSize="8"/>
+                        <Label Content="12:00" Grid.Row="1" FontSize="8" />
+                    </Grid>
+                    <Canvas Name="HourCanvas" Width="50" />
+                </StackPanel>
+            </DockPanel>
+            <DockPanel LastChildFill="True" Margin="5,0,0,0">
+                <Label Content="Minute" DockPanel.Dock="Top" />
+                <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label Content="00" Grid.Row="0" FontSize="8"/>
+                        <Label Content="15" Grid.Row="1" FontSize="8"/>
+                        <Label Content="30" Grid.Row="2" FontSize="8"/>
+                        <Label Content="45" Grid.Row="3" FontSize="8"/>
+                    </Grid>
+                    <Canvas Name="MinuteCanvas" Width="50" />
+                </StackPanel>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

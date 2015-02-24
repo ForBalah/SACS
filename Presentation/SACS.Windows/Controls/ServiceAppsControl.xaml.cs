@@ -1,0 +1,625 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using Gat.Controls;
+using Microsoft.Win32;
+using SACS.BusinessLayer.BusinessLogic.Schedule;
+using SACS.BusinessLayer.BusinessLogic.Validation;
+using SACS.BusinessLayer.Presenters;
+using SACS.BusinessLayer.Views;
+using SACS.Common.Helpers;
+using SACS.DataAccessLayer.Factories;
+using SACS.DataAccessLayer.Models;
+using SACS.DataAccessLayer.WebAPI.Interfaces;
+using SACS.Windows.ViewModels;
+using SACS.Windows.Windows;
+using Enums = SACS.Common.Enums;
+using Models = SACS.DataAccessLayer.Models;
+
+namespace SACS.Windows.Controls
+{
+    /// <summary>
+    /// Interaction logic for ServiceAppsControl.xaml
+    /// </summary>
+    public partial class ServiceAppsControl : UserControl, IServiceAppView
+    {
+        //// ApplicationCommands
+        //// ComponentCommands
+        //// MediaCommands.
+        //// NavigationCommands
+        //// SystemCommands
+        public event EventHandler<string> GeneralStatusChange;
+        protected List<ServiceAppViewModel> _serviceApps = new List<ServiceAppViewModel>();
+        protected bool _inEditMode = false;
+        private ServiceApp _selectedServiceApp;
+        private ServiceAppPresenter _presenter;
+        private AnalyticsWindow _analytics;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceAppsControl"/> class.
+        /// </summary>
+        public ServiceAppsControl()
+        {
+            InitializeComponent();
+            this._presenter = new ServiceAppPresenter(this, new WebApiClientFactory());
+            this.ServiceAppListView.ItemsSource = this._serviceApps;
+        }
+
+        #region Properties
+
+        public ICommand Export { get; set; }
+
+        #endregion
+
+        #region Event Handlers
+
+        /// <summary>
+        /// Handles the Click event of the AppPathSelectButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void AppPathSelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            var v = new OpenDialogView();
+            var vm = (Gat.Controls.OpenDialogViewModel)v.DataContext;
+            vm.IsDirectoryChooser = true;
+            vm.Show();
+            if (vm.Result ?? false)
+            {
+                this.AppPathTextBox.Text = vm.SelectedFilePath;
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the CancelServiceAppButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void CancelServiceAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            this._inEditMode = false;
+            this.ToggleEditFieldVisibility(false);
+            this.SelectServiceApp(this._selectedServiceApp);
+        }
+
+        /// <summary>
+        /// Handles the CanExecute event of the CommandBinding control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CanExecuteRoutedEventArgs"/> instance containing the event data.</param>
+        private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = !this._inEditMode;
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ConfigPathSelectButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void ConfigPathSelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Configuration Files (*.config)|*.config|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.ConfigPathTextBox.Text = openFileDialog.FileName;
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the EditServiceAppButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void EditServiceAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            this._inEditMode = true;
+            this.ToggleEditFieldVisibility(true);
+            this.ShowServiceAppDetails(new ServiceAppViewModel(this._selectedServiceApp), false);
+        }
+
+        /// <summary>
+        /// Handles the Click event of the EntryFileSelectButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void EntryFileSelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Assemblies (*.exe;*.dll)|*.exe;*.dll|All files (*.*)|*.*";
+
+            openFileDialog.InitialDirectory = Path.GetFullPath(this.AppPathTextBox.Text);
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.EntryFileTextBox.Text = openFileDialog.SafeFileName;
+            }
+        }
+
+        /// <summary>
+        /// Handles the Executed event of the NewCommandBinding control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
+        private void NewCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this._inEditMode = true;
+            
+            // TODO: update the selection/deselection of service app to a property and expose on View
+            this.ServiceAppListView.SelectedItem = null;
+            this._selectedServiceApp = null;
+            this.ToggleEditFieldVisibility(true);
+            this.ShowServiceAppDetails(new ServiceAppViewModel(null), false);
+        }
+
+        /// <summary>
+        /// Handles the Executed event of the RefreshCommandBinding control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
+        private void RefreshCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            this._presenter.LoadServiceApps();
+        }
+
+        /// <summary>
+        /// Handles the Executed event of the ExportCommandBinding control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
+        private void ExportCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text (Tab Delimited)|*.txt|Text (Comma Delimited)|*.csv";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string exportContents = this._presenter.ExportServiceAppList(Path.GetExtension(saveFileDialog.FileName));
+                    File.WriteAllText(saveFileDialog.FileName, exportContents);
+                    MessageBox.Show("List exported successfuly.", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    this.ShowException("Failed to export", ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the Executed event of the ViewAnalyticsCommandBinding control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
+        private void ViewAnalyticsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_analytics == null || !_analytics.IsVisible)
+            {
+                _analytics = new AnalyticsWindow();
+            }
+
+            _analytics.ShowActivated = true;
+            _analytics.Show();
+            if (_analytics.WindowState == WindowState.Minimized)
+            {
+                _analytics.WindowState = WindowState.Normal;
+            }
+
+            _analytics.Focus();
+        }
+
+        /// <summary>
+        /// Handles the Executed event of the HelpCommandBinding control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
+        private void HelpCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Handles the Click event of the IdentitySelectButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void IdentitySelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            AccountSelectWindow accountWindow = new AccountSelectWindow();
+            accountWindow.IsCustomAccount = !string.IsNullOrWhiteSpace(this.IdentityLabel.Text);
+            accountWindow.Username = this.IdentityLabel.Text;
+            if (accountWindow.ShowDialog() == true)
+            {
+                if (accountWindow.IsCustomAccount)
+                {
+                    this.IdentityLabel.Text = accountWindow.Username;
+                    this.PasswordHiddenLabel.Text = accountWindow.EncryptedPassword;
+                }
+                else
+                {
+                    this.IdentityLabel.Text = null;
+                    this.PasswordHiddenLabel.Text = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ScheduleSelectButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void ScheduleSelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScheduleWindow scheduleWindow = new ScheduleWindow();
+            scheduleWindow.UpdateWith(this._selectedServiceApp != null ? this._selectedServiceApp.Schedule : ScheduleUtility.DefaultCrontab);
+            if (scheduleWindow.ShowDialog() == true)
+            {
+                this.ScheduleHiddenLabel.Text = scheduleWindow.Schedule;
+                this.ScheduleLabel.Text = ScheduleUtility.GetFullDescription(scheduleWindow.Schedule);
+            }
+        }
+
+        /// <summary>
+        /// Handles the SelectionChanged event of the ServiceAppListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
+        private void ServiceAppListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ServiceAppViewModel item = ((sender as ListView).SelectedItem as ServiceAppViewModel);
+            if (item != null)
+            {
+                this.SelectServiceApp(item.ServiceApp);
+            }
+            else
+            {
+                this.ClearServiceAppDetails();
+            }
+        }
+
+        /// <summary>
+        /// Handles the click event of the StartServiceAppButton
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartServiceAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._selectedServiceApp != null)
+            {
+                this._presenter.StartServiceApp(this._selectedServiceApp);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the StopServiceAppButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void StopServiceAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._selectedServiceApp != null)
+            {
+                this._presenter.StopServiceApp(this._selectedServiceApp);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the SaveServiceAppButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void SaveServiceAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            ServiceApp serviceApp = this.BuildServiceAppFromInput();
+            if (serviceApp != null)
+            {
+                this.SelectServiceApp(serviceApp);
+                this._presenter.UpdateServiceApp(serviceApp);
+                this._inEditMode = false;
+                this.ToggleEditFieldVisibility(false);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the DeleteServiceAppButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void DeleteServiceAppButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to remove this Service App?", "Remove Service App", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                this._presenter.RemoveServiceApp(this.ServiceAppNameTextBox.Text ?? (string)this.ServiceAppNameLabel.Content);
+                this._inEditMode = false;
+                this.ToggleEditFieldVisibility(false);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the RunButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void RunButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._selectedServiceApp != null)
+            {
+                this._presenter.RunServiceApp(this._selectedServiceApp);
+                MessageBox.Show(string.Format("{0} is running.", this._selectedServiceApp.Name), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Loaded event of the UserControl control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.LoadComboBoxes();
+            this._presenter.LoadServiceApps(this.IsVisible);
+            this.ServiceAppListView.Focus();
+        }
+
+        #endregion
+  
+        #region Methods
+
+        /// <summary>
+        /// Shows the exception.
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="e">The e.</param>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public void ShowException(string title, Exception e)
+        {
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                // TODO: move this to a base class (so that it can be removed from all the other controls)
+                MessageBox.Show(string.Format("{0}\r\n\r\nView server logs for more details.", e.Message), title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        /// <summary>
+        /// Binds the service apps.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        public void BindServiceApps(IList<Models.ServiceApp> list)
+        {
+            if (list != null)
+            {
+                this.MergeServiceAppList(list);
+            }
+        }
+
+        /// <summary>
+        /// Sets the status bar message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void SetStatusMessage(string message)
+        {
+            if (this.GeneralStatusChange != null)
+            {
+                this.GeneralStatusChange(this, message);
+            }
+        }
+
+        /// <summary>
+        /// Selects the specified service app, or deselects if null is passed in
+        /// </summary>
+        /// <param name="serviceApp"></param>
+        public void SelectServiceApp(ServiceApp serviceApp)
+        {
+            this._selectedServiceApp = serviceApp;
+
+            if (serviceApp != null)
+            {
+                ShowServiceAppDetails(new ServiceAppViewModel(serviceApp), true);
+            }
+            else
+            {
+                this.ClearServiceAppDetails();
+            }
+        }
+
+        /// <summary>
+        /// Builds the service application from input.
+        /// </summary>
+        /// <returns></returns>
+        private ServiceApp BuildServiceAppFromInput()
+        {
+            if (this.ValidateInput())
+            {
+                ServiceApp newServiceApp = new ServiceApp
+                {
+                    Name = this.ServiceAppNameTextBox.Text,
+                    StartupTypeEnum = (Enums.StartupType)this.StartupTypeComboBox.SelectedValue,
+                    Environment = this.ServiceAppEnvironmentTextBox.Text,
+                    Description = this.DescriptionTextBox.Text,
+                    Path = this.AppPathTextBox.Text,
+                    ConfigFilePath = this.ConfigPathTextBox.Text,
+                    EntryFile = this.EntryFileTextBox.Text,
+                    Assembly = this.AssemblyNameTextBox.Text,
+                    Username = this.IdentityLabel.Text,
+                    Password = this.PasswordHiddenLabel.Text,
+                    Schedule = this.ScheduleHiddenLabel.Text
+                };
+
+                return newServiceApp;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Clears the service application details.
+        /// </summary>
+        private void ClearServiceAppDetails()
+        {
+            this.ServiceAppNameLabel.Content = null;
+            this.StartupTypeLabel.Text = null;
+            this.StartServiceAppButton.IsEnabled = false;
+            this.StopServiceAppButton.IsEnabled = false;
+            this.RunButton.IsEnabled = false;
+            this.ServiceAppDescriptionLabel.Text = null;
+            this.ServiceAppPathLabel.Text = null;
+            this.ServiceAppEnvironmentLabel.Text = null;
+            this.ConfigPathLabel.Text = null;
+            this.EntryFileLabel.Text = null;
+            this.AssemblyLabel.Text = null;
+            this.ScheduleLabel.Text = null;
+            this.ScheduleHiddenLabel.Text = null;
+            this.EditServiceAppButton.IsEnabled = false;
+            this.EditMessageTextBlock.Text = null;
+        }
+
+        /// <summary>
+        /// Loads the combo boxes.
+        /// </summary>
+        private void LoadComboBoxes()
+        {
+            this.StartupTypeComboBox.ItemsSource = EnumHelper.GetEnumList<Enums.StartupType>();
+        }
+
+        /// <summary>
+        /// Merges the service app list with the existing field.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        private void MergeServiceAppList(IList<Models.ServiceApp> list)
+        {
+            this._serviceApps.Clear();
+            this._serviceApps.AddRange(list.Select(s => new ServiceAppViewModel(s)));
+            this._serviceApps.Sort(ServiceAppViewModel.Comparer);
+
+            string app = this._selectedServiceApp != null ? this._selectedServiceApp.Name : null;
+            ICollectionView view = CollectionViewSource.GetDefaultView(this.ServiceAppListView.ItemsSource);
+            view.Refresh();
+
+            if (app != null)
+            {
+                for (int i = 0; i < this.ServiceAppListView.Items.Count; i++)
+                {
+                    var serviceApp = this.ServiceAppListView.Items[i] as ServiceAppViewModel;
+                    if (serviceApp.ServiceApp.Name == app)
+                    {
+                        this.ServiceAppListView.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shows the service app details.
+        /// </summary>
+        /// <param name="viewModel">The service app view model.</param>
+        /// <param name="isReadOnly">if set to <c>true</c> show the details as read only.</param>
+        private void ShowServiceAppDetails(ServiceAppViewModel viewModel, bool isReadOnly)
+        {
+            this.ServiceAppNameLabel.Content = this.ServiceAppNameTextBox.Text = viewModel.ServiceApp.Name;
+
+            this.StartServiceAppButton.IsEnabled = viewModel.CanStart && isReadOnly;
+            this.StopServiceAppButton.IsEnabled = viewModel.CanStop && isReadOnly;
+            this.RunButton.IsEnabled = viewModel.IsRunning && isReadOnly;
+
+            this.StartupTypeLabel.Text = viewModel.ServiceApp.StartupTypeEnum.GetName();
+            this.StartupTypeComboBox.SelectedValue = viewModel.ServiceApp.StartupTypeEnum;
+            this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = viewModel.ServiceApp.Description;
+            this.ServiceAppPathLabel.Text = this.AppPathTextBox.Text = viewModel.ServiceApp.Path;
+            this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = viewModel.ServiceApp.Environment;
+            this.ConfigPathLabel.Text = this.ConfigPathTextBox.Text = viewModel.ServiceApp.ConfigFilePath;
+            this.EntryFileLabel.Text = this.EntryFileTextBox.Text = viewModel.ServiceApp.EntryFile;
+            this.AssemblyLabel.Text = this.AssemblyNameTextBox.Text = viewModel.ServiceApp.Assembly;
+            this.IdentityLabel.Text = this.IdentityLabel.Text = viewModel.ServiceApp.Username;
+            this.PasswordHiddenLabel.Text = viewModel.ServiceApp.Password;
+            this.ScheduleLabel.Text = viewModel.ScheduleDescription;
+            this.ScheduleHiddenLabel.Text = viewModel.ServiceApp.Schedule;
+
+            this.EditServiceAppButton.IsEnabled = !viewModel.IsRunning;
+            this.EditMessageTextBlock.Text = viewModel.IsRunning ? "Stop the app before making changes" : null;
+        }
+
+        /// <summary>
+        /// Toggles the edit field visibility.
+        /// </summary>
+        /// <param name="isEdit">if set to <c>true</c> [is edit].</param>
+        private void ToggleEditFieldVisibility(bool isEdit)
+        {
+            this.ServiceAppListView.IsEnabled = !isEdit;
+            this.StartServiceAppButton.IsEnabled = false;
+            this.StopServiceAppButton.IsEnabled = false;
+            this.RunButton.IsEnabled = false;
+            this.ServiceAppNameLabel.Visibility = MapVisibility(!isEdit || this._selectedServiceApp != null);
+            this.ServiceAppNameTextBox.Visibility = MapVisibility(isEdit && this._selectedServiceApp == null);
+            this.StartupTypeLabel.Visibility = MapVisibility(!isEdit);
+            this.StartupTypeComboBox.Visibility = MapVisibility(isEdit);
+            this.ServiceAppEnvironmentLabel.Visibility = MapVisibility(!isEdit);
+            this.ServiceAppEnvironmentTextBox.Visibility = MapVisibility(isEdit);
+            this.ServiceAppDescriptionLabel.Visibility = MapVisibility(!isEdit);
+            this.DescriptionTextBox.Visibility = MapVisibility(isEdit);
+            this.ServiceAppPathLabel.Visibility = MapVisibility(!isEdit);
+            this.ServiceAppPathDockPanel.Visibility = MapVisibility(isEdit);
+            this.ConfigPathLabel.Visibility = MapVisibility(!isEdit);
+            this.ConfigPathDockPanel.Visibility = MapVisibility(isEdit);
+            this.EntryFileLabel.Visibility = MapVisibility(!isEdit);
+            this.EntryFileDockPanel.Visibility = MapVisibility(isEdit);
+            this.AssemblyLabel.Visibility = MapVisibility(!isEdit);
+            this.AssemblyNameTextBox.Visibility = MapVisibility(isEdit);
+            this.IdentitySelectButton.Visibility = MapVisibility(isEdit);
+            this.ScheduleSelectButton.Visibility = MapVisibility(isEdit);
+            this.EditServiceAppButton.Visibility = MapVisibility(!isEdit);
+            this.SaveServiceAppButton.Visibility = MapVisibility(isEdit);
+            this.RemoveServiceAppButton.Visibility = MapVisibility(isEdit && this._selectedServiceApp != null);
+            this.CancelServiceAppButton.Visibility = MapVisibility(isEdit);
+
+            // Also need to place the first focus
+            if (isEdit)
+            {
+                this.ServiceAppNameTextBox.Focus();
+            }
+        }
+
+        /// <summary>
+        /// Validates the input.
+        /// </summary>
+        /// <returns></returns>
+        private bool ValidateInput()
+        {
+            ServiceAppValidator validator = new ServiceAppValidator();
+            validator.ValidateAppName(this.ServiceAppNameTextBox.Text);
+            validator.ValidateStartupType((Enums.StartupType)this.StartupTypeComboBox.SelectedValue);
+            validator.ValidateEnvironmentName(this.ServiceAppEnvironmentTextBox.Text);
+            validator.ValidateDescription(this.DescriptionTextBox.Text);
+            validator.ValidateAppPath(this.AppPathTextBox.Text);
+            validator.ValidateConfigFilePath(this.ConfigPathTextBox.Text);
+            validator.ValidateEntryFileName(this.EntryFileTextBox.Text);
+            validator.ValidateAssemblyName(this.AssemblyNameTextBox.Text);
+            validator.ValidateSchedule(this.ScheduleHiddenLabel.Text);
+
+            if (validator.ErrorMessages.Any())
+            {
+                MessageBox.Show("• " + string.Join(Environment.NewLine + "• ", validator.ErrorMessages), "The following validation errors occured", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Quick method to map the visibility which lowers the cyclomatic complexity.
+        /// </summary>
+        /// <param name="isVisible">if set to <c>true</c> [is visible].</param>
+        /// <returns></returns>
+        private static Visibility MapVisibility(bool isVisible){
+            return isVisible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,30 @@
+﻿<Window x:Class="SACS.Windows.Windows.LogFilterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Filter Logs" Height="200" Width="300">
+    <DockPanel Margin="4,4,8,4">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+            <Button Height="23" Name="ClearButton" Style="{StaticResource ButtonStyle}" Width="75" Click="ClearButton_Click">Clear</Button>
+            <Button Height="23" Name="OkButton" Style="{StaticResource ButtonStyle}" Width="75" Click="OkButton_Click">OK</Button>
+            <Button Height="23" Name="CancelButton" Style="{StaticResource ButtonStyle}" Width="75" Click="CancelButton_Click">Cancel</Button>
+        </StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="90" />
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Height="28">UserName:</Label>
+            <TextBox Grid.Column="1" Grid.Row="0" Height="23" Name="UserNameTextBox" />
+            <Label Grid.Column="0" Grid.Row="1" Height="28">Level:</Label>
+            <ComboBox Grid.Column="1" Grid.Row="1" Height="23" Name="LevelComboBox" />
+            <Label Grid.Column="0" Grid.Row="2">Message:</Label>
+            <TextBox Grid.Column="1" Grid.Row="2" Height="23" Name="MessageTextBox" />
+        </Grid>
+    </DockPanel>
+</Window>

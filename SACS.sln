@@ -1,0 +1,141 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{6FC514A2-1448-4D88-B42D-56C9C00AF0C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E209AD22-A7F9-43D8-9CCD-97F555663FC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{325CE6CA-4654-4ACC-AD74-5175B0280E4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F4FC9DC6-1514-46CF-88D5-AC6B8D14C8E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.BusinessLayer", "Libraries\SACS.BusinessLayer\SACS.BusinessLayer.csproj", "{F3F5E00D-B176-4572-A841-C87655D033CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{321F83D4-3B84-4983-BC4D-D9FB2DFD18FE}"
+	ProjectSection(SolutionItems) = preProject
+		SolutionItems\AssemblyVersion.cs = SolutionItems\AssemblyVersion.cs
+		SolutionItems\SACS Help.mht = SolutionItems\SACS Help.mht
+		TODO.txt = TODO.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{CF70CD45-BF15-4F23-AEBD-44878224A2E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.DataAccessLayer", "Libraries\SACS.DataAccessLayer\SACS.DataAccessLayer.csproj", "{1B505841-5594-4AED-87B8-403A78C6DA1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Common", "Libraries\SACS.Common\SACS.Common.csproj", "{766DC86E-6E2D-438D-86CF-11EBEF2A456E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Windows", "Presentation\SACS.Windows\SACS.Windows.csproj", "{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Web", "Presentation\SACS.Web\SACS.Web.csproj", "{D89876F2-3D9E-4FE0-853D-BE2CAB9EE365}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.UnitTests", "Tests\SACS.UnitTests\SACS.UnitTests.csproj", "{D128D4E5-EA68-4CDD-AEA2-48E073BA9CF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.WindowsService", "Services\SACS.WindowsService\SACS.WindowsService.csproj", "{25F058DE-DEB2-4B34-9186-0A86524C3D01}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SACS.Database", "Database\SACS.Database\SACS.Database.sqlproj", "{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{0FAB963B-78A8-4874-8B61-F8720B0AEFE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Standards", "Standards", "{6A02D2B9-5F25-48DC-BEA7-ACEE2C0C204F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeAnalysis", "CodeAnalysis", "{C22A11CB-2E21-47D2-ADC0-262AB8AD339B}"
+	ProjectSection(SolutionItems) = preProject
+		Standards\CodeAnalysis\CustomDictionary.xml = Standards\CodeAnalysis\CustomDictionary.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StyleCop", "StyleCop", "{1ECF0F84-C203-4271-BA3D-6C0E4A983107}"
+	ProjectSection(SolutionItems) = preProject
+		Standards\StyleCop\Settings.StyleCop = Standards\StyleCop\Settings.StyleCop
+		Standards\StyleCop\StyleCop.CSharp.dll = Standards\StyleCop\StyleCop.CSharp.dll
+		Standards\StyleCop\StyleCop.dll = Standards\StyleCop\StyleCop.dll
+		Standards\StyleCop\StyleCop.Targets = Standards\StyleCop\StyleCop.Targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.TestApp", "Tests\SACS.TestApp\SACS.TestApp.csproj", "{BB2F3B85-B5C8-4031-AE8F-5A0AB7DE2E7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.IntegrationTests", "Tests\SACS.IntegrationTests\SACS.IntegrationTests.csproj", "{CCAA2C2E-7880-4BBC-BF47-B18D2E0E2309}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Implementation", "Libraries\SACS.Implementation\SACS.Implementation.csproj", "{EF46E159-C1DE-4E63-A306-80579728B548}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Scheduler", "Libraries\SACS.Scheduler\SACS.Scheduler.csproj", "{60D32251-1BE4-4A40-8366-0A2584BECEF0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3F5E00D-B176-4572-A841-C87655D033CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3F5E00D-B176-4572-A841-C87655D033CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3F5E00D-B176-4572-A841-C87655D033CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3F5E00D-B176-4572-A841-C87655D033CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B505841-5594-4AED-87B8-403A78C6DA1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B505841-5594-4AED-87B8-403A78C6DA1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B505841-5594-4AED-87B8-403A78C6DA1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B505841-5594-4AED-87B8-403A78C6DA1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{766DC86E-6E2D-438D-86CF-11EBEF2A456E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{766DC86E-6E2D-438D-86CF-11EBEF2A456E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{766DC86E-6E2D-438D-86CF-11EBEF2A456E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{766DC86E-6E2D-438D-86CF-11EBEF2A456E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{766DC86E-6E2D-438D-86CF-11EBEF2A456E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D89876F2-3D9E-4FE0-853D-BE2CAB9EE365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D89876F2-3D9E-4FE0-853D-BE2CAB9EE365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D89876F2-3D9E-4FE0-853D-BE2CAB9EE365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D89876F2-3D9E-4FE0-853D-BE2CAB9EE365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D128D4E5-EA68-4CDD-AEA2-48E073BA9CF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D128D4E5-EA68-4CDD-AEA2-48E073BA9CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D128D4E5-EA68-4CDD-AEA2-48E073BA9CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D128D4E5-EA68-4CDD-AEA2-48E073BA9CF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25F058DE-DEB2-4B34-9186-0A86524C3D01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25F058DE-DEB2-4B34-9186-0A86524C3D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25F058DE-DEB2-4B34-9186-0A86524C3D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25F058DE-DEB2-4B34-9186-0A86524C3D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BB2F3B85-B5C8-4031-AE8F-5A0AB7DE2E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB2F3B85-B5C8-4031-AE8F-5A0AB7DE2E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB2F3B85-B5C8-4031-AE8F-5A0AB7DE2E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB2F3B85-B5C8-4031-AE8F-5A0AB7DE2E7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCAA2C2E-7880-4BBC-BF47-B18D2E0E2309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCAA2C2E-7880-4BBC-BF47-B18D2E0E2309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCAA2C2E-7880-4BBC-BF47-B18D2E0E2309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCAA2C2E-7880-4BBC-BF47-B18D2E0E2309}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF46E159-C1DE-4E63-A306-80579728B548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF46E159-C1DE-4E63-A306-80579728B548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF46E159-C1DE-4E63-A306-80579728B548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF46E159-C1DE-4E63-A306-80579728B548}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D32251-1BE4-4A40-8366-0A2584BECEF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D32251-1BE4-4A40-8366-0A2584BECEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D32251-1BE4-4A40-8366-0A2584BECEF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D32251-1BE4-4A40-8366-0A2584BECEF0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{25F058DE-DEB2-4B34-9186-0A86524C3D01} = {E209AD22-A7F9-43D8-9CCD-97F555663FC2}
+		{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB} = {325CE6CA-4654-4ACC-AD74-5175B0280E4A}
+		{D89876F2-3D9E-4FE0-853D-BE2CAB9EE365} = {325CE6CA-4654-4ACC-AD74-5175B0280E4A}
+		{D128D4E5-EA68-4CDD-AEA2-48E073BA9CF0} = {F4FC9DC6-1514-46CF-88D5-AC6B8D14C8E2}
+		{BB2F3B85-B5C8-4031-AE8F-5A0AB7DE2E7A} = {F4FC9DC6-1514-46CF-88D5-AC6B8D14C8E2}
+		{CCAA2C2E-7880-4BBC-BF47-B18D2E0E2309} = {F4FC9DC6-1514-46CF-88D5-AC6B8D14C8E2}
+		{F3F5E00D-B176-4572-A841-C87655D033CD} = {CF70CD45-BF15-4F23-AEBD-44878224A2E8}
+		{1B505841-5594-4AED-87B8-403A78C6DA1D} = {CF70CD45-BF15-4F23-AEBD-44878224A2E8}
+		{766DC86E-6E2D-438D-86CF-11EBEF2A456E} = {CF70CD45-BF15-4F23-AEBD-44878224A2E8}
+		{EF46E159-C1DE-4E63-A306-80579728B548} = {CF70CD45-BF15-4F23-AEBD-44878224A2E8}
+		{60D32251-1BE4-4A40-8366-0A2584BECEF0} = {CF70CD45-BF15-4F23-AEBD-44878224A2E8}
+		{BCC13C03-FDCA-426C-B726-80A9F29DBFC1} = {0FAB963B-78A8-4874-8B61-F8720B0AEFE4}
+		{C22A11CB-2E21-47D2-ADC0-262AB8AD339B} = {6A02D2B9-5F25-48DC-BEA7-ACEE2C0C204F}
+		{1ECF0F84-C203-4271-BA3D-6C0E4A983107} = {6A02D2B9-5F25-48DC-BEA7-ACEE2C0C204F}
+	EndGlobalSection
+EndGlobal

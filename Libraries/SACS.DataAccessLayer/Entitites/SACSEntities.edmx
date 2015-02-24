@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SACSEntities.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="SACSEntitiesStoreContainer">
+    <EntitySet Name="ServiceApplications" EntityType="SACSEntities.Store.ServiceApplications" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ServiceApplicationAudits" EntityType="SACSEntities.Store.ServiceApplicationAudits" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SystemAudits" EntityType="SACSEntities.Store.SystemAudits" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ServiceApplicationPerfomances" EntityType="SACSEntities.Store.ServiceApplicationPerfomances" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ServiceApplicationHistories" EntityType="SACSEntities.Store.ServiceApplicationHistories" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="ServiceApplicationServiceApplicationAudit" Association="SACSEntities.Store.ServiceApplicationServiceApplicationAudit">
+      <End Role="ServiceApplication" EntitySet="ServiceApplications" />
+      <End Role="ServiceApplicationAudit" EntitySet="ServiceApplicationAudits" />
+    </AssociationSet>
+    <AssociationSet Name="ServiceApplicationServiceApplicationPerfomance" Association="SACSEntities.Store.ServiceApplicationServiceApplicationPerfomance">
+      <End Role="ServiceApplication" EntitySet="ServiceApplications" />
+      <End Role="ServiceApplicationPerfomance" EntitySet="ServiceApplicationPerfomances" />
+    </AssociationSet>
+    <AssociationSet Name="ServiceApplicationHistoryServiceApplication" Association="SACSEntities.Store.ServiceApplicationHistoryServiceApplication">
+      <End Role="ServiceApplicationHistory" EntitySet="ServiceApplicationHistories" />
+      <End Role="ServiceApplication" EntitySet="ServiceApplications" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="ServiceApplications">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Environment" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AssemblyName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CronSchedule" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ConfigPath" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Active" Type="bit" Nullable="false" />
+    <Property Name="CreatedByUserId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedByUserId" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="ModifiedDate" Type="datetime" Nullable="true" />
+    <Property Name="StartupType" Type="int" Nullable="false" />
+    <Property Name="EntryFile" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ServiceApplicationAudits">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="CreatedByUserId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="ServiceApplicationId" Type="int" Nullable="false" />
+    <Property Name="AuditType" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SystemAudits">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CreatedByUserId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CpuCounter" Type="decimal" Nullable="true" Precision="18" Scale="4" />
+    <Property Name="RamCounter" Type="decimal" Nullable="true" Precision="18" Scale="4" />
+    <Property Name="AuditType" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ServiceApplicationPerfomances">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StartTime" Type="datetime" Nullable="false" />
+    <Property Name="EndTime" Type="datetime" Nullable="true" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Source" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ServiceApplicationId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ServiceApplicationHistories">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Environment" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="AssemblyName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CronSchedule" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ConfigPath" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Active" Type="bit" Nullable="false" />
+    <Property Name="CreatedByUserId" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="ServiceApplicationId" Type="int" Nullable="true" />
+    <Property Name="EntryFile" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="ServiceApplicationServiceApplicationAudit">
+    <End Role="ServiceApplication" Type="SACSEntities.Store.ServiceApplications" Multiplicity="1" />
+    <End Role="ServiceApplicationAudit" Type="SACSEntities.Store.ServiceApplicationAudits" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ServiceApplication">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ServiceApplicationAudit">
+        <PropertyRef Name="ServiceApplicationId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ServiceApplicationServiceApplicationPerfomance">
+    <End Role="ServiceApplication" Type="SACSEntities.Store.ServiceApplications" Multiplicity="1" />
+    <End Role="ServiceApplicationPerfomance" Type="SACSEntities.Store.ServiceApplicationPerfomances" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ServiceApplication">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ServiceApplicationPerfomance">
+        <PropertyRef Name="ServiceApplicationId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ServiceApplicationHistoryServiceApplication">
+    <End Role="ServiceApplicationHistory" Type="SACSEntities.Store.ServiceApplicationHistories" Multiplicity="*" />
+    <End Role="ServiceApplication" Type="SACSEntities.Store.ServiceApplications" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="ServiceApplication">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="ServiceApplicationHistory">
+        <PropertyRef Name="ServiceApplicationId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="SACSEntities" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="SACSEntitiesContainer" annotation:LazyLoadingEnabled="true" cg:TypeAccess="Internal">
+          <EntitySet Name="ServiceApplications" EntityType="SACSEntities.ServiceApplication" />
+          <EntitySet Name="ServiceApplicationAudits" EntityType="SACSEntities.ServiceApplicationAudit" />
+          <EntitySet Name="SystemAudits" EntityType="SACSEntities.SystemAudit" />
+          <AssociationSet Name="ServiceApplicationServiceApplicationAudit" Association="SACSEntities.ServiceApplicationServiceApplicationAudit">
+            <End Role="ServiceApplication" EntitySet="ServiceApplications" />
+            <End Role="ServiceApplicationAudit" EntitySet="ServiceApplicationAudits" />
+          </AssociationSet>
+          <EntitySet Name="ServiceApplicationPerfomances" EntityType="SACSEntities.ServiceApplicationPerfomance" />
+          <AssociationSet Name="ServiceApplicationServiceApplicationPerfomance" Association="SACSEntities.ServiceApplicationServiceApplicationPerfomance">
+            <End Role="ServiceApplication" EntitySet="ServiceApplications" />
+            <End Role="ServiceApplicationPerfomance" EntitySet="ServiceApplicationPerfomances" />
+          </AssociationSet>
+          <EntitySet Name="ServiceApplicationHistories" EntityType="SACSEntities.ServiceApplicationHistory" />
+          <AssociationSet Name="ServiceApplicationHistoryServiceApplication" Association="SACSEntities.ServiceApplicationHistoryServiceApplication">
+            <End Role="ServiceApplicationHistory" EntitySet="ServiceApplicationHistories" />
+            <End Role="ServiceApplication" EntitySet="ServiceApplications" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="ServiceApplication">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Environment" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Path" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="AssemblyName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CronSchedule" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="ConfigPath" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedByUserId" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="true" Precision="3" />
+          <NavigationProperty Name="ServiceApplicationAudits" Relationship="SACSEntities.ServiceApplicationServiceApplicationAudit" FromRole="ServiceApplication" ToRole="ServiceApplicationAudit" />
+          <NavigationProperty Name="ServiceApplicationPerfomances" Relationship="SACSEntities.ServiceApplicationServiceApplicationPerfomance" FromRole="ServiceApplication" ToRole="ServiceApplicationPerfomance" />
+          <NavigationProperty Name="ServiceApplicationHistories" Relationship="SACSEntities.ServiceApplicationHistoryServiceApplication" FromRole="ServiceApplication" ToRole="ServiceApplicationHistory" />
+          <Property Name="StartupType" Type="SACSEntities.StartupType" Nullable="false" />
+          <Property Name="EntryFile" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ServiceApplicationAudit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Message" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedByUserId" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ServiceApplication" Relationship="SACSEntities.ServiceApplicationServiceApplicationAudit" FromRole="ServiceApplicationAudit" ToRole="ServiceApplication" />
+          <Property Name="ServiceApplicationId" Type="Int32" Nullable="false" />
+          <Property Name="AuditType" Type="SACSEntities.AuditType" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemAudit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedByUserId" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CpuCounter" Type="Decimal" Nullable="true" Precision="18" Scale="4" />
+          <Property Name="RamCounter" Type="Decimal" Nullable="true" Precision="18" Scale="4" />
+          <Property Name="AuditType" Type="SACSEntities.AuditType" Nullable="false" />
+        </EntityType>
+        <Association Name="ServiceApplicationServiceApplicationAudit">
+          <End Type="SACSEntities.ServiceApplication" Role="ServiceApplication" Multiplicity="1" />
+          <End Type="SACSEntities.ServiceApplicationAudit" Role="ServiceApplicationAudit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ServiceApplication">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ServiceApplicationAudit">
+              <PropertyRef Name="ServiceApplicationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ServiceApplicationPerfomance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StartTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndTime" Type="DateTime" Nullable="true" Precision="3" />
+          <Property Name="Message" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="ServiceApplication" Relationship="SACSEntities.ServiceApplicationServiceApplicationPerfomance" FromRole="ServiceApplicationPerfomance" ToRole="ServiceApplication" />
+          <Property Name="ServiceApplicationId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="ServiceApplicationServiceApplicationPerfomance">
+          <End Type="SACSEntities.ServiceApplication" Role="ServiceApplication" Multiplicity="1" />
+          <End Type="SACSEntities.ServiceApplicationPerfomance" Role="ServiceApplicationPerfomance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ServiceApplication">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ServiceApplicationPerfomance">
+              <PropertyRef Name="ServiceApplicationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="AuditType">
+          <Member Name="Create" Value="0" />
+          <Member Name="Update" Value="1" />
+          <Member Name="Delete" Value="2" />
+          <Member Name="Start" Value="3" />
+          <Member Name="Stop" Value="4" />
+          <Member Name="Performance" Value="5" />
+        </EnumType>
+        <EntityType Name="ServiceApplicationHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="true" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Environment" Type="String" Nullable="true" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AssemblyName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CronSchedule" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ConfigPath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedByUserId" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ServiceApplication" Relationship="SACSEntities.ServiceApplicationHistoryServiceApplication" FromRole="ServiceApplicationHistory" ToRole="ServiceApplication" />
+          <Property Name="ServiceApplicationId" Type="Int32" Nullable="true" />
+          <Property Name="EntryFile" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="ServiceApplicationHistoryServiceApplication">
+          <End Type="SACSEntities.ServiceApplicationHistory" Role="ServiceApplicationHistory" Multiplicity="*" />
+          <End Type="SACSEntities.ServiceApplication" Role="ServiceApplication" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ServiceApplication">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ServiceApplicationHistory">
+              <PropertyRef Name="ServiceApplicationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="StartupType">
+          <Member Name="NotSet" Value="0" />
+          <Member Name="Manual" Value="1" />
+          <Member Name="Automatic" Value="2" />
+          <Member Name="Disabled" Value="3" />
+        </EnumType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SACSEntitiesStoreContainer" CdmEntityContainer="SACSEntitiesContainer">
+    <EntitySetMapping Name="ServiceApplications">
+      <EntityTypeMapping TypeName="IsTypeOf(SACSEntities.ServiceApplication)">
+        <MappingFragment StoreEntitySet="ServiceApplications">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Environment" ColumnName="Environment" />
+          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="AssemblyName" ColumnName="AssemblyName" />
+          <ScalarProperty Name="CronSchedule" ColumnName="CronSchedule" />
+          <ScalarProperty Name="ConfigPath" ColumnName="ConfigPath" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="ModifiedByUserId" ColumnName="ModifiedByUserId" />
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="StartupType" ColumnName="StartupType" />
+          <ScalarProperty Name="EntryFile" ColumnName="EntryFile" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ServiceApplicationAudits">
+      <EntityTypeMapping TypeName="IsTypeOf(SACSEntities.ServiceApplicationAudit)">
+        <MappingFragment StoreEntitySet="ServiceApplicationAudits">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="ServiceApplicationId" ColumnName="ServiceApplicationId" />
+          <ScalarProperty Name="AuditType" ColumnName="AuditType" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SystemAudits">
+      <EntityTypeMapping TypeName="IsTypeOf(SACSEntities.SystemAudit)">
+        <MappingFragment StoreEntitySet="SystemAudits">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="CpuCounter" ColumnName="CpuCounter" />
+          <ScalarProperty Name="RamCounter" ColumnName="RamCounter" />
+          <ScalarProperty Name="AuditType" ColumnName="AuditType" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ServiceApplicationPerfomances">
+      <EntityTypeMapping TypeName="IsTypeOf(SACSEntities.ServiceApplicationPerfomance)">
+        <MappingFragment StoreEntitySet="ServiceApplicationPerfomances">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="Source" ColumnName="Source" />
+          <ScalarProperty Name="ServiceApplicationId" ColumnName="ServiceApplicationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ServiceApplicationHistories">
+      <EntityTypeMapping TypeName="IsTypeOf(SACSEntities.ServiceApplicationHistory)">
+        <MappingFragment StoreEntitySet="ServiceApplicationHistories">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Environment" ColumnName="Environment" />
+          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="AssemblyName" ColumnName="AssemblyName" />
+          <ScalarProperty Name="CronSchedule" ColumnName="CronSchedule" />
+          <ScalarProperty Name="ConfigPath" ColumnName="ConfigPath" />
+          <ScalarProperty Name="Active" ColumnName="Active" />
+          <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="ServiceApplicationId" ColumnName="ServiceApplicationId" />
+          <ScalarProperty Name="EntryFile" ColumnName="EntryFile" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

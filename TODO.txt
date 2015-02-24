@@ -1,0 +1,28 @@
+Presentation Layer:
+-------------------
+Add Help
+Create the Management Console installer?
+Fix disabling of toolbar buttons when the service is inaccessible.
+update icons
+Configure log4net properly in presentation layer (Elmah maybe?)
+
+Business Layer:
+---------------
+Fix encryption to use different initialization vectors
+Check the intermittent exception that occurs in the test app when stopping the service - think this is related to running multiple instances of the same code
+ServiceAppBase includes means to set message when service is run successfully
+Add Handle exception with levels such as info, send email and state which service app threw the exception
+- Initialize, Execute, CleaUp, OnError, LogMessage
+Add ability to log to system lof from service application - i.e. expose method on base class
+Send alert if CPU usage remains high for too long. allow threshold to be configurable
+
+Service layer:
+--------------
+Add logging for all the Controllers.
+system performance data needs to take into account minutes and seconds
+
+Data Access Layer:
+------------------
+Move DAO creation to abstract factory pattern
+Log Container start and stop to system audit
+-------------------------------------

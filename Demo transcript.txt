@@ -1,0 +1,27 @@
+Server Management
+=================
+The hors d'oeuvre. Or, if you aren't cultured yet, the "hors d'oeuvres". This is where it begins - on the server. We install this once onto the target server and we manage it on this screen. Of which the only management you can do is, well, stop and start. everything else gives us details on the server that informs us and allows us to diagnose any issues that arise.
+
+(show the various aspects)
+
+Application Management
+======================
+Features! What can it do?
+Partitions
+----------
+Well you can drag the partition left and right. I think that's pretty cool.
+Anyways more importantly, its so you can easily change how much you want to focus on the one or the other.
+Why did I put the details on this side instead of the other side? I dunno, maybe I wanted to be different and pioneering.
+Actually the original plan was to have it swipe in from the left after you make a selection and choose properties.
+But I had such issues doing it in WPF. was more like WTF. Like.... sigh... yes we should embrace tech, and WPF allows you to do really cool two-way databinding to keep a friggin column stationary. Look! (show FixedWidthColumn class). Yes, that's the standard! The victor is whoever manages to coerce who first.
+Sorry! I'm digressing. Features!
+Listing
+-------
+(Show list features)
+Edit
+----
+(show start stop features, edit features)
+Schedule Editor
+---------------
+Ah the coup de grace.
+

@@ -1,0 +1,142 @@
+﻿<UserControl x:Class="SACS.Windows.Controls.ServiceAppsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ue="clr-namespace:SACS.Windows.ExtentedControls"
+             xmlns:ext="clr-namespace:SACS.Windows.Extensions"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="600" Loaded="UserControl_Loaded">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="ext:Commands.ExportList" CanExecute="CommandBinding_CanExecute" Executed="ExportCommandBinding_Executed" />
+        <CommandBinding Command="ext:Commands.ViewAnalytics" Executed="ViewAnalyticsCommandBinding_Executed" />
+        <CommandBinding Command="Refresh" CanExecute="CommandBinding_CanExecute" Executed="RefreshCommandBinding_Executed" />
+        <CommandBinding Command="New" CanExecute="CommandBinding_CanExecute" Executed="NewCommandBinding_Executed" />
+        <CommandBinding Command="Help" Executed="HelpCommandBinding_Executed" />
+    </UserControl.CommandBindings>
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="Refresh" ToolTip="Refresh the Service App list">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/SACS.Windows;component/Images/Refresh.png" Height="24" Width="24" />
+                        <TextBlock Margin="2,3,0,0">Refresh</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="New" ToolTip="Add Service App to Server">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/SACS.Windows;component/Images/Add.png" Height="24" Width="24" />
+                        <TextBlock Margin="2,3,0,0">Add</TextBlock>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+            <ToolBar>
+                <Button Command="ext:Commands.ExportList" ToolTip="Export">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/SACS.Windows;component/Images/Export.png" Height="24" Width="24" />
+                        <TextBlock Margin="2,3,0,0">Export</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Command="ext:Commands.ViewAnalytics" ToolTip="View Application Analytics">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/SACS.Windows;component/Images/Analytics.png" Height="24" Width="24" />
+                        <TextBlock Margin="2,3,0,0">Analytics</TextBlock>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+            <ToolBar>
+                <Button Command="Help" ToolTip="View help document">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/SACS.Windows;component/Images/Help.png" Height="24" Width="24" />
+                        <TextBlock Margin="2,3,0,0">Help</TextBlock>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <Grid Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <ListView x:Name="ServiceAppListView"  Foreground="#FF28448D" SelectionChanged="ServiceAppListView_SelectionChanged">
+                <ListView.View>
+                    <GridView>
+                        <ue:FixedWidthColumn Header="" FixedWidth="40" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Path=ImagePath}" ToolTip="{Binding Path=ServiceApp.LastMessage}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </ue:FixedWidthColumn>
+                        <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding Path=ServiceApp.Name}" />
+                        <GridViewColumn Header="Description" Width="200" DisplayMemberBinding="{Binding Path=ServiceApp.Description}" />
+                        <GridViewColumn Header="Startup" Width="70" DisplayMemberBinding="{Binding Path=ServiceApp.StartupTypeEnum}" />
+                        <GridViewColumn Header="Assembly" Width="150" DisplayMemberBinding="{Binding Path=ServiceApp.Assembly}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Name="ContentGridSplitter" Grid.Column="1" Width="5" HorizontalAlignment="Left" Background="#FF4282CF" />
+            <DockPanel LastChildFill="True" Grid.Column="1" Margin="10,5,0,0">
+                <Label Name="ServiceAppNameLabel" FontWeight="Bold" Margin="0,0,0,10" FontSize="14" Height="30" DockPanel.Dock="Top" />
+                <TextBox Name="ServiceAppNameTextBox" Visibility="Collapsed" Margin="0,0,0,10" FontSize="14" Height="30" MaxLines="1" MaxLength="50" DockPanel.Dock="Top" BorderThickness="2" />
+                <ScrollViewer>
+                    <StackPanel Name="DetailsStackPanel" Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="0,0,5,0">
+                        <Button Name="StartServiceAppButton" Width="100" Content="Start" IsEnabled="false" Style="{StaticResource ButtonStyle}" Click="StartServiceAppButton_Click" ToolTip="Start this service app." />
+                        <Button Name="StopServiceAppButton" Width="100" Content="Stop" IsEnabled="false" Style="{StaticResource ButtonStyle}" Click="StopServiceAppButton_Click" ToolTip="Stop this service app." />
+                        <Button Name="RunButton" Width="100" Content="Run Immediately" IsEnabled="false" Style="{StaticResource ButtonStyle}" Click="RunButton_Click" ToolTip="Run this service app immediately, regarless of schedule." />
+                        <Label Content="Startup Type:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="Determines whether the service app starts up and is scheduled automatically, starts up but requires manual execution, or is disabled and is not started." />
+                        <TextBlock Name="StartupTypeLabel" Margin="0,0,0,10" />
+                        <ComboBox Name="StartupTypeComboBox" Visibility="Collapsed" DisplayMemberPath="Name" SelectedValuePath="Source" Margin="0,0,0,5" />
+                        <Label Content="Environment:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The name of the environment the service app runs under." />
+                        <TextBlock Name="ServiceAppEnvironmentLabel" Margin="0,0,0,10" />
+                        <TextBox Name="ServiceAppEnvironmentTextBox" Visibility="Collapsed" Margin="0,0,0,5" />
+                        <Label Content="Description:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The long description of the service app." />
+                        <TextBlock Name="ServiceAppDescriptionLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
+                        <TextBox Name="DescriptionTextBox" Visibility="Collapsed" TextWrapping="Wrap" MinLines="3" Margin="0,0,0,5" />
+                        <Label Content="App Path:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The base path of the service app." />
+                        <TextBlock Name="ServiceAppPathLabel" Margin="0,0,0,10" />
+                        <DockPanel Name="ServiceAppPathDockPanel" LastChildFill="True" Visibility="Collapsed" Margin="0,0,0,5">
+                            <Button Name="AppPathSelectButton" Content="Browse..." Width="65" DockPanel.Dock="Right" Click="AppPathSelectButton_Click" />
+                            <TextBox Name="AppPathTextBox" />
+                        </DockPanel>
+                        <Label Content="Config File:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The .config file that the service app will use." />
+                        <TextBlock Name="ConfigPathLabel" Margin="0,0,0,10" />
+                        <DockPanel Name="ConfigPathDockPanel" LastChildFill="True" Visibility="Collapsed" Margin="0,0,0,5">
+                            <Button Name="ConfigPathSelectButton" Content="Browse..." Width="65" DockPanel.Dock="Right" Click="ConfigPathSelectButton_Click" />
+                            <TextBox Name="ConfigPathTextBox" />
+                        </DockPanel>
+                        <Label Content="Entry File:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The .dll or .exe containing the service app implementation." />
+                        <TextBlock Name="EntryFileLabel" Margin="0,0,0,10" />
+                        <DockPanel Name="EntryFileDockPanel" LastChildFill="True" Visibility="Collapsed" Margin="0,0,0,5">
+                            <Button Name="EntryFileSelectButton" Content="Browse..." Width="65" DockPanel.Dock="Right" Click="EntryFileSelectButton_Click" />
+                            <TextBox Name="EntryFileTextBox" />
+                        </DockPanel>
+                        <Label Content="Assembly Name:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The name of the assembly with the service app." />
+                        <TextBlock Name="AssemblyLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
+                        <TextBox Name="AssemblyNameTextBox" Visibility="Collapsed" Margin="0,0,0,5" />
+                        <Label Content="Identity:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The name of the assembly with the service app." />
+                        <DockPanel Name="IdentityDockPanel" LastChildFill="True" Margin="0,0,0,10">
+                            <Button DockPanel.Dock="Right" Name="IdentitySelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="IdentitySelectButton_Click" />
+                            <TextBlock Name="IdentityLabel" />
+                            <TextBlock Name="PasswordHiddenLabel" Visibility="Collapsed" />
+                        </DockPanel>
+                        <Label Content="Schedule:" BorderThickness="0,0,0,1" BorderBrush="Black" />
+                        <DockPanel Name="ScheduleDockPanel" LastChildFill="True" Margin="0,0,0,10">
+                            <Button DockPanel.Dock="Right" Name="ScheduleSelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="ScheduleSelectButton_Click" />
+                            <TextBlock Name="ScheduleHiddenLabel" Visibility="Collapsed" />
+                            <TextBlock Name="ScheduleLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
+                        </DockPanel>
+                        <Label Content="Configure:" BorderThickness="0,0,0,1" BorderBrush="Black" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <Button Name="EditServiceAppButton" Width="50" Content="Edit" IsEnabled="False" Style="{StaticResource ButtonStyle}" Click="EditServiceAppButton_Click" />
+                            <Button Name="SaveServiceAppButton" Width="50" Content="Save" Visibility="Collapsed" Style="{StaticResource ButtonStyle}" Click="SaveServiceAppButton_Click" />
+                            <Button Name="RemoveServiceAppButton" Width="50" Content="Remove" Visibility="Collapsed" Style="{StaticResource ButtonStyle}" Click="DeleteServiceAppButton_Click" />
+                            <Button Name="CancelServiceAppButton" Width="50" Content="Cancel" Visibility="Collapsed" Style="{StaticResource ButtonStyle}" Click="CancelServiceAppButton_Click" />
+                            <TextBlock Name="EditMessageTextBlock" Text="" FontWeight="Bold" Foreground="#FFB91E1E" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</UserControl>
