@@ -59,6 +59,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
             catch (Exception e)
             {
+                ILog log = LogManager.GetLogger(this._appName);
+                log.Error(e);
+
                 if (this.ExecutionError != null)
                 {
                     this.ExecutionError(this, e);
