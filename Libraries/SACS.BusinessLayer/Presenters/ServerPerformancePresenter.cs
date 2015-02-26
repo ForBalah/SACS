@@ -17,9 +17,10 @@ namespace SACS.BusinessLayer.Presenters
         private readonly IRestClientFactory factory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnalyticsPresenter"/> class.
+        /// Initializes a new instance of the <see cref="ServerPerformancePresenter"/> class.
         /// </summary>
         /// <param name="view">The view.</param>
+        /// <param name="factory">The REST client factory.</param>
         public ServerPerformancePresenter(IServerPerformanceView view, IRestClientFactory factory)
             : base(view)
         {
@@ -33,19 +34,23 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="toDate">To date.</param>
         public void LoadData(DateTime fromDate, DateTime toDate)
         {
-            this.TryExecute(() =>
-            {
-                IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
-                this.View.SetCpuPerformanceData(client.GetSystemCpuPerformance(fromDate, toDate));
-            },null,
-            true);
+            this.TryExecute(
+                () =>
+                {
+                    IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
+                    this.View.SetCpuPerformanceData(client.GetSystemCpuPerformance(fromDate, toDate));
+                },
+                null,
+                true);
 
-            this.TryExecute(() =>
-            {
-                IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
-                this.View.SetMemoryPerformanceData(client.GetSystemMemoryPerformance(fromDate, toDate));
-            }, null,
-            true);
+            this.TryExecute(
+                () =>
+                {
+                    IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
+                    this.View.SetMemoryPerformanceData(client.GetSystemMemoryPerformance(fromDate, toDate));
+                },
+                null,
+                true);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace SACS.DataAccessLayer.Factories
 
             return (T)Activator.CreateInstance(
                         classMap[typeof(T)],
-                        BindingFlags.NonPublic | BindingFlags.Public| BindingFlags.Instance,
+                        BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance,
                         default(Binder),
                         new object[] { basePath, clientHandler },
                         CultureInfo.InvariantCulture);

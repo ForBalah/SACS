@@ -43,7 +43,10 @@ namespace SACS.BusinessLayer.Extensions
             var secureStr = new SecureString();
             if (managedString.Length > 0)
             {
-                foreach (var c in managedString.ToCharArray()) secureStr.AppendChar(c);
+                foreach (var c in managedString.ToCharArray())
+                {
+                    secureStr.AppendChar(c);
+                }
             }
 
             return secureStr;

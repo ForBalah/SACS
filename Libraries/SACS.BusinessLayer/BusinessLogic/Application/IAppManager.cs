@@ -55,7 +55,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         /// <param name="dao">The DAO.</param>
-        /// <param name="startAutomatically">If set to <c>true</c> schedule automatically.</param>
         /// <returns>A string containing an error message if a recoverable error occured.</returns>
         /// <exception cref="System.IndexOutOfRangeException">The ServiceApp could not be found in the container.</exception>
         /// <exception cref="System.InvalidOperationException">The ServiceApp is not in a stopped state.</exception>

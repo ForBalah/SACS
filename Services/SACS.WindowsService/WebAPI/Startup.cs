@@ -1,7 +1,5 @@
-﻿using Owin;
-using System.Web.Http;
-using System.Web.Http.Routing;
-using System.Net.Http;
+﻿using System.Web.Http;
+using Owin;
 
 namespace SACS.WindowsService.WebAPI
 {
@@ -19,13 +17,11 @@ namespace SACS.WindowsService.WebAPI
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+                defaults: new { id = RouteParameter.Optional });
 
             config.Routes.MapHttpRoute(
                 name: "WithActionApi",
-                routeTemplate: "api/{controller}/{id}/{action}"
-            );
+                routeTemplate: "api/{controller}/{id}/{action}");
 
             appBuilder.UseWebApi(config);
         }

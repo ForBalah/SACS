@@ -19,6 +19,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
         /// Gets the type of the entry.
         /// </summary>
         /// <returns></returns>
+        /// <param name="assemblyPath">The path to the assembly file to check inside of.</param>
         /// <exception cref="EntryPointNotFoundException">Thrown when implementation of service entry could not be found.</exception>
         public virtual string GetEntryType(string assemblyPath)
         {
@@ -37,7 +38,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
         /// <summary>
         /// Finds the entry type for the service app. this should ideally be called in a separate app domain because it loads the assembly.
         /// </summary>
-        /// <param name="assemblyPath">the path to the base assembly.</param>
+        /// <param name="assemblyPath">The path to the base assembly.</param>
         /// <returns></returns>
         private string FindEntryType(string assemblyPath)
         {

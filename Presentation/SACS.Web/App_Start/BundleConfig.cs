@@ -15,7 +15,7 @@ namespace SACS.Web
         /// <summary>
         /// Registers bundles. For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkID=303951
         /// </summary>
-        /// <param name="bundles">bundle collection</param>
+        /// <param name="bundles">Bundle collection</param>
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/WebFormsJs").Include(

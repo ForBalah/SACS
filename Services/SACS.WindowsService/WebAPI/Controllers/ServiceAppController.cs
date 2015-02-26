@@ -18,8 +18,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
     /// </summary>
     public class ServiceAppController : ApiController
     {
-        IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
-        IAppListDao _appListDao = DaoFactory.Create<IAppListDao, AppListDao>();
+        private IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
+        private IAppListDao _appListDao = DaoFactory.Create<IAppListDao, AppListDao>();
 
         /// <summary>
         /// Retrieve all the installed ServiceApps
@@ -33,7 +33,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Starts the service app with the specified app name
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The service app identifier.</param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("Start")]
@@ -41,7 +41,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         {
             try
             {
-                string error = AppManager.Current.InitializeServiceApp(id, _dao);
+                string error = AppManager.Current.InitializeServiceApp(id, this._dao);
                 if (string.IsNullOrWhiteSpace(error))
                 {
                     return Ok();
@@ -60,7 +60,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Stops the service app with the specified app name
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The service app identifier.</param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("Stop")]
@@ -68,7 +68,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         {
             try
             {
-                AppManager.Current.StopServiceApp(id, _dao);
+                AppManager.Current.StopServiceApp(id, this._dao);
                 return Ok();
             }
             catch (Exception e)
@@ -80,7 +80,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Runs the service app with the specified app name immediately, if it is started
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">The service app identifier.</param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("Run")]
@@ -90,7 +90,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
             {
                 if (AppManager.Current.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    AppManager.Current.RunServiceApp(id, _dao);
+                    AppManager.Current.RunServiceApp(id, this._dao);
                     return Ok();
                 }
                 else
@@ -115,7 +115,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         {
             try
             {
-                string result = AppManager.Current.UpdateServiceApp(serviceApp, _dao, _appListDao);
+                string result = AppManager.Current.UpdateServiceApp(serviceApp, this._dao, this._appListDao);
                 if (!string.IsNullOrWhiteSpace(result))
                 {
                     return BadRequest(result);
@@ -132,7 +132,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Removes the service application.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The service app identifier.</param>
         /// <returns></returns>
         [HttpDelete]
         [ActionName("Remove")]
@@ -142,7 +142,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
             {
                 if (AppManager.Current.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    AppManager.Current.RemoveServiceApp(id, _dao, _appListDao);
+                    AppManager.Current.RemoveServiceApp(id, this._dao, this._appListDao);
                     return Ok();
                 }
                 else

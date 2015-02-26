@@ -17,19 +17,27 @@ namespace SACS.Windows.Extensions
     /// </summary>
     public static class ImageExtensions
     {
-        /// <summary>
-        /// The log image list
-        /// </summary>
-        public static Dictionary<LogImageType, BitmapSource> LogImageList =
+        private static Dictionary<LogImageType, BitmapSource> logImageList =
             new Dictionary<LogImageType, BitmapSource>()
             {
-                {LogImageType.Debug, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null)},
-                {LogImageType.Error, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle, Int32Rect.Empty, null)},
-                {LogImageType.Fatal, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Hand.Handle, Int32Rect.Empty, null)},
-                {LogImageType.Info, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Information.Handle, Int32Rect.Empty, null)},
-                {LogImageType.Warn, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Warning.Handle, Int32Rect.Empty, null)},
-                {LogImageType.Custom, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Asterisk.Handle, Int32Rect.Empty, null)}
+                { LogImageType.Debug, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Question.Handle, Int32Rect.Empty, null) },
+                { LogImageType.Error, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Error.Handle, Int32Rect.Empty, null) },
+                { LogImageType.Fatal, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Hand.Handle, Int32Rect.Empty, null) },
+                { LogImageType.Info, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Information.Handle, Int32Rect.Empty, null) },
+                { LogImageType.Warn, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Warning.Handle, Int32Rect.Empty, null) },
+                { LogImageType.Custom, Imaging.CreateBitmapSourceFromHIcon(SystemIcons.Asterisk.Handle, Int32Rect.Empty, null) }
             };
+
+        /// <summary>
+        /// Gets the log image list.
+        /// </summary>
+        public static Dictionary<LogImageType, BitmapSource> LogImageList
+        {
+            get
+            {
+                return logImageList;
+            }
+        }
 
         /// <summary>
         /// Gets the log image.

@@ -92,6 +92,7 @@ namespace SACS.DataAccessLayer.Models
             {
                 return (StartupType)this.StartupType;
             }
+
             set
             {
                 this.StartupType = (int)value;

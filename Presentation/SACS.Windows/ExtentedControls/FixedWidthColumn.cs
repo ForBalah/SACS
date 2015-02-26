@@ -24,7 +24,7 @@ namespace SACS.Windows.ExtentedControls
                 new FrameworkPropertyMetadata(double.NaN, new PropertyChangedCallback(OnFixedWidthChanged)));
 
         /// <summary>
-        /// Initializes the <see cref="FixedWidthColumn"/> class.
+        /// Initializes static members of the <see cref="SACS.Windows.ExtentedControls.FixedWidthColumn"/> class.
         /// </summary>
         static FixedWidthColumn()
         {

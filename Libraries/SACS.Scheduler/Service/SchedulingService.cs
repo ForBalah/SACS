@@ -22,9 +22,20 @@ namespace SACS.Scheduler.Service
         /// </summary>
         public SchedulingService()
         {
-            this._timerMonitor.Elapsed += TimerMonitor_Elapsed;
+            this._timerMonitor.Elapsed += this.TimerMonitor_Elapsed;
         }
 
+        #region Properties
+        
+        /// <summary>
+        /// Gets a value indicating whether this schedule service is running.
+        /// </summary>
+        public bool IsRunning { get; private set; } 
+
+        #endregion
+
+        #region Event Handlers
+        
         /// <summary>
         /// Handles the Elapsed event of the TimerMonitor control.
         /// </summary>
@@ -44,17 +55,16 @@ namespace SACS.Scheduler.Service
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this schedule service is running.
-        /// </summary>
-        public bool IsRunning { get; private set; }
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Add the named job to the service given the execution step to perform with the specified schedule.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="schedule">A Crontab schedule</param>
-        /// <param name="executionStep"></param>
+        /// <param name="name">The name of the job.</param>
+        /// <param name="schedule">The crontab schedule string.</param>
+        /// <param name="executionStep">The step to perform on execution.</param>
         public void AddJob(string name, string schedule, Action executionStep)
         {
             var cronSchedule = CrontabSchedule.Parse(schedule);
@@ -64,9 +74,9 @@ namespace SACS.Scheduler.Service
         /// <summary>
         /// Add the named job to the service given the execution step to perform with the specified schedule.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="schedule"></param>
-        /// <param name="executionStep"></param>
+        /// <param name="name">The name of the job.</param>
+        /// <param name="schedule">The schedule defining function.</param>
+        /// <param name="executionStep">The step to perform on execution.</param>
         public void AddJob(string name, Func<DateTime, DateTime> schedule, Action executionStep)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -107,7 +117,7 @@ namespace SACS.Scheduler.Service
         /// <summary>
         /// Returns the name job
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The job name.</param>
         /// <returns></returns>
         public IServiceJob GetJob(string name)
         {
@@ -141,9 +151,9 @@ namespace SACS.Scheduler.Service
         }
 
         /// <summary>
-        /// Immediately runs a job specified by name
+        /// Immediately runs a job specified by name.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The job name.</param>
         public void RunJob(string name)
         {
             var job = this.GetJob(name);
@@ -151,9 +161,9 @@ namespace SACS.Scheduler.Service
         }
 
         /// <summary>
-        /// Stops and removes named job from this service
+        /// Stops and removes named job from this service.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The job name.</param>
         public void RemoveJob(string name)
         {
             if (this.HasJob(name))
@@ -167,7 +177,7 @@ namespace SACS.Scheduler.Service
         /// <summary>
         /// Schedules the next execution of the specified job
         /// </summary>
-        /// <param name="job"></param>
+        /// <param name="job">The job.</param>
         internal void ScheduleNextExecution(IServiceJob job)
         {
             var currentTime = SystemTime.UtcNow;
@@ -196,16 +206,18 @@ namespace SACS.Scheduler.Service
 
             this._jobs[job] = timer; // overwrite the timer.
         }
-        
+
         /// <summary>
         /// Returns a boolean indicating whether the name matches the job
         /// </summary>
-        /// <param name="job"></param>
-        /// <param name="name"></param>
+        /// <param name="job">The job.</param>
+        /// <param name="name">The name to compare to.</param>
         /// <returns></returns>
         private static bool JobComparison(IServiceJob job, string name)
         {
             return job.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase);
-        }
+        } 
+
+        #endregion
     }
 }

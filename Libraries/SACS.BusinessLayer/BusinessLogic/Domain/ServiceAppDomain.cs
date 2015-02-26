@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Timers;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Loader;
+using SACS.BusinessLayer.BusinessLogic.Security;
 using SACS.Common.Enums;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
 using SACS.DataAccessLayer.Models;
 using SACS.Implementation;
-using SACS.BusinessLayer.BusinessLogic.Security;
-using SACS.Common.Configuration;
-using System.Reflection;
-using System.IO;
 
 namespace SACS.BusinessLayer.BusinessLogic.Domain
 {
@@ -25,14 +23,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
     {
         #region Fields
 
+        private readonly IServiceAppDao _executionDao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
+        private readonly DomainInitializer initializer = new DomainInitializer();
         private Timer _unloadCheckTimer;
         private ServiceApp _ServiceApp;
         private ServiceAppBase _serviceImpl;
         private AppDomain _appDomain;
         private ILog _log;
         private ServiceAppImpersonator _impersonator;
-        private readonly IServiceAppDao _executionDao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
-        private readonly DomainInitializer initializer = new DomainInitializer();
 
         #endregion
 
@@ -43,10 +41,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         /// <param name="app">The application.</param>
         /// <param name="log">The log.</param>
+        /// <param name="impersonator">The user impersonator provider.</param>
         /// <exception cref="System.ArgumentNullException">
-        /// app;Cannot create ServiceAppDomain with null ServiceApp
+        /// Cannot create ServiceAppDomain with null ServiceApp
         /// or
-        /// app;Cannot create ServiceAppDomain with null or empty ServiceApp name
+        /// Cannot create ServiceAppDomain with null or empty ServiceApp name
         /// </exception>
         internal ServiceAppDomain(ServiceApp app, ILog log, ServiceAppImpersonator impersonator)
         {
@@ -65,7 +64,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._log = log;
             this._impersonator = impersonator;
             this._unloadCheckTimer = new Timer(1000);
-            this._unloadCheckTimer.Elapsed += UnloadCheckTimer_Elapsed;
+            this._unloadCheckTimer.Elapsed += this.UnloadCheckTimer_Elapsed;
         } 
 
         #endregion
@@ -165,7 +164,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <summary>
         /// Gets the execution job.
         /// </summary>
-        /// <returns></returns>
         /// <exception cref="System.InvalidOperationException">Thrown when the service app was not initialized successfully to be able to schedule the job.</exception>
         internal void RunServiceApp()
         {

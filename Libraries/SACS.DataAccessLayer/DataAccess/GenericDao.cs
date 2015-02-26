@@ -28,7 +28,7 @@ namespace SACS.DataAccessLayer.DataAccess
         #region Constructors and Destructors
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="GenericDao"/> class from being created.
+        /// Initializes a new instance of the <see cref="SACS.DataAccessLayer.DataAccess.GenericDao" /> class.
         /// </summary>
         protected GenericDao()
         {

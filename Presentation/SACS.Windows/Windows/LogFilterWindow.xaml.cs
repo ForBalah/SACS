@@ -21,6 +21,19 @@ namespace SACS.Windows.Windows
     public partial class LogFilterWindow : Window
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="LogFilterWindow"/> class.
+        /// </summary>
+        /// <param name="entries">The entries.</param>
+        public LogFilterWindow(IEnumerable<LogEntry> entries)
+        {
+            this.Entries = entries;
+            this.InitializeComponent();
+            this.PopulateLevelDropDown();
+        }
+
+        #region Properties
+        
+        /// <summary>
         /// Gets the entries that were set on the window
         /// </summary>
         /// <value>
@@ -47,8 +60,8 @@ namespace SACS.Windows.Windows
         /// </value>
         public string Level
         {
-            get 
-            { 
+            get
+            {
                 if (this.LevelComboBox.SelectedIndex != -1)
                 {
                     return this.LevelComboBox.SelectedValue.ToString();
@@ -69,27 +82,11 @@ namespace SACS.Windows.Windows
         public string Message
         {
             get { return this.MessageTextBox.Text; }
-        }
+        } 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LogFilterWindow"/> class.
-        /// </summary>
-        /// <param name="entries">The entries.</param>
-        public LogFilterWindow(IEnumerable<LogEntry> entries)
-        {
-            this.Entries = entries;
-            InitializeComponent();
-            this.PopulateLevelDropDown();
-        }
+        #endregion
 
-        /// <summary>
-        /// Populates the level drop down.
-        /// </summary>
-        private void PopulateLevelDropDown()
-        {
-            var levels = (from e in Entries select e.Level).Distinct().ToList();
-            this.LevelComboBox.ItemsSource = levels;
-        }
+        #region Event Handlers
 
         /// <summary>
         /// Handles the Click event of the ClearButton control.
@@ -122,6 +119,21 @@ namespace SACS.Windows.Windows
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
+        } 
+
+        #endregion
+
+        #region Methods
+        
+        /// <summary>
+        /// Populates the level drop down.
+        /// </summary>
+        private void PopulateLevelDropDown()
+        {
+            var levels = (from e in this.Entries select e.Level).Distinct().ToList();
+            this.LevelComboBox.ItemsSource = levels;
+        } 
+
+        #endregion
     }
 }

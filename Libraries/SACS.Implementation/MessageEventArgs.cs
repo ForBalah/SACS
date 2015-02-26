@@ -6,7 +6,7 @@ using System.Text;
 namespace SACS.Implementation
 {
     /// <summary>
-    /// Event args for passing messages to a log event
+    /// Event args for passing messages to a log event.
     /// </summary>
     [Serializable]
     public class MessageEventArgs : EventArgs

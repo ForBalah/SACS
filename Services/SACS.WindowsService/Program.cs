@@ -66,7 +66,7 @@ namespace SACS.WindowsService
         /// <summary>
         /// Main start method
         /// </summary>
-        /// <param name="args">the start method</param>
+        /// <param name="args">The start method.</param>
         public static void Main(string[] args)
         {
             Initialize();

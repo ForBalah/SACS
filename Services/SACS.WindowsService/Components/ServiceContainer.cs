@@ -31,7 +31,7 @@ namespace SACS.WindowsService.Components
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the Service container
+        /// Initializes a new instance of the <see cref="SACS.WindowsService.Components.ServiceContainer" /> class.
         /// </summary>
         /// <param name="schedulingService">The custom built scheduling service.</param>
         /// <param name="webApiComponent">The Communication component.</param>
@@ -84,12 +84,12 @@ namespace SACS.WindowsService.Components
             using (IServiceAppDao serviceAppDao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>())
             {
                 IAppListDao appListDao = DaoFactory.Create<IAppListDao, AppListDao>();
-                _appManager.InitializeAllServiceApps(appListDao.FindAll(), serviceAppDao, errors);
+                this._appManager.InitializeAllServiceApps(appListDao.FindAll(), serviceAppDao, errors);
             }
 
             errors.ToList().ForEach(error =>
             {
-                _log.Warn(error);
+                this._log.Warn(error);
             });
         }
 

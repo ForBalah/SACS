@@ -24,9 +24,12 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Gets the application performance data.
         /// </summary>
-        /// <param name="from">From.</param>
-        /// <param name="to">To.</param>
+        /// <param name="from">From date.</param>
+        /// <param name="to">To date.</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Dates must be formatted as YYYYMMDD.
+        /// </remarks>
         [HttpGet]
         public IDictionary<string, IList<AppPerformance>> GetAppPerformanceData(string from, string to)
         {
@@ -46,8 +49,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Gets the system cpu performance data.
         /// </summary>
-        /// <param name="cpuFrom">From.</param>
-        /// <param name="to">To.</param>
+        /// <param name="cpuFrom">From date.</param>
+        /// <param name="to">To date.</param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("Cpu")]
@@ -69,8 +72,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <summary>
         /// Gets the system memory performance data.
         /// </summary>
-        /// <param name="memFrom">From.</param>
-        /// <param name="to">To.</param>
+        /// <param name="memFrom">From date.</param>
+        /// <param name="to">To date.</param>
         /// <returns></returns>
         [HttpGet]
         [ActionName("Memory")]

@@ -36,11 +36,11 @@ namespace SACS.Windows.Controls
         /// </summary>
         public ServerPerformanceControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._presenter = new ServerPerformancePresenter(this, new WebApiClientFactory());
             this.SetupSeries();
             this._timer = new Timer(1.5 * 60000);
-            this._timer.Elapsed += Timer_Elapsed;
+            this._timer.Elapsed += this.Timer_Elapsed;
             this._timer.Start();
         }
 
@@ -56,7 +56,7 @@ namespace SACS.Windows.Controls
             if (this.IsVisible)
             {
                 var dispatcher = Application.Current.Dispatcher;
-                dispatcher.BeginInvoke((Action)LoadGraphs);
+                dispatcher.BeginInvoke((Action)this.LoadGraphs);
             }
         }
 
@@ -93,7 +93,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {

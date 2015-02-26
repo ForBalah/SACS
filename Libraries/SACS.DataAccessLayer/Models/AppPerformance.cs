@@ -81,7 +81,7 @@ namespace SACS.DataAccessLayer.Models
             get
             {
                 DateTime endTime = this.EndTime ?? this.StartTime;
-                return (double)(endTime - StartTime).Milliseconds / 1000d;
+                return (double)(endTime - this.StartTime).Milliseconds / 1000d;
             }
         }
 

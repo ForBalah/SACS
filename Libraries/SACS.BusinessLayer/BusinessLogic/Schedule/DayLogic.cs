@@ -97,11 +97,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Schedule
                     for (int i = 0; i < dayParts.Count; i++)
                     {
                         var dayPart = dayParts[i];
-                        result.Append(MakethTheNumber(dayPart.Item1));
+                        result.Append(this.MakethTheNumber(dayPart.Item1));
                         if (dayPart.Item2.HasValue)
                         {
                             result.Append("-");
-                            result.Append(MakethTheNumber(dayPart.Item2.Value));
+                            result.Append(this.MakethTheNumber(dayPart.Item2.Value));
                         }
 
                         if (i < dayParts.Count - 1)
@@ -118,10 +118,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Schedule
         }
 
         /// <summary>
-        /// Makethes the number.
+        /// Makethes the number. Yes, maketh it! I.e. -st, -nd, -rd
         /// </summary>
         /// <param name="number">The number.</param>
         /// <returns></returns>
+        /// <remarks>
+        /// There's a word for it I just don't know it.
+        /// </remarks>
         private string MakethTheNumber(int number)
         {
             if (number % 10 == 1 && number != 11)

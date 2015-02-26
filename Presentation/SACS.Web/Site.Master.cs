@@ -31,19 +31,19 @@ namespace SACS.Web
             if (requestCookie != null && Guid.TryParse(requestCookie.Value, out requestCookieGuidValue))
             {
                 // Use the Anti-XSRF token from the cookie
-                _antiXsrfTokenValue = requestCookie.Value;
-                Page.ViewStateUserKey = _antiXsrfTokenValue;
+                this._antiXsrfTokenValue = requestCookie.Value;
+                Page.ViewStateUserKey = this._antiXsrfTokenValue;
             }
             else
             {
                 // Generate a new Anti-XSRF token and save to the cookie
-                _antiXsrfTokenValue = Guid.NewGuid().ToString("N");
-                Page.ViewStateUserKey = _antiXsrfTokenValue;
+                this._antiXsrfTokenValue = Guid.NewGuid().ToString("N");
+                Page.ViewStateUserKey = this._antiXsrfTokenValue;
 
                 var responseCookie = new HttpCookie(AntiXsrfTokenKey)
                 {
                     HttpOnly = true,
-                    Value = _antiXsrfTokenValue
+                    Value = this._antiXsrfTokenValue
                 };
                 if (FormsAuthentication.RequireSSL && Request.IsSecureConnection)
                 {
@@ -53,7 +53,7 @@ namespace SACS.Web
                 Response.Cookies.Set(responseCookie);
             }
 
-            Page.PreLoad += Master_Page_PreLoad;
+            Page.PreLoad += this.Master_Page_PreLoad;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace SACS.Web
             else
             {
                 // Validate the Anti-XSRF token
-                if ((string)ViewState[AntiXsrfTokenKey] != _antiXsrfTokenValue
+                if ((string)ViewState[AntiXsrfTokenKey] != this._antiXsrfTokenValue
                     || (string)ViewState[AntiXsrfUserNameKey] != (Context.User.Identity.Name ?? string.Empty))
                 {
                     throw new InvalidOperationException("Validation of Anti-XSRF token failed.");

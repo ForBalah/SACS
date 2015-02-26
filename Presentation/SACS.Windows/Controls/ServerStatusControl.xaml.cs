@@ -34,10 +34,10 @@ namespace SACS.Windows.Controls
         /// </summary>
         public ServerStatusControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._presenter = new ServerStatusPresenter(this);
             this._timer = new Timer(1000);
-            this._timer.Elapsed += Timer_Elapsed;
+            this._timer.Elapsed += this.Timer_Elapsed;
             this._timer.Start();
         }
 
@@ -212,9 +212,9 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="System.NotImplementedException">Not yet implemented.</exception>
         public void ShowException(string title, Exception e)
         {
             throw new NotImplementedException();

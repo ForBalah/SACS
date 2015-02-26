@@ -21,12 +21,17 @@ namespace SACS.Windows.ExtentedControls
 
         public ScheduleCalendar()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.DayCalendar.DisplayDateStart = DateTime.Today;
             this.DayCalendar.SelectedDate = DateTime.Today;
             this.DayCalendar.SelectionMode = CalendarSelectionMode.MultipleRange;
             this._nextOccurences = new List<DateTime>();
         }
+
+        /// <summary>
+        /// Occurs when selected date has been changed in the calendar.
+        /// </summary>
+        public event EventHandler SelectedDateChanged;
 
         /// <summary>
         /// Gets or sets the schedule.
@@ -52,11 +57,6 @@ namespace SACS.Windows.ExtentedControls
             }
         }
 
-        /// <summary>
-        /// Occurs when selected date has been changed in the calendar.
-        /// </summary>
-        public event EventHandler SelectedDateChanged;
-
         #region Event Handlers
         
         /// <summary>
@@ -68,7 +68,7 @@ namespace SACS.Windows.ExtentedControls
         {
             if (e.AddedItems.Count > 0)
             {
-                HighlightHours((DateTime)e.AddedItems[0]);
+                this.HighlightHours((DateTime)e.AddedItems[0]);
             }
 
             if (this.SelectedDateChanged != null)
@@ -199,8 +199,8 @@ namespace SACS.Windows.ExtentedControls
         /// </summary>
         private void NormalizeDisplayDate()
         {
-            int beginPeriod = (this.DayCalendar.DisplayDateStart ?? DateTime.Today).Year * 100 + (this.DayCalendar.DisplayDateStart ?? DateTime.Today).Month;
-            int displayPeriod = this.DayCalendar.DisplayDate.Year * 100 + this.DayCalendar.DisplayDate.Month;
+            int beginPeriod = ((this.DayCalendar.DisplayDateStart ?? DateTime.Today).Year * 100) + (this.DayCalendar.DisplayDateStart ?? DateTime.Today).Month;
+            int displayPeriod = (this.DayCalendar.DisplayDate.Year * 100) + this.DayCalendar.DisplayDate.Month;
 
             if (displayPeriod > beginPeriod)
             {
@@ -208,7 +208,7 @@ namespace SACS.Windows.ExtentedControls
             }
             else
             {
-                this.DayCalendar.DisplayDate = (this.DayCalendar.DisplayDateStart ?? DateTime.Today);
+                this.DayCalendar.DisplayDate = this.DayCalendar.DisplayDateStart ?? DateTime.Today;
             }
         }
 

@@ -21,6 +21,7 @@ namespace SACS.BusinessLayer.Presenters
         /// Initializes a new instance of the <see cref="AnalyticsPresenter"/> class.
         /// </summary>
         /// <param name="view">The view.</param>
+        /// <param name="factory">The REST client factory.</param>
         public AnalyticsPresenter(IAnalyticsView view, IRestClientFactory factory)
             : base(view)
         {
@@ -34,12 +35,14 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="toDate">To date.</param>
         public void LoadData(DateTime fromDate, DateTime toDate)
         {
-            this.TryExecute(() =>
-            {
-                IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
-                this.View.SetPerformanceData(client.GetAllAppPerformances(fromDate, toDate));
-            },null,
-            true);
+            this.TryExecute(
+                () =>
+                {
+                    IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
+                    this.View.SetPerformanceData(client.GetAllAppPerformances(fromDate, toDate));
+                },
+                null,
+                true);
         }
     }
 }

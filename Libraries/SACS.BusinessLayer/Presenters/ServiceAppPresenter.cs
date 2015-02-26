@@ -26,7 +26,7 @@ namespace SACS.BusinessLayer.Presenters
         /// Initializes a new instance of the <see cref="ServiceAppPresenter" /> class.
         /// </summary>
         /// <param name="view">The view.</param>
-        /// <param name="factory">The factory.</param>
+        /// <param name="factory">The REST client factory.</param>
         public ServiceAppPresenter(IServiceAppView view, IRestClientFactory factory)
             : base(view)
         {
@@ -67,20 +67,21 @@ namespace SACS.BusinessLayer.Presenters
         /// <summary>
         /// Loads the service apps.
         /// </summary>
-        /// <param name="isViewVisible">if set to <c>true</c> [is view visible].</param>
+        /// <param name="isViewVisible">If set to <c>true</c> show messages.</param>
         public void LoadServiceApps(bool isViewVisible)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                this.View.BindServiceApps(client.GetInstalledServiceApps());
-                this.View.SetStatusMessage(null);
-            }, 
-            () =>
-            {
-                this.View.BindServiceApps(new List<ServiceApp>());
-            },
-            isViewVisible);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    this.View.BindServiceApps(client.GetInstalledServiceApps());
+                    this.View.SetStatusMessage(null);
+                }, 
+                () =>
+                {
+                    this.View.BindServiceApps(new List<ServiceApp>());
+                },
+                isViewVisible);
         }
 
         /// <summary>
@@ -97,11 +98,13 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="serviceApp">The service app to start.</param>
         public void StartServiceApp(ServiceApp serviceApp)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                client.StartServiceApp(serviceApp.Name);
-            }, true);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    client.StartServiceApp(serviceApp.Name);
+                },
+                true);
 
             this.LoadServiceApps();
         }
@@ -112,11 +115,13 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="serviceApp">The service app to stop.</param>
         public void StopServiceApp(ServiceApp serviceApp)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                client.StopServiceApp(serviceApp.Name);
-            }, true);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    client.StopServiceApp(serviceApp.Name);
+                },
+                true);
 
             this.LoadServiceApps();
         }
@@ -127,11 +132,13 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="serviceApp">The service application.</param>
         public void RunServiceApp(ServiceApp serviceApp)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                client.RunServiceApp(serviceApp.Name);
-            }, true);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    client.RunServiceApp(serviceApp.Name);
+                },
+                true);
 
             this.LoadServiceApps();
         }
@@ -142,11 +149,13 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="serviceApp">The service application.</param>
         public void UpdateServiceApp(ServiceApp serviceApp)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                client.UpdateServiceApp(serviceApp);
-            }, true);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    client.UpdateServiceApp(serviceApp);
+                },
+                true);
 
             this.LoadServiceApps();
             this.View.SelectServiceApp(serviceApp);
@@ -158,11 +167,13 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="appName">Name of the application.</param>
         public void RemoveServiceApp(string appName)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                client.RemoveServiceApp(appName);
-            }, true);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    client.RemoveServiceApp(appName);
+                },
+                true);
 
             this.LoadServiceApps();
         }
@@ -173,21 +184,23 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="appName">Name of the application.</param>
         public void GetServiceAppDetails(string appName)
         {
-            this.TryExecute(() =>
-            {
-                IServiceAppClient client = this.factory.Create<IServiceAppClient>();
-                this.View.SelectServiceApp(client.GetServiceApp(appName));
-            }, true);
+            this.TryExecute(
+                () =>
+                {
+                    IServiceAppClient client = this.factory.Create<IServiceAppClient>();
+                    this.View.SelectServiceApp(client.GetServiceApp(appName));
+                },
+                true);
         }
 
         /// <summary>
         /// Peforms the specified action, wrapped in a try/catch and informs the view of the outcome
         /// </summary>
         /// <param name="action">The action.</param>
-        /// <param name="showError">if set to <c>true</c> show the error in the view.</param>
+        /// <param name="showError">If set to <c>true</c> show the error in the view.</param>
         private void TryExecute(Action action, bool showError)
         {
-            TryExecute(action, null, showError);
+            base.TryExecute(action, null, showError);
         }
     }
 }

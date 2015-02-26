@@ -28,14 +28,14 @@ namespace SACS.DataAccessLayer.DataAccess
         #region Constructors and Destructors
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="AppListDao"/> class from being created.
+        /// Prevents a default instance of the <see cref="SACS.DataAccessLayer.DataAccess.AppListDao"/> class from being created.
         /// </summary>
         private AppListDao()
         {
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="AppListDao"/> class from being created.
+        /// Initializes a new instance of the <see cref="SACS.DataAccessLayer.DataAccess.AppListDao"/> class.
         /// </summary>
         /// <param name="xml">The XML.</param>
         private AppListDao(string xml)

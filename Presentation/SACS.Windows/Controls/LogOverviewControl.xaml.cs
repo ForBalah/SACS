@@ -34,7 +34,7 @@ namespace SACS.Windows.Controls
         /// </summary>
         public LogsControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._presenter = new LogOverviewPresenter(this, new WebApiClientFactory());
             this.LogsNameListBox.ItemsSource = this._currentLogs;
         }
@@ -112,7 +112,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {

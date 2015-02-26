@@ -15,10 +15,10 @@ namespace SACS.DataAccessLayer.WebAPI
     public class AnalyticsClient : WebApiClient, IAnalyticsClient
     {
         /// <summary>
-        /// Instantiates a new instance of the <see cref="ServiceAppClient "/> class
+        /// Initializes a new instance of the <see cref="SACS.DataAccessLayer.WebAPI.AnalyticsClient" /> class
         /// </summary>
-        /// <param name="baseAdderss"></param>
-        /// <param name="httpMessageHandler"></param>
+        /// <param name="baseAdderss">The base Web API url.</param>
+        /// <param name="httpMessageHandler">The message handler class dependency.</param>
         internal AnalyticsClient(string baseAdderss, HttpMessageHandler httpMessageHandler)
             : base(baseAdderss, httpMessageHandler)
         {

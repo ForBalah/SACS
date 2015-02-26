@@ -17,9 +17,10 @@ namespace SACS.BusinessLayer.Presenters
         private readonly IRestClientFactory factory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnalyticsPresenter"/> class.
+        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.Presenters.LogOverviewPresenter"/> class.
         /// </summary>
         /// <param name="view">The view.</param>
+        /// <param name="factory">The REST client factory.</param>
         public LogOverviewPresenter(ILogOverviewView view, IRestClientFactory factory)
             : base(view)
         {
@@ -31,7 +32,7 @@ namespace SACS.BusinessLayer.Presenters
         /// </summary>
         public void LoadControl()
         {
-            var logPaths = GetLogPaths();
+            var logPaths = this.GetLogPaths();
             this.View.SetCurrentLogs(logPaths);
         }
 
@@ -42,14 +43,15 @@ namespace SACS.BusinessLayer.Presenters
         private IEnumerable<string> GetLogPaths()
         {
             IEnumerable<string> logs = new List<string>();
-            this.TryExecute(() =>
-            {
-                ILogsClient client = this.factory.Create<ILogsClient>();
-                logs = client.GetLogNames();
-                this.View.ClearException();
-            },
-            null,
-            true);
+            this.TryExecute(
+                () =>
+                {
+                    ILogsClient client = this.factory.Create<ILogsClient>();
+                    logs = client.GetLogNames();
+                    this.View.ClearException();
+                },
+                null,
+                true);
 
             return logs;
         }

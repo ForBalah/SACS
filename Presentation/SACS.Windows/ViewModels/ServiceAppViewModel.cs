@@ -15,14 +15,6 @@ namespace SACS.Windows.ViewModels
     public class ServiceAppViewModel
     {
         /// <summary>
-        /// The ServiceAppViewModel comparer
-        /// </summary>
-        public static Comparison<ServiceAppViewModel> Comparer = new Comparison<ServiceAppViewModel>((a, b) =>
-        {
-            return a.ServiceApp.Name.CompareTo(b.ServiceApp.Name);
-        });
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceAppViewModel"/> class.
         /// </summary>
         /// <param name="serviceApp">The service application.</param>
@@ -39,6 +31,20 @@ namespace SACS.Windows.ViewModels
                     StartupTypeEnum = StartupType.NotSet,
                     Schedule = string.Empty
                 };
+            }
+        }
+
+        /// <summary>
+        /// Gets the ServiceAppViewModel comparer
+        /// </summary>
+        public static Comparison<ServiceAppViewModel> Comparer
+        {
+            get
+            {
+                return new Comparison<ServiceAppViewModel>((a, b) =>
+                {
+                    return a.ServiceApp.Name.CompareTo(b.ServiceApp.Name);
+                });
             }
         }
 

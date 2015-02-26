@@ -27,8 +27,12 @@
   <PropertyGroup Condition="('$(SourceAnalysisTreatErrorsAsWarnings)' != '') and ('$(StyleCopTreatErrorsAsWarnings)' == '')">
     <StyleCopTreatErrorsAsWarnings>$(SourceAnalysisTreatErrorsAsWarnings)</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(StyleCopTreatErrorsAsWarnings)' == ''">
+  <PropertyGroup Condition="('$(StyleCopTreatErrorsAsWarnings)' == '') and ('$(Configuration)' == 'Debug')">
     <StyleCopTreatErrorsAsWarnings>true</StyleCopTreatErrorsAsWarnings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="('$(StyleCopTreatErrorsAsWarnings)' == '') and ('$(Configuration)' == 'Release')">
+    <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
 
   <!-- Define StyleCopEnabled property. -->
@@ -92,7 +96,7 @@
        <StyleCopFiles Remove="@(ExcludeFromStyleCop)" />    
     </ItemGroup>
 
-    <Message Text="Excluding @(StyleCopExcludedFiles)" Importance="Normal" Condition="'@(StyleCopExcludedFiles)' != ''" />
+    <Message Text="Excluding @(StyleCopExcludedFiles)" Importance="Normal" />
 
     <!-- Run the StyleCop MSBuild task. -->
     <StyleCopTask
@@ -105,10 +109,10 @@
       CacheResults="$(StyleCopCacheResults)"
       OverrideSettingsFile="$(StyleCopOverrideSettingsFile)"
       OutputFile="$(StyleCopOutputFile)"
-      MaxViolationCount="$(StyleCopMaxViolationCount)">
-      <Output TaskParameter="ViolationCount" PropertyName="StyleCopViolationCount" />
-    </StyleCopTask>
-    
+      MaxViolationCount="$(StyleCopMaxViolationCount)"
+            />
+
+    <!-- Make output files cleanable -->
     <CreateItem Include="$(StyleCopOutputFile)">
       <Output TaskParameter="Include" ItemName="FileWrites"/>
     </CreateItem>

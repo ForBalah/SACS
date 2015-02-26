@@ -15,12 +15,12 @@ namespace SACS.Web.Models
     }
 
     /// <summary>
-    /// The applications DB context
+    /// The applications DB context.
     /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         /// <summary>
-        /// Initializes a new instance of the application DB context
+        /// Initializes a new instance of the <see cref="SACS.Web.Models.ApplicationDbContext"/> class.
         /// </summary>
         public ApplicationDbContext()
             : base("DefaultConnection")
@@ -31,12 +31,12 @@ namespace SACS.Web.Models
     #region Helpers
 
     /// <summary>
-    /// The User Manager
+    /// The User Manager.
     /// </summary>
     public class UserManager : UserManager<ApplicationUser>
     {
         /// <summary>
-        /// Initializes a new instance of the User Manager
+        /// Initializes a new instance of the <see cref="SACS.Web.Models.UserManager"/> class.
         /// </summary>
         public UserManager()
             : base(new UserStore<ApplicationUser>(new ApplicationDbContext()))
@@ -53,21 +53,21 @@ namespace SACS.Web
     public static class IdentityHelper
     {
         /// <summary>
-        /// Used for XSRF when linking external logins
+        /// Used for XSRF when linking external logins.
         /// </summary>
         public const string XsrfKey = "XsrfId";
 
         /// <summary>
-        /// The provider name key
+        /// The provider name key.
         /// </summary>
         public const string ProviderNameKey = "providerName";
 
         /// <summary>
-        /// Performs sign in
+        /// Performs sign in.
         /// </summary>
-        /// <param name="manager">The User Manager</param>
-        /// <param name="user">The applciation User</param>
-        /// <param name="isPersistent">whether the connection is persistent</param>
+        /// <param name="manager">The User Manager.</param>
+        /// <param name="user">The applciation User.</param>
+        /// <param name="isPersistent">Whether the connection is persistent.</param>
         public static void SignIn(UserManager manager, ApplicationUser user, bool isPersistent)
         {
             IAuthenticationManager authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
@@ -77,9 +77,9 @@ namespace SACS.Web
         }
 
         /// <summary>
-        /// Gets the provider name from the request
+        /// Gets the provider name from the request.
         /// </summary>
-        /// <param name="request">The http request</param>
+        /// <param name="request">The http request.</param>
         /// <returns></returns>
         public static string GetProviderNameFromRequest(HttpRequest request)
         {
@@ -87,9 +87,9 @@ namespace SACS.Web
         }
 
         /// <summary>
-        /// Gets the external login redirect URL
+        /// Gets the external login redirect URL.
         /// </summary>
-        /// <param name="accountProvider">The name of the account provider</param>
+        /// <param name="accountProvider">The name of the account provider.</param>
         /// <returns></returns>
         public static string GetExternalLoginRedirectUrl(string accountProvider)
         {
@@ -97,9 +97,9 @@ namespace SACS.Web
         }
 
         /// <summary>
-        /// Gets a value indicating whether the URL is local
+        /// Gets a value indicating whether the URL is local.
         /// </summary>
-        /// <param name="url">The URL to check</param>
+        /// <param name="url">The URL to check.</param>
         /// <returns></returns>
         private static bool IsLocalUrl(string url)
         {
@@ -109,7 +109,7 @@ namespace SACS.Web
         /// <summary>
         /// Use Response.Redirect to the return URL.
         /// </summary>
-        /// <param name="returnUrl">The URL to return to</param>
+        /// <param name="returnUrl">The URL to return to.</param>
         /// <param name="response">The http response.</param>
         public static void RedirectToReturnUrl(string returnUrl, HttpResponse response)
         {

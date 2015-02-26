@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using SACS.Windows.Extensions;
 
 namespace MultiSelectComboBox
 {
@@ -31,7 +23,7 @@ namespace MultiSelectComboBox
         /// </summary>
         public MultiSelectComboBox()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._nodeList = new ObservableCollection<Node>();
         }
 
@@ -66,7 +58,10 @@ namespace MultiSelectComboBox
         /// </value>
         public Dictionary<string, object> ItemsSource
         {
-            get { return (Dictionary<string, object>)GetValue(ItemsSourceProperty); }
+            get
+            {
+                return (Dictionary<string, object>)GetValue(ItemsSourceProperty);
+            }
 
             set
             {
@@ -82,7 +77,10 @@ namespace MultiSelectComboBox
         /// </value>
         public Dictionary<string, object> SelectedItems
         {
-            get { return (Dictionary<string, object>)GetValue(SelectedItemsProperty); }
+            get
+            {
+                return (Dictionary<string, object>)GetValue(SelectedItemsProperty);
+            }
 
             set
             {
@@ -208,6 +206,7 @@ namespace MultiSelectComboBox
                         selectedCount++;
                     }
                 }
+
                 if (selectedCount == this._nodeList.Count - 1)
                 {
                     this._nodeList.FirstOrDefault(i => i.Title == "All").IsSelected = true;
@@ -432,6 +431,11 @@ namespace MultiSelectComboBox
 
         #endregion
 
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
         #region Properties
 
         /// <summary>
@@ -475,11 +479,6 @@ namespace MultiSelectComboBox
         }
 
         #endregion
-
-        /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Notifies the property changed.

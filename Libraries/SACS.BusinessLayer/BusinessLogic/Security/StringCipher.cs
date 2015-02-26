@@ -22,7 +22,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         private static readonly byte[] initVectorBytes = Encoding.ASCII.GetBytes("tu89geji340t89u2");
 
         // This constant is used to determine the keysize of the encryption algorithm.
-        private const int keysize = 256;
+        private const int Keysize = 256;
 
         /// <summary>
         /// Encrypts the specified plain text.
@@ -35,7 +35,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             using (PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null))
             {
-                byte[] keyBytes = password.GetBytes(keysize / 8);
+                byte[] keyBytes = password.GetBytes(Keysize / 8);
                 using (RijndaelManaged symmetricKey = new RijndaelManaged())
                 {
                     symmetricKey.Mode = CipherMode.CBC;
@@ -67,7 +67,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
             byte[] cipherTextBytes = Convert.FromBase64String(cipherText);
             using (PasswordDeriveBytes password = new PasswordDeriveBytes(passPhrase, null))
             {
-                byte[] keyBytes = password.GetBytes(keysize / 8);
+                byte[] keyBytes = password.GetBytes(Keysize / 8);
                 using (RijndaelManaged symmetricKey = new RijndaelManaged())
                 {
                     symmetricKey.Mode = CipherMode.CBC;

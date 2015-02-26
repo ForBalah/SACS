@@ -22,7 +22,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
         /// <summary>
         /// Schedules the service application domain.
         /// </summary>
-        /// <param name="schedulingService">The scheduling service.</param>
+        /// <param name="domain">The domain wrapper to schedule for.</param>
         /// <param name="dao">The DAO.</param>
         /// <returns>
         /// Any errors that occured when trying to create the schedule.

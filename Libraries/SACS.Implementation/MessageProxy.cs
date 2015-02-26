@@ -6,7 +6,7 @@ using System.Text;
 namespace SACS.Implementation
 {
     /// <summary>
-    /// The proxy class for passing messages between app domains
+    /// The proxy class for passing messages between app domains.
     /// </summary>
     public class MessageProxy : MarshalByRefObject
     {
@@ -14,7 +14,7 @@ namespace SACS.Implementation
         private Action<Message> _callback;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceAppMessages" /> class.
+        /// Initializes a new instance of the <see cref="SACS.Implementation.MessageProxy" /> class.
         /// </summary>
         /// <param name="serviceAppBase">The service application base.</param>
         /// <param name="callback">The callback.</param>
@@ -22,7 +22,7 @@ namespace SACS.Implementation
         {
             this._serviceAppBase = serviceAppBase;
             this._callback = callback;
-            AddMessageListener();
+            this.AddMessageListener();
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace SACS.Implementation
         /// </summary>
         public void AddMessageListener()
         {
-            this._serviceAppBase.LogMessage += ServiceAppBase_LogMessage;
+            this._serviceAppBase.LogMessage += this.ServiceAppBase_LogMessage;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace SACS.Implementation
         /// </summary>
         public void RemoveMessageListener()
         {
-            this._serviceAppBase.LogMessage -= ServiceAppBase_LogMessage;
+            this._serviceAppBase.LogMessage -= this.ServiceAppBase_LogMessage;
         }
 
         /// <summary>

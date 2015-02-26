@@ -12,17 +12,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
     /// </summary>
     internal class ServiceAppJobWrapper
     {
-        private ServiceAppBase _serviceAppBase;
-        private ServiceAppImpersonator _impersonator;
         private readonly string _appName;
         private readonly string _username;
         private readonly string _password;
         private readonly IServiceAppDao _dao;
-
-        /// <summary>
-        /// Occurs when an execution error occurs
-        /// </summary>
-        public event EventHandler<Exception> ExecutionError;
+        private ServiceAppBase _serviceAppBase;
+        private ServiceAppImpersonator _impersonator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceAppJobWrapper" /> class.
@@ -43,6 +38,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._impersonator = impersonator;
         }
 
+        /// <summary>
+        /// Occurs when an execution error occurs
+        /// </summary>
+        public event EventHandler<Exception> ExecutionError;
+
         #region Methods
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public void Execute()
         {
-            MessageProxy proxy = new MessageProxy(this._serviceAppBase, LogMessage);
+            MessageProxy proxy = new MessageProxy(this._serviceAppBase, this.LogMessage);
             try
             {
                 int performanceId = this._dao.RecordServiceAppExecutionStart(this._appName);

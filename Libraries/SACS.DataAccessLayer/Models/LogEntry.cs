@@ -29,7 +29,7 @@ namespace SACS.DataAccessLayer.Models
         public DateTime TimeStamp { get; set; }
 
         /// <summary>
-        /// Gets or sets the image.
+        /// Gets the image.
         /// </summary>
         /// <value>
         /// The image.

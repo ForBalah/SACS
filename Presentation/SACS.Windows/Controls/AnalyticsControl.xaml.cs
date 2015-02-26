@@ -31,14 +31,14 @@ namespace SACS.Windows.Controls
         private DateTime _FromDate;
         private DateTime _ToDate;
         private List<ScatterSeries> _series = new List<ScatterSeries>();
-        protected List<AppPerformanceViewModel> _appPerformances = new List<AppPerformanceViewModel>();
+        private List<AppPerformanceViewModel> _appPerformances = new List<AppPerformanceViewModel>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AnalyticsControl"/> class.
         /// </summary>
         public AnalyticsControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._presenter = new AnalyticsPresenter(this, new WebApiClientFactory());
             this.FromDate = DateTime.Today.AddMonths(-1);
             this.ToDate = DateTime.Today.AddDays(1);
@@ -101,7 +101,6 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Updates the TreeView.
         /// </summary>
-        /// <exception cref="System.NotImplementedException"></exception>
         private void UpdateTreeView()
         {
             this.DataTreeView.Items.Clear();
@@ -123,9 +122,9 @@ namespace SACS.Windows.Controls
                     {
                         LastChildFill = true
                     };
-                    CreateLabel(panel, perfItem.StartTimeString, 180);
-                    CreateLabel(panel, perfItem.EndTimeString, 180);
-                    CreateLabel(panel, perfItem.Message, null);
+                    this.CreateLabel(panel, perfItem.StartTimeString, 180);
+                    this.CreateLabel(panel, perfItem.EndTimeString, 180);
+                    this.CreateLabel(panel, perfItem.Message, null);
                     childItem.Header = panel;
 
                     treeItem.Items.Add(childItem);
@@ -166,7 +165,6 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Sets the chart data.
         /// </summary>
-        /// <param name="data">The data.</param>
         private void UpdateChartData()
         {
             foreach (var dataItem in this._appPerformances.Where(d => d.IsSelected))
@@ -203,7 +201,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {

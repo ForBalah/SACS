@@ -18,9 +18,10 @@ namespace SACS.BusinessLayer.Presenters
         private readonly IRestClientFactory factory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AnalyticsPresenter"/> class.
+        /// Initializes a new instance of the <see cref="LogDetailPresenter"/> class.
         /// </summary>
         /// <param name="view">The view.</param>
+        /// <param name="factory">The REST client factory.</param>
         public LogDetailPresenter(ILogDetailView view, IRestClientFactory factory)
             : base(view)
         {
@@ -36,12 +37,14 @@ namespace SACS.BusinessLayer.Presenters
         {
             IList<LogEntry> entries = new List<LogEntry>();
 
-            this.TryExecute(() =>
-            {
-                ILogsClient client = this.factory.Create<ILogsClient>();
-                entries = client.GetLogEntries(logFileName);
-            }, null,
-            true);
+            this.TryExecute(
+                () =>
+                {
+                    ILogsClient client = this.factory.Create<ILogsClient>();
+                    entries = client.GetLogEntries(logFileName);
+                },
+                null,
+                true);
 
             return entries;
         }

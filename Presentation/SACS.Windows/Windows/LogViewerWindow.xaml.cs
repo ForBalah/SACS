@@ -24,7 +24,7 @@ namespace SACS.Windows.Windows
         /// </summary>
         public LogViewerWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>

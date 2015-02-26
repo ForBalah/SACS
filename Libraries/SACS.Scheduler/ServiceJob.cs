@@ -12,9 +12,15 @@ namespace SACS.Scheduler
     /// </summary>
     public class ServiceJob : IServiceJob
     {
-        ILog _log = LogManager.GetLogger(typeof(ServiceJob));
+        private ILog _log = LogManager.GetLogger(typeof(ServiceJob));
         private Action _executionStep;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SACS.Scheduler.ServiceJob" /> class.
+        /// </summary>
+        /// <param name="name">The name to give the job.</param>
+        /// <param name="schedule">The schedule defining function.</param>
+        /// <param name="executionStep">The step to perform on execution.</param>
         public ServiceJob(string name, Func<DateTime, DateTime> schedule, Action executionStep)
         {
             this.Name = name;

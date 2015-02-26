@@ -21,13 +21,13 @@ namespace SACS.DataAccessLayer.WebAPI.Interfaces
         /// <summary>
         /// Sends the command to start the specified service app by name
         /// </summary>
-        /// <param name="appName"></param>
+        /// <param name="appName">Name of the application.</param>
         void StartServiceApp(string appName);
 
         /// <summary>
         /// Sends the command to stop the specified service app by name
         /// </summary>
-        /// <param name="appName"></param>
+        /// <param name="appName">Name of the application.</param>
         void StopServiceApp(string appName);
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace SACS.DataAccessLayer.WebAPI.Interfaces
         /// <summary>
         /// Updates the container with the specified service app
         /// </summary>
-        /// <param name="appName">Name of the application.</param>
+        /// <param name="serviceApp">The Service App model to do the update with.</param>
         void UpdateServiceApp(ServiceApp serviceApp);
 
         /// <summary>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SACS.DataAccessLayer.Models
 {
     /// <summary>
-    /// the system performance model
+    /// The system performance model.
     /// </summary>
     public class SystemPerformance
     {

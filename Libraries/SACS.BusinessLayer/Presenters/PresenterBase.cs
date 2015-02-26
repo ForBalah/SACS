@@ -57,7 +57,7 @@ namespace SACS.BusinessLayer.Presenters
         /// </summary>
         /// <param name="action">The action.</param>
         /// <param name="exceptionAction">The exception action.</param>
-        /// <param name="showError">if set to <c>true</c> show the error in the view.</param>
+        /// <param name="showError">If set to <c>true</c> show the error in the view.</param>
         protected void TryExecute(Action action, Action exceptionAction, bool showError)
         {
             try

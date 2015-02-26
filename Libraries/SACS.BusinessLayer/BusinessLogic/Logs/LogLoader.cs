@@ -18,17 +18,33 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
         /// The default namespace
         /// </summary>
         public const string DefaultNamespace = "log4j";
-        
-        /// <summary>
-        /// The default base date
-        /// </summary>
-        public static DateTime DefaultDate = new DateTime(1970, 1, 1);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Logs.LogLoader"/> class.
+        /// </summary>
+        /// <param name="baseDate">The base date to use to transform logged dates with.</param>
         public LogLoader(DateTime baseDate)
         {
             this.BaseDate = baseDate;
         }
 
+        #region Properties
+        
+        /// <summary>
+        /// Gets the default base date
+        /// </summary>
+        public static DateTime DefaultDate
+        {
+            get
+            {
+                return new DateTime(1970, 1, 1);
+            }
+        } 
+
+        #endregion
+
+        #region Methods
+        
         /// <summary>
         /// Gets the base date.
         /// </summary>
@@ -494,6 +510,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
 
             this.listView1.ItemsSource = _Entries;
             */
-        }
+        } 
+
+        #endregion
     }
 }

@@ -28,6 +28,7 @@ namespace SACS.WindowsService.Components
                 CounterName = "Working Set - Private",
                 InstanceName = Process.GetCurrentProcess().ProcessName
             };
+
         private static PerformanceCounter cpuCounter = new PerformanceCounter
             {
                 CategoryName = "Process",
@@ -38,7 +39,7 @@ namespace SACS.WindowsService.Components
         /// <summary>
         /// Kicks off the running of the schedule monitor.
         /// </summary>
-        /// <param name="service">the schedulign service to use.</param>
+        /// <param name="service">The schedulign service to use.</param>
         public static void AddToScheduler(ISchedulingService service)
         {
             service.AddJob(

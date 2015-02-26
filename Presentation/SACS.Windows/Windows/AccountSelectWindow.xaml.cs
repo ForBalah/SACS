@@ -28,7 +28,7 @@ namespace SACS.Windows.Windows
         /// </summary>
         public AccountSelectWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         #region Properties

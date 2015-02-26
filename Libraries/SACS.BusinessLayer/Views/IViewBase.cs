@@ -14,6 +14,7 @@ namespace SACS.BusinessLayer.Views
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
         void ShowException(string title, Exception e);
     }

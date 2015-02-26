@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SACS.Common.Enums
 {
+    /// <summary>
+    /// The DTO for enums.
+    /// </summary>
     public class EnumWrapper
     {
         /// <summary>

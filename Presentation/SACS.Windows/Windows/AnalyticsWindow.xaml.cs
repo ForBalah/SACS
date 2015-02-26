@@ -19,9 +19,12 @@ namespace SACS.Windows.Windows
     /// </summary>
     public partial class AnalyticsWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnalyticsWindow"/> class.
+        /// </summary>
         public AnalyticsWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

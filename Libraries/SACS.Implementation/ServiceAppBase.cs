@@ -56,27 +56,32 @@ namespace SACS.Implementation
         {
             if (message != null && this.LogMessage != null)
             {
-                this.LogMessage(null, new MessageEventArgs { Message = new Message(this.GetType().Name , message) });
+                this.LogMessage(null, new MessageEventArgs { Message = new Message(this.GetType().Name, message) });
             }
         }
 
         /// <summary>
         /// Helper method for sending errors to a pre-defined logger. NOTE: stick to BCL (Base Class Library) exceptions
-        /// as there could be potential issues sending custom exceptions from a service app to its SAC
+        /// as there could be potential issues sending custom exceptions from a service app to its SAC.
         /// </summary>
         /// <param name="exception">The exception.</param>
-        /// <remarks>There are a lot of intricacies involved when raising events within a child domain that involves quite
+        /// <remarks>
+        /// <para>There are a lot of intricacies involved when raising events within a child domain that involves quite
         /// a bit of marshalling and serialization of assemblies between parent and child domains. Because the SAC and the 
         /// Service App could sit in different locations it there can be quite a bit of time spent, by .NET, looking for
         /// the right assemblies.
-        /// 
+        /// </para>
+        /// <para>
         /// The easiest solution, without having to specify fairly complex "assembly resolving" for the binder, involves 
         /// merely using exception classes which are known to be common to both the service app container, and the service
         /// app. And all the derived exception classes within the BCL (E.g. ArgumentException or InvalidOperationException)
         /// meet the criteria.
-        /// 
+        /// </para>
+        /// <para>
         /// For an explanation around what communication steps take place between app domains, see:
-        /// http://stackoverflow.com/questions/1277346/net-problem-with-raising-and-handling-events-using-appdomains</remarks>
+        /// http://stackoverflow.com/questions/1277346/net-problem-with-raising-and-handling-events-using-appdomains.
+        /// </para>
+        /// </remarks>
         public void SendError(Exception exception)
         {
             if (exception != null && this.LogMessage != null)

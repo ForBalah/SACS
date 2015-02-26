@@ -35,9 +35,9 @@ namespace SACS.Windows.Controls
         //// MediaCommands.
         //// NavigationCommands
         //// SystemCommands
-        public event EventHandler<string> GeneralStatusChange;
-        protected List<ServiceAppViewModel> _serviceApps = new List<ServiceAppViewModel>();
-        protected bool _inEditMode = false;
+        private List<ServiceAppViewModel> _serviceApps = new List<ServiceAppViewModel>();
+
+        private bool _inEditMode = false;
         private ServiceApp _selectedServiceApp;
         private ServiceAppPresenter _presenter;
         private AnalyticsWindow _analytics;
@@ -47,10 +47,12 @@ namespace SACS.Windows.Controls
         /// </summary>
         public ServiceAppsControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._presenter = new ServiceAppPresenter(this, new WebApiClientFactory());
             this.ServiceAppListView.ItemsSource = this._serviceApps;
         }
+
+        public event EventHandler<string> GeneralStatusChange;
 
         #region Properties
 
@@ -200,19 +202,19 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
         private void ViewAnalyticsCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_analytics == null || !_analytics.IsVisible)
+            if (this._analytics == null || !this._analytics.IsVisible)
             {
-                _analytics = new AnalyticsWindow();
+                this._analytics = new AnalyticsWindow();
             }
 
-            _analytics.ShowActivated = true;
-            _analytics.Show();
-            if (_analytics.WindowState == WindowState.Minimized)
+            this._analytics.ShowActivated = true;
+            this._analytics.Show();
+            if (this._analytics.WindowState == WindowState.Minimized)
             {
-                _analytics.WindowState = WindowState.Normal;
+                this._analytics.WindowState = WindowState.Normal;
             }
 
-            _analytics.Focus();
+            this._analytics.Focus();
         }
 
         /// <summary>
@@ -272,7 +274,7 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void ServiceAppListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ServiceAppViewModel item = ((sender as ListView).SelectedItem as ServiceAppViewModel);
+            ServiceAppViewModel item = (sender as ListView).SelectedItem as ServiceAppViewModel;
             if (item != null)
             {
                 this.SelectServiceApp(item.ServiceApp);
@@ -286,8 +288,8 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Handles the click event of the StartServiceAppButton
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void StartServiceAppButton_Click(object sender, RoutedEventArgs e)
         {
             if (this._selectedServiceApp != null)
@@ -374,9 +376,8 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the exception.
         /// </summary>
-        /// <param name="title">The title.</param>
-        /// <param name="e">The e.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <param name="title">The title of the exception.</param>
+        /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {
             if (!DesignerProperties.GetIsInDesignMode(this))
@@ -413,14 +414,14 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Selects the specified service app, or deselects if null is passed in
         /// </summary>
-        /// <param name="serviceApp"></param>
+        /// <param name="serviceApp">The service app.</param>
         public void SelectServiceApp(ServiceApp serviceApp)
         {
             this._selectedServiceApp = serviceApp;
 
             if (serviceApp != null)
             {
-                ShowServiceAppDetails(new ServiceAppViewModel(serviceApp), true);
+                this.ShowServiceAppDetails(new ServiceAppViewModel(serviceApp), true);
             }
             else
             {
@@ -519,7 +520,7 @@ namespace SACS.Windows.Controls
         /// Shows the service app details.
         /// </summary>
         /// <param name="viewModel">The service app view model.</param>
-        /// <param name="isReadOnly">if set to <c>true</c> show the details as read only.</param>
+        /// <param name="isReadOnly">If set to <c>true</c> show the details as read only.</param>
         private void ShowServiceAppDetails(ServiceAppViewModel viewModel, bool isReadOnly)
         {
             this.ServiceAppNameLabel.Content = this.ServiceAppNameTextBox.Text = viewModel.ServiceApp.Name;
@@ -548,7 +549,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Toggles the edit field visibility.
         /// </summary>
-        /// <param name="isEdit">if set to <c>true</c> [is edit].</param>
+        /// <param name="isEdit">If set to <c>true</c> [is edit].</param>
         private void ToggleEditFieldVisibility(bool isEdit)
         {
             this.ServiceAppListView.IsEnabled = !isEdit;
@@ -614,9 +615,10 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Quick method to map the visibility which lowers the cyclomatic complexity.
         /// </summary>
-        /// <param name="isVisible">if set to <c>true</c> [is visible].</param>
+        /// <param name="isVisible">If set to <c>true</c> [is visible].</param>
         /// <returns></returns>
-        private static Visibility MapVisibility(bool isVisible){
+        private static Visibility MapVisibility(bool isVisible)
+        {
             return isVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 

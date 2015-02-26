@@ -13,12 +13,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
         /// Initializes a new instance of the <see cref="HtmlEmailTemplateProvider"/> class.
         /// </summary>
         /// <param name="path">The path.</param>
-        public HtmlEmailTemplateProvider(string path) : base(path) { }
+        public HtmlEmailTemplateProvider(string path)
+            : base(path)
+        {
+        }
 
         /// <summary>
         /// Gets the formatted value equivalent
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">The value to format.</param>
         /// <returns></returns>
         protected override string GetFormattedValue(string value)
         {

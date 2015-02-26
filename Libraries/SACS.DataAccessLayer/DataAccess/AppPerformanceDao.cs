@@ -16,7 +16,7 @@ namespace SACS.DataAccessLayer.DataAccess
     public class AppPerformanceDao : GenericDao, IAppPerformanceDao
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceAppDao"/> class.
+        /// Initializes a new instance of the <see cref="SACS.DataAccessLayer.DataAccess.AppPerformanceDao"/> class.
         /// </summary>
         protected AppPerformanceDao()
             : base()

@@ -11,8 +11,8 @@ namespace SACS.Windows.Controls
     /// <summary>
     /// The base class for the user controls
     /// </summary>
+    [Obsolete("Not used.")]
     public abstract class UserControlBase : UserControl
     {
-        
     }
 }

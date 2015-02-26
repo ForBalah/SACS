@@ -19,11 +19,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
     {
         #region Fields
 
+        private readonly ILog _log = LogManager.GetLogger(typeof(AppManager));
+
         private static object _syncRoot = new object();
         private static IAppManager _Current;
 
         private ServiceAppDomainCollection _ServiceAppDomains;
-        private readonly ILog _log = LogManager.GetLogger(typeof(AppManager));
         private IServiceAppSchedulingService _SchedulingService;
 
         #endregion
@@ -162,7 +163,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         /// <param name="dao">The DAO.</param>
-        /// <param name="startAutomatically">If set to <c>true</c> schedule automatically.</param>
         /// <returns>A string containing an error message if a recoverable error occured.</returns>
         /// <exception cref="System.IndexOutOfRangeException">The ServiceApp could not be found in the container.</exception>
         /// <exception cref="System.InvalidOperationException">The ServiceApp is not in a stopped state.</exception>

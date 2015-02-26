@@ -18,12 +18,12 @@ namespace SACS.Web.Account
         /// <param name="e">The event args</param>
         protected void Page_Load(object sender, EventArgs e)
         {
-            RegisterHyperLink.NavigateUrl = "Register";
-            OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
+            this.RegisterHyperLink.NavigateUrl = "Register";
+            this.OpenAuthLogin.ReturnUrl = Request.QueryString["ReturnUrl"];
             var returnUrl = HttpUtility.UrlEncode(Request.QueryString["ReturnUrl"]);
             if (!string.IsNullOrEmpty(returnUrl))
             {
-                RegisterHyperLink.NavigateUrl += "?ReturnUrl=" + returnUrl;
+                this.RegisterHyperLink.NavigateUrl += "?ReturnUrl=" + returnUrl;
             }
         }
 
@@ -46,8 +46,8 @@ namespace SACS.Web.Account
                 }
                 else
                 {
-                    FailureText.Text = "Invalid username or password.";
-                    ErrorMessage.Visible = true;
+                    this.FailureText.Text = "Invalid username or password.";
+                    this.ErrorMessage.Visible = true;
                 }
             }
         }

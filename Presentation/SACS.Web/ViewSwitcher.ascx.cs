@@ -53,7 +53,7 @@ namespace SACS.Web
                 return;
             }
 
-            var url = GetRouteUrl(switchViewRouteName, new { view = AlternateView, __FriendlyUrls_SwitchViews = true });
+            var url = GetRouteUrl(switchViewRouteName, new { view = this.AlternateView, __FriendlyUrls_SwitchViews = true });
             url += "?ReturnUrl=" + HttpUtility.UrlEncode(Request.RawUrl);
             this.SwitchUrl = url;
         }

@@ -13,7 +13,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
     public abstract class EmailTemplateProvider
     {
         private string _template;
-        protected Dictionary<string, string> values = new Dictionary<string, string>();
+        private Dictionary<string, string> values = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailTemplateProvider"/> class.
@@ -57,7 +57,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
         /// <summary>
         /// Gets the formatted value equivalent
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">The value to format.</param>
         /// <returns></returns>
         protected abstract string GetFormattedValue(string value);
     }

@@ -28,7 +28,7 @@ namespace SACS.Windows.Controls
         /// </summary>
         public ConfigurationControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /// <summary>

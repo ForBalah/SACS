@@ -220,7 +220,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Schedule
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        public static IList<Tuple<int,int?>> SplitValues(string input)
+        public static IList<Tuple<int, int?>> SplitValues(string input)
         {
             string[] parts = input.Split(',');
             List<Tuple<int, int?>> finalList = new List<Tuple<int, int?>>();

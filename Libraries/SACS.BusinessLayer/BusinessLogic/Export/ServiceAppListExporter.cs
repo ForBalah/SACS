@@ -25,7 +25,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Export
         /// <returns></returns>
         internal string ExportTabDelimited(IList<ServiceApp> serviceAppList)
         {
-            return ExportList(serviceAppList, "\t");
+            return this.ExportList(serviceAppList, "\t");
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Export
         /// <returns></returns>
         internal string ExportCsv(IList<ServiceApp> serviceAppList)
         {
-            return ExportList(serviceAppList, ",");
+            return this.ExportList(serviceAppList, ",");
         }
 
         /// <summary>

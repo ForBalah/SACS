@@ -22,15 +22,15 @@ namespace SACS.Windows.Windows
     /// </summary>
     public partial class ScheduleWindow : Window, IScheduleSelectorView
     {
-        private bool _isUpdating = false; // not ideal but this is used to prevent multiple updates because so many change events are bound to
         private readonly ScheduleSelectorPresenter _presenter;
+        private bool _isUpdating = false; // TODO: not ideal but this is used to prevent multiple updates because so many change events are bound to
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScheduleWindow"/> class.
         /// </summary>
         public ScheduleWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.ValidationMessages = new List<string>();
             this._presenter = new ScheduleSelectorPresenter(this);
             this._presenter.LoadControl();
@@ -148,7 +148,7 @@ namespace SACS.Windows.Windows
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            if (!_isUpdating)
+            if (!this._isUpdating)
             {
                 this.RefreshSchedule();
             }
@@ -178,18 +178,18 @@ namespace SACS.Windows.Windows
             this.DayMultiSelect.ItemsSource = Enumerable.Range(1, 31).ToDictionary(k => k.ToString(), v => (object)v);
             this.MonthMultiSelect.ItemsSource = new Dictionary<string, object>
             {
-                { "January", 1},
-                { "February", 2},
-                { "March", 3},
-                { "April", 4},
-                { "May", 5},
-                { "June", 6},
-                { "July", 7},
-                { "August", 8},
-                { "September", 9},
-                { "October", 10},
-                { "November", 11},
-                { "December", 12},
+                { "January", 1 },
+                { "February", 2 },
+                { "March", 3 },
+                { "April", 4 },
+                { "May", 5 },
+                { "June", 6 },
+                { "July", 7 },
+                { "August", 8 },
+                { "September", 9 },
+                { "October", 10 },
+                { "November", 11 },
+                { "December", 12 },
             };
         }
 
@@ -226,9 +226,9 @@ namespace SACS.Windows.Windows
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="System.NotImplementedException">Not implemented.</exception>
         public void ShowException(string title, Exception e)
         {
             throw new NotImplementedException();
@@ -238,7 +238,7 @@ namespace SACS.Windows.Windows
         /// Gets the schedule part.
         /// </summary>
         /// <param name="multiSelectComboBox">The multi select ComboBox.</param>
-        /// <param name="isEveryChecked">if set to <c>true</c> is every checked.</param>
+        /// <param name="isEveryChecked">If set to <c>true</c> return tuple indicating everything is checked.</param>
         /// <returns></returns>
         private static Tuple<IList<int>, bool> GetSchedulePart(MultiSelectComboBox.MultiSelectComboBox multiSelectComboBox, bool isEveryChecked)
         {
@@ -341,7 +341,7 @@ namespace SACS.Windows.Windows
         /// </summary>
         private void UpdateDescription()
         {
-            DescriptionLabel.Text = ScheduleUtility.GetFullDescription(this.Schedule);
+            this.DescriptionLabel.Text = ScheduleUtility.GetFullDescription(this.Schedule);
             this.ScheduleCalendar.Schedule = this.Schedule;
         }
 

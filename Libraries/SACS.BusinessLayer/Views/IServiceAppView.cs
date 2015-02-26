@@ -21,7 +21,7 @@ namespace SACS.BusinessLayer.Views
         /// <summary>
         /// Selects the specified service app, or deselects if null is passed in
         /// </summary>
-        /// <param name="serviceApp"></param>
+        /// <param name="serviceApp">The service app.</param>
         void SelectServiceApp(ServiceApp serviceApp);
 
         /// <summary>

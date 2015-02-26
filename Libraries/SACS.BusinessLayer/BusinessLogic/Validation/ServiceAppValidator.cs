@@ -132,7 +132,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Validation
         /// <returns></returns>
         public bool ValidateAppPath(string path)
         {
-            return ValidatePath(path, "App path");
+            return this.ValidatePath(path, "App path");
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Validation
         /// <returns></returns>
         public bool ValidateConfigFilePath(string path)
         {
-            return ValidatePath(path, "Config file path");
+            return this.ValidatePath(path, "Config file path");
         }
 
         /// <summary>

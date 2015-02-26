@@ -10,6 +10,99 @@ using System.Threading.Tasks;
 namespace SACS.BusinessLayer.BusinessLogic.Security
 {
     /// <summary>
+    /// The Logon type
+    /// </summary>
+    public enum LogonType
+    {
+        /// <summary>
+        /// Interactive logon. Used for users on the same machine.
+        /// </summary>
+        LOGON32_LOGON_INTERACTIVE = 2,
+
+        /// <summary>
+        /// Network logon.
+        /// </summary>
+        LOGON32_LOGON_NETWORK = 3,
+
+        /// <summary>
+        /// Batch logon.
+        /// </summary>
+        LOGON32_LOGON_BATCH = 4,
+
+        /// <summary>
+        /// Service logon.
+        /// </summary>
+        LOGON32_LOGON_SERVICE = 5,
+
+        /// <summary>
+        /// Unlock logon.
+        /// </summary>
+        LOGON32_LOGON_UNLOCK = 7,
+
+        /// <summary>
+        /// Cleartext logon. Win2K or higher.
+        /// </summary>
+        LOGON32_LOGON_NETWORK_CLEARTEXT = 8,
+
+        /// <summary>
+        /// New credentials logon. Use as substitute for network. Win2K or higher.
+        /// </summary>
+        LOGON32_LOGON_NEW_CREDENTIALS = 9
+    }
+
+    /// <summary>
+    /// The logon provider.
+    /// </summary>
+    public enum LogonProvider
+    {
+        /// <summary>
+        /// Default provider.
+        /// </summary>
+        LOGON32_PROVIDER_DEFAULT = 0,
+
+        /// <summary>
+        /// Win NT 3.5 provider.
+        /// </summary>
+        LOGON32_PROVIDER_WINNT35 = 1,
+
+        /// <summary>
+        /// Win NT 4.0 provider.
+        /// </summary>
+        LOGON32_PROVIDER_WINNT40 = 2,
+
+        /// <summary>
+        /// Win NT 5.0 provider.
+        /// </summary>
+        LOGON32_PROVIDER_WINNT50 = 3
+    }
+
+    /// <summary>
+    /// The impersonation level.
+    /// </summary>
+    public enum ImpersonationLevel
+    {
+        /// <summary>
+        /// Anonymous impersonation level.
+        /// </summary>
+        SecurityAnonymous = 0,
+
+        /// <summary>
+        /// Identification impersonation level.
+        /// </summary>
+        SecurityIdentification = 1,
+
+        /// <summary>
+        /// Full impersonation level.
+        /// </summary>
+        SecurityImpersonation = 2,
+
+        /// <summary>
+        /// Delegated impersonation level.
+        /// </summary>
+        SecurityDelegation = 3
+    }
+
+    /// <summary>
     /// Allows code to be executed under the security context of a specified user account.
     /// </summary>
     /// <remarks> 
@@ -38,14 +131,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         #region Constructors and Destructors
         
         /// <summary>
-        /// Initializes a new instance of the <see cref="Impersonator"/> class.
+        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class.
         /// </summary>
         public Impersonator()
         {
         }
 
         /// <summary>
-        /// Begins impersonation with the given credentials.
+        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class.
         /// </summary>
         /// <param name="userName">Name of the user.</param>
         /// <param name="domainName">Name of the domain.</param>
@@ -56,7 +149,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         } 
 
         /// <summary>
-        /// Begins impersonation with the given credentials, Logon type and Logon provider.
+        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class.
         /// </summary>
         /// <param name="userName">Name of the user.</param>
         /// <param name="domainName">Name of the domain.</param>
@@ -101,17 +194,18 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         /// <param name="logonProvider">The logon provider. <see cref="Mit.Sharepoint.WebParts.EventLogQuery.Network.LogonProvider"/></param>
         public void Impersonate(string userName, string domainName, string password, LogonType logonType, LogonProvider logonProvider)
         {
-            UndoImpersonation();
+           this.UndoImpersonation();
 
             IntPtr logonToken = IntPtr.Zero;
             IntPtr logonTokenDuplicate = IntPtr.Zero;
             try
             {
                 // revert to the application pool identity, saving the identity of the current requestor
-                _wic = WindowsIdentity.Impersonate(IntPtr.Zero);
+                this._wic = WindowsIdentity.Impersonate(IntPtr.Zero);
 
                 // do logon & impersonate
-                if (Win32NativeMethods.LogonUser(userName,
+                if (Win32NativeMethods.LogonUser(
+                    userName,
                     domainName,
                     password,
                     (int)logonType,
@@ -153,64 +247,36 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         private void UndoImpersonation()
         {
             // restore saved requestor identity
-            if (_wic != null)
+            if (this._wic != null)
             {
-                _wic.Undo();
+                this._wic.Undo();
             }
 
-            _wic = null;
+            this._wic = null;
         } 
 
         #endregion
     }
 
     /// <summary>
-    /// The Logon type
-    /// </summary>
-    public enum LogonType
-    {
-        LOGON32_LOGON_INTERACTIVE = 2,
-        LOGON32_LOGON_NETWORK = 3,
-        LOGON32_LOGON_BATCH = 4,
-        LOGON32_LOGON_SERVICE = 5,
-        LOGON32_LOGON_UNLOCK = 7,
-        LOGON32_LOGON_NETWORK_CLEARTEXT = 8, // Win2K or higher
-        LOGON32_LOGON_NEW_CREDENTIALS = 9 // Win2K or higher
-    }
-
-    public enum LogonProvider
-    {
-        LOGON32_PROVIDER_DEFAULT = 0,
-        LOGON32_PROVIDER_WINNT35 = 1,
-        LOGON32_PROVIDER_WINNT40 = 2,
-        LOGON32_PROVIDER_WINNT50 = 3
-    }
-
-    public enum ImpersonationLevel
-    {
-        SecurityAnonymous = 0,
-        SecurityIdentification = 1,
-        SecurityImpersonation = 2,
-        SecurityDelegation = 3
-    }
-
-    /// <summary>
     /// Handles to the native methods
     /// </summary>
-    class Win32NativeMethods
+    internal class Win32NativeMethods
     {
         [DllImport("advapi32.dll", SetLastError = true)]
-        public static extern int LogonUser(string lpszUserName,
-             string lpszDomain,
-             string lpszPassword,
-             int dwLogonType,
-             int dwLogonProvider,
-             ref IntPtr phToken);
+        public static extern int LogonUser(
+            string lpszUserName,
+            string lpszDomain,
+            string lpszPassword,
+            int dwLogonType,
+            int dwLogonProvider,
+            ref IntPtr phToken);
 
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern int DuplicateToken(IntPtr hToken,
-              int impersonationLevel,
-              ref IntPtr hNewToken);
+        public static extern int DuplicateToken(
+            IntPtr hToken,
+            int impersonationLevel,
+            ref IntPtr hNewToken);
 
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool RevertToSelf();

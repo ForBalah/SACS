@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Formatting;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http.Headers;
 using log4net;
 
 namespace SACS.DataAccessLayer.WebAPI
@@ -23,10 +19,10 @@ namespace SACS.DataAccessLayer.WebAPI
         protected readonly HttpMessageHandler ClientHandler;
 
         /// <summary>
-        /// Instantiates a new instance of the <see cref="WebApiClient"/> class.
+        /// Initializes a new instance of the <see cref="SACS.DataAccessLayer.WebAPI.WebApiClient"/> class.
         /// </summary>
-        /// <param name="baseAddress"></param>
-        /// <param name="httpMessageHandler"></param>
+        /// <param name="baseAddress">The base Web API url.</param>
+        /// <param name="httpMessageHandler">The message handler class dependency.</param>
         internal WebApiClient(string baseAddress, HttpMessageHandler httpMessageHandler)
         {
             this.BaseAddress = baseAddress;
@@ -48,10 +44,11 @@ namespace SACS.DataAccessLayer.WebAPI
         /// <summary>
         /// Gets the specified resource path with the provided parameters
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">The type of resource to return.</typeparam>
         /// <param name="resourcePath">The resource path.</param>
+        /// <param name="parameters">The request query parameters to add.</param>
         /// <returns></returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">The exception</exception>
+        /// <exception cref="System.Net.Http.HttpRequestException">The REST exception.</exception>
         protected T Get<T>(string resourcePath, Dictionary<string, string> parameters)
         {
             string finalResourcePath = resourcePath;
@@ -96,7 +93,6 @@ namespace SACS.DataAccessLayer.WebAPI
             {
                 try
                 {
-
                     response = client.PostAsync<T>(requestUri, content, new JsonMediaTypeFormatter()).Result;
                 }
                 catch (AggregateException aggregateException)
@@ -126,7 +122,6 @@ namespace SACS.DataAccessLayer.WebAPI
             {
                 try
                 {
-
                     response = client.PutAsync<T>(requestUri, content, new JsonMediaTypeFormatter()).Result;
                 }
                 catch (AggregateException aggregateException)

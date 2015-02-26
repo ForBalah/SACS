@@ -40,8 +40,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Schedule
         /// Gets the next occurrences.
         /// </summary>
         /// <param name="crontab">The crontab.</param>
-        /// <param name="start">The start.</param>
-        /// <param name="end">The end.</param>
+        /// <param name="from">The start.</param>
+        /// <param name="to">The end.</param>
         /// <returns></returns>
         public static IList<DateTime> GetNextOccurrences(string crontab, DateTime from, DateTime to)
         {
@@ -221,7 +221,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Schedule
         /// </summary>
         /// <param name="ncrontab">The ncrontab.</param>
         /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         private static string BuildDescription(CrontabSchedule ncrontab)
         {
             if (ncrontab.ToString() == AnytimeSchedule.ToString())

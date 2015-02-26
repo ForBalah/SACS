@@ -35,8 +35,8 @@ namespace SACS.Web.Account
         protected void Page_Load()
         {
             // Process the result from an auth provider in the request
-            ProviderName = IdentityHelper.GetProviderNameFromRequest(Request);
-            if (string.IsNullOrEmpty(ProviderName))
+            this.ProviderName = IdentityHelper.GetProviderNameFromRequest(Request);
+            if (string.IsNullOrEmpty(this.ProviderName))
             {
                 Response.Redirect("~/Account/Login");
             }
@@ -72,13 +72,13 @@ namespace SACS.Web.Account
                     }
                     else
                     {
-                        AddErrors(result);
+                        this.AddErrors(result);
                         return;
                     }
                 }
                 else
                 {
-                    userName.Text = loginInfo.DefaultUserName;
+                    this.userName.Text = loginInfo.DefaultUserName;
                 }
             }
         }        
@@ -104,7 +104,7 @@ namespace SACS.Web.Account
             }
 
             var manager = new UserManager();
-            var user = new ApplicationUser() { UserName = userName.Text };
+            var user = new ApplicationUser() { UserName = this.userName.Text };
             IdentityResult result = manager.Create(user);
             if (result.Succeeded)
             {
@@ -124,7 +124,7 @@ namespace SACS.Web.Account
                 }
             }
 
-            AddErrors(result);
+            this.AddErrors(result);
         }
 
         /// <summary>

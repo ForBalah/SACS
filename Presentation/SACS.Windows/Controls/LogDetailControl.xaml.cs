@@ -31,9 +31,8 @@ namespace SACS.Windows.Controls
     {
         #region Fields
 
-        private string _fileName = string.Empty;
         private readonly LogDetailPresenter _presenter;
-        ////private ListSortDirection _sortDirection = ListSortDirection.Descending;
+        private string _fileName = string.Empty;
 
         #endregion
 
@@ -44,10 +43,9 @@ namespace SACS.Windows.Controls
         /// </summary>
         public LogDetailControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this._presenter = new LogDetailPresenter(this, new WebApiClientFactory());
             this.Entries = new List<LogEntryViewModel>();
-            ////this.LogListView.AddHandler(GridViewColumnHeader.ClickEvent, new RoutedEventHandler(LogListView_HeaderClicked));
 
             this.ErrorImage.Source = ImageExtensions.GetLogImage(LogImageType.Error);
             this.InfoImage.Source = ImageExtensions.GetLogImage(LogImageType.Info);
@@ -242,7 +240,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the exception generated.
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="title">The title of the exception.</param>
         /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {
@@ -302,7 +300,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Finds the specified direction.
         /// </summary>
-        /// <param name="findNext">if set to <c>true</c> find next, otherwise find previous.</param>
+        /// <param name="findNext">If set to <c>true</c> find next, otherwise find previous.</param>
         private void FindLogItem(bool findNext)
         {
             if (this.FindTextBox.Text.Length > 0)

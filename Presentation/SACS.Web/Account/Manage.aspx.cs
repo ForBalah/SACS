@@ -51,12 +51,12 @@ namespace SACS.Web.Account
                 UserManager manager = new UserManager();
                 if (this.HasPassword(manager))
                 {
-                    changePasswordHolder.Visible = true;
+                    this.changePasswordHolder.Visible = true;
                 }
                 else
                 {
-                    setPassword.Visible = true;
-                    changePasswordHolder.Visible = false;
+                    this.setPassword.Visible = true;
+                    this.changePasswordHolder.Visible = false;
                 }
 
                 this.CanRemoveExternalLogins = manager.GetLogins(User.Identity.GetUserId()).Count() > 1;
@@ -73,7 +73,7 @@ namespace SACS.Web.Account
                         : message == "SetPwdSuccess" ? "Your password has been set."
                         : message == "RemoveLoginSuccess" ? "The account was removed."
                         : string.Empty;
-                    successMessage.Visible = !string.IsNullOrEmpty(this.SuccessMessage);
+                    this.successMessage.Visible = !string.IsNullOrEmpty(this.SuccessMessage);
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace SACS.Web.Account
                 }
                 else
                 {
-                    AddErrors(result);
+                    this.AddErrors(result);
                 }
             }
         }
@@ -111,14 +111,14 @@ namespace SACS.Web.Account
             {
                 // Create the local login info and link the local account to the user
                 UserManager manager = new UserManager();
-                IdentityResult result = manager.AddPassword(User.Identity.GetUserId(), password.Text);
+                IdentityResult result = manager.AddPassword(User.Identity.GetUserId(), this.password.Text);
                 if (result.Succeeded)
                 {
                     Response.Redirect("~/Account/Manage?m=SetPwdSuccess");
                 }
                 else
                 {
-                    AddErrors(result);
+                    this.AddErrors(result);
                 }
             }
         }
