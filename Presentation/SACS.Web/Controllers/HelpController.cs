@@ -7,24 +7,15 @@ using System.Web.Mvc;
 namespace SACS.Web.Controllers
 {
     /// <summary>
-    /// The Server Controller
+    /// The help controller class.
     /// </summary>
-    public class ServerController : Controller
+    public class HelpController : Controller
     {
         /// <summary>
-        /// The index get action.
+        /// The get action returning the index.
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
-        {
-            return View();
-        }
-
-        /// <summary>
-        /// The logs get action
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Logs()
         {
             return View();
         }

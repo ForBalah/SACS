@@ -1,10 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using System.Reflection
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - SACS Web Management Console</title>
     @Styles.Render("~/Content/css")
+    <!-- TODO: Move these into the solution -->
     <!-- Font Awesome Icons -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Ionicons -->
@@ -12,7 +15,97 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body class="skin-blue">
-    @RenderBody()
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="@Url.Content("~/")" class="logo" title="@typeof(MvcApplication).Assembly.GetName().Version">Manage<b>SACS</b></a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img src="@Url.Content("~/Content/Images/user.png")" class="user-image" alt="User Image" />
+                                <span class="hidden-xs">@User.Identity.Name.</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="@Url.Content("~/Content/Images/user.png")" class="user-image" alt="User Image" />
+                                    <p>
+                                        @User.Identity.Name.
+                                    </p>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- =============================================== -->
+        <!-- Left side column. contains the sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    <li class="header">SERVER</li>
+                    <li>
+                        <a href="@Url.Action("Index", "Server")">
+                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Logs", "Server")">
+                            <i class="fa fa-book"></i> <span>Logs</span>
+                        </a>
+                    </li>
+                    <li class="header">APPLICATIONS</li>
+                    <li>
+                        <a href="@Url.Action("Index", "ServiceApps")">
+                            <i class="fa fa-list-alt"></i> <span>Service Apps</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Analytics", "ServiceApps")">
+                            <i class="fa fa-area-chart"></i> <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li class="header">DOCUMENTATION</li>
+                    <li>
+                        <a href="@Url.Action("Index", "Help")">
+                            <i class="fa fa-file-text"></i> <span>Help</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- =============================================== -->
+        <!-- Right side column. Contains the navbar and content of the page -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                </h1>
+                <ol class="breadcrumb">
+                    @RenderSection("Breadcrumbs", required: false)
+                </ol>
+            </section>
+            @RenderBody()
+        </div><!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; @DateTime.Today.Year.</strong> All rights reserved
+        </footer>
+    </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

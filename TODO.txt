@@ -1,9 +1,14 @@
 Presentation Layer - Windows:
--------------------
+-----------------------------
 Add Help
 Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
+
+Presentation Layer - Web:
+-------------------------
+Setup profiler - either MiniProfiler or Glimpse.
+Use flot for graphs
 
 Business Layer:
 ---------------

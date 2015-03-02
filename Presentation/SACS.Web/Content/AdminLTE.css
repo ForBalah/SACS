@@ -733,7 +733,7 @@ a:focus {
   width: 280px;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header {
-  height: 175px;
+  height: 125px;
   padding: 10px;
   text-align: center;
 }
@@ -1124,7 +1124,7 @@ a:focus {
 }
 .small-box h3,
 .small-box p {
-  z-index: 5px;
+  z-index: 5;
 }
 .small-box .icon {
   -webkit-transition: all 0.3s linear;
