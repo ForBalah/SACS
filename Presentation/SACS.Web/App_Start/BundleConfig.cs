@@ -30,7 +30,8 @@ namespace SACS.Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",
                 "~/Content/AdminLTE.css",
-                "~/Content/skins/_all-skins.css"));
+                "~/Content/skins/_all-skins.css",
+                "~/Content/Site.css"));
         }
     }
 }

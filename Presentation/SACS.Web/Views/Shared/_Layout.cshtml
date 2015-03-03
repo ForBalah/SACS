@@ -100,7 +100,10 @@
                     @RenderSection("Breadcrumbs", required: false)
                 </ol>
             </section>
-            @RenderBody()
+            <!-- Main content -->
+            <section class="content">
+                @RenderBody()
+            </section>
         </div><!-- /.content-wrapper -->
         <footer class="main-footer">
             <strong>Copyright &copy; @DateTime.Today.Year.</strong> All rights reserved

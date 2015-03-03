@@ -1,7 +1,66 @@
-﻿
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "Service Apps";
 }
 
-<h2>Index</h2>
+@section Breadcrumbs {
+    <li>@Html.ActionLink("Home", "Index", "Server")</li>
+    <li>@Html.ActionLink("Applications", "Index", "ServiceApps")</li>
+    <li class="active"><i class="fa fa-list-alt"></i> Service Apps</li>
+}
 
+
+<!-- Logs box -->
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">List</h3>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-1 hidden-xs hidden-sm">
+                <strong>Status</strong>
+            </div>
+            <div class="col-md-3">
+                <strong>Name / Environment</strong>
+            </div>
+            <div class="col-md-3 hidden-xs hidden-sm">
+                <strong>Description</strong>
+            </div>
+            <div class="col-md-1 hidden-xs hidden-sm">
+                <strong>Startup</strong>
+            </div>
+            <div class="col-md-2 hidden-xs hidden-sm">
+                <strong>Assembly</strong>
+            </div>
+            <div class="col-md-2 hidden-xs hidden-sm pull-right">
+                <strong>Actions</strong>
+            </div>
+            <div class="row-border"></div>
+        </div>
+        <!-- This will be repeated -->
+        <div class="row">
+            <div class="col-md-1">
+                STATUS
+            </div>
+            <div class="col-md-3">
+                ServiceAppName / Environment
+            </div>
+            <div class="col-md-3">
+                This is the description of the service app for other to see and understand what exactly it is that this particular service is doing.
+            </div>
+            <div class="col-md-1">
+                Startup
+            </div>
+            <div class="col-md-2">
+                The.Assembly
+            </div>
+            <div class="col-md-2 pull-right">
+                Stop Start Run
+            </div>
+            <div class="row-border"></div>
+        </div>
+        <!-- End repeat -->
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+        <small>Note: Service Apps can be modified through the Windows console.</small>
+    </div><!-- /.box-footer-->
+</div><!-- /.box -->
