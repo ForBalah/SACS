@@ -148,6 +148,7 @@
     <Compile Include="Models\ServiceApp.cs" />
     <Compile Include="Models\SystemPerformance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ImagePathProvider.cs" />
     <Compile Include="WebAPI\AnalyticsClient.cs" />
     <Compile Include="WebAPI\Interfaces\IAnalyticsClient.cs" />
     <Compile Include="WebAPI\Interfaces\ILogsClient.cs" />

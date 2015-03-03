@@ -2,7 +2,8 @@
 using System.Runtime.Serialization;
 using System.Security;
 using NCrontab;
-using SACS.Common.Enums;
+using SACS.DataAccessLayer.Providers;
+using Enums = SACS.Common.Enums;
 
 namespace SACS.DataAccessLayer.Models
 {
@@ -12,6 +13,20 @@ namespace SACS.DataAccessLayer.Models
     public class ServiceApp
     {
         private CrontabSchedule _cronTabSchedule;
+
+        /// <summary>
+        /// Gets the ServiceAppViewModel comparer
+        /// </summary>
+        public static Comparison<ServiceApp> Comparer
+        {
+            get
+            {
+                return new Comparison<ServiceApp>((a, b) =>
+                {
+                    return a.Name.CompareTo(b.Name);
+                });
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name.
@@ -86,11 +101,11 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The type of the startup.
         /// </value>
-        public StartupType StartupTypeEnum
+        public Enums.StartupType StartupTypeEnum
         {
             get
             {
-                return (StartupType)this.StartupType;
+                return (Enums.StartupType)this.StartupType;
             }
 
             set
@@ -159,11 +174,11 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The state enum.
         /// </value>
-        public ServiceAppState StateEnum
+        public Enums.ServiceAppState StateEnum
         {
             get
             {
-                return (ServiceAppState)this.State;
+                return (Enums.ServiceAppState)this.State;
             }
 
             set
@@ -195,6 +210,74 @@ namespace SACS.DataAccessLayer.Models
         /// The password.
         /// </value>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the service app can be started.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the service app can be started.; otherwise, <c>false</c>.
+        /// </value>
+        public bool CanStart
+        {
+            get
+            {
+                bool appState = this.StateEnum == Enums.ServiceAppState.Unknown ||
+                    this.StateEnum == Enums.ServiceAppState.NotLoaded ||
+                    this.StateEnum == Enums.ServiceAppState.Error;
+                return appState && this.StartupTypeEnum != Enums.StartupType.Disabled;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service app can be stopped.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the service app can be stopped.; otherwise, <c>false</c>.
+        /// </value>
+        public bool CanStop
+        {
+            get
+            {
+                return this.StateEnum == Enums.ServiceAppState.Initialized ||
+                    this.StateEnum == Enums.ServiceAppState.Executing;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the service app is running
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the service app is running; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRunning
+        {
+            get
+            {
+                return this.StateEnum == Enums.ServiceAppState.Initialized ||
+                    this.StateEnum == Enums.ServiceAppState.Executing;
+            }
+        }
+
+        /// <summary>
+        /// Gets the image path.
+        /// </summary>
+        /// <value>
+        /// The image path.
+        /// </value>
+        public string ImagePath
+        {
+            get
+            {
+                if (ImagePathProvider.Current != null)
+                {
+                    return ImagePathProvider.Current.GetStateImagePath(this);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.

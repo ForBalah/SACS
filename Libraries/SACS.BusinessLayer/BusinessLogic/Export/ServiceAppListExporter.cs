@@ -15,7 +15,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Export
     {
         private static List<string> fieldExclusion = new List<string>
         {
-            "Password"
+            "Password",
+            "CanStart",
+            "CanStop",
+            "IsRunning",
+            "ImagePath"
         };
 
         /// <summary>

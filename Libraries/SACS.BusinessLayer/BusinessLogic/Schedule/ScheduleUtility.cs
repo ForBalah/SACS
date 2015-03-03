@@ -61,13 +61,18 @@ namespace SACS.BusinessLayer.BusinessLogic.Schedule
         /// <returns></returns>
         public static string GetFullDescription(string crontab)
         {
-            var ncrontab = CrontabSchedule.TryParse(crontab);
-            if (ncrontab == null)
+            if (crontab != null)
             {
-                return string.Empty;
+                var ncrontab = CrontabSchedule.TryParse(crontab);
+                if (ncrontab == null)
+                {
+                    return string.Empty;
+                }
+
+                return BuildDescription(ncrontab);
             }
 
-            return BuildDescription(ncrontab);
+            return string.Empty;
         }
 
         /// <summary>

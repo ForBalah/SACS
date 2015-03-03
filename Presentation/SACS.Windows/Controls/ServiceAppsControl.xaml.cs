@@ -35,7 +35,7 @@ namespace SACS.Windows.Controls
         //// MediaCommands.
         //// NavigationCommands
         //// SystemCommands
-        private List<ServiceAppViewModel> _serviceApps = new List<ServiceAppViewModel>();
+        private List<ServiceApp> _serviceApps = new List<ServiceApp>();
 
         private bool _inEditMode = false;
         private ServiceApp _selectedServiceApp;
@@ -125,7 +125,7 @@ namespace SACS.Windows.Controls
         {
             this._inEditMode = true;
             this.ToggleEditFieldVisibility(true);
-            this.ShowServiceAppDetails(new ServiceAppViewModel(this._selectedServiceApp), false);
+            this.ShowServiceAppDetails(this._selectedServiceApp, false);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace SACS.Windows.Controls
             this.ServiceAppListView.SelectedItem = null;
             this._selectedServiceApp = null;
             this.ToggleEditFieldVisibility(true);
-            this.ShowServiceAppDetails(new ServiceAppViewModel(null), false);
+            this.ShowServiceAppDetails(null, false);
         }
 
         /// <summary>
@@ -274,10 +274,10 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void ServiceAppListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ServiceAppViewModel item = (sender as ListView).SelectedItem as ServiceAppViewModel;
+            ServiceApp item = (sender as ListView).SelectedItem as ServiceApp;
             if (item != null)
             {
-                this.SelectServiceApp(item.ServiceApp);
+                this.SelectServiceApp(item);
             }
             else
             {
@@ -421,7 +421,7 @@ namespace SACS.Windows.Controls
 
             if (serviceApp != null)
             {
-                this.ShowServiceAppDetails(new ServiceAppViewModel(serviceApp), true);
+                this.ShowServiceAppDetails(serviceApp, true);
             }
             else
             {
@@ -495,8 +495,8 @@ namespace SACS.Windows.Controls
         private void MergeServiceAppList(IList<Models.ServiceApp> list)
         {
             this._serviceApps.Clear();
-            this._serviceApps.AddRange(list.Select(s => new ServiceAppViewModel(s)));
-            this._serviceApps.Sort(ServiceAppViewModel.Comparer);
+            this._serviceApps.AddRange(list);
+            this._serviceApps.Sort(ServiceApp.Comparer);
 
             string app = this._selectedServiceApp != null ? this._selectedServiceApp.Name : null;
             ICollectionView view = CollectionViewSource.GetDefaultView(this.ServiceAppListView.ItemsSource);
@@ -506,8 +506,8 @@ namespace SACS.Windows.Controls
             {
                 for (int i = 0; i < this.ServiceAppListView.Items.Count; i++)
                 {
-                    var serviceApp = this.ServiceAppListView.Items[i] as ServiceAppViewModel;
-                    if (serviceApp.ServiceApp.Name == app)
+                    var serviceApp = this.ServiceAppListView.Items[i] as ServiceApp;
+                    if (serviceApp.Name == app)
                     {
                         this.ServiceAppListView.SelectedIndex = i;
                         break;
@@ -519,31 +519,40 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Shows the service app details.
         /// </summary>
-        /// <param name="viewModel">The service app view model.</param>
+        /// <param name="serviceApp">The service app.</param>
         /// <param name="isReadOnly">If set to <c>true</c> show the details as read only.</param>
-        private void ShowServiceAppDetails(ServiceAppViewModel viewModel, bool isReadOnly)
+        private void ShowServiceAppDetails(ServiceApp serviceApp, bool isReadOnly)
         {
-            this.ServiceAppNameLabel.Content = this.ServiceAppNameTextBox.Text = viewModel.ServiceApp.Name;
+            if (serviceApp == null)
+            {
+                serviceApp = new Models.ServiceApp
+                {
+                    StartupTypeEnum = Enums.StartupType.NotSet,
+                    Schedule = string.Empty
+                };
+            }
 
-            this.StartServiceAppButton.IsEnabled = viewModel.CanStart && isReadOnly;
-            this.StopServiceAppButton.IsEnabled = viewModel.CanStop && isReadOnly;
-            this.RunButton.IsEnabled = viewModel.IsRunning && isReadOnly;
+            this.ServiceAppNameLabel.Content = this.ServiceAppNameTextBox.Text = serviceApp.Name;
 
-            this.StartupTypeLabel.Text = viewModel.ServiceApp.StartupTypeEnum.GetName();
-            this.StartupTypeComboBox.SelectedValue = viewModel.ServiceApp.StartupTypeEnum;
-            this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = viewModel.ServiceApp.Description;
-            this.ServiceAppPathLabel.Text = this.AppPathTextBox.Text = viewModel.ServiceApp.Path;
-            this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = viewModel.ServiceApp.Environment;
-            this.ConfigPathLabel.Text = this.ConfigPathTextBox.Text = viewModel.ServiceApp.ConfigFilePath;
-            this.EntryFileLabel.Text = this.EntryFileTextBox.Text = viewModel.ServiceApp.EntryFile;
-            this.AssemblyLabel.Text = this.AssemblyNameTextBox.Text = viewModel.ServiceApp.Assembly;
-            this.IdentityLabel.Text = this.IdentityLabel.Text = viewModel.ServiceApp.Username;
-            this.PasswordHiddenLabel.Text = viewModel.ServiceApp.Password;
-            this.ScheduleLabel.Text = viewModel.ScheduleDescription;
-            this.ScheduleHiddenLabel.Text = viewModel.ServiceApp.Schedule;
+            this.StartServiceAppButton.IsEnabled = serviceApp.CanStart && isReadOnly;
+            this.StopServiceAppButton.IsEnabled = serviceApp.CanStop && isReadOnly;
+            this.RunButton.IsEnabled = serviceApp.IsRunning && isReadOnly;
 
-            this.EditServiceAppButton.IsEnabled = !viewModel.IsRunning;
-            this.EditMessageTextBlock.Text = viewModel.IsRunning ? "Stop the app before making changes" : null;
+            this.StartupTypeLabel.Text = serviceApp.StartupTypeEnum.GetName();
+            this.StartupTypeComboBox.SelectedValue = serviceApp.StartupTypeEnum;
+            this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = serviceApp.Description;
+            this.ServiceAppPathLabel.Text = this.AppPathTextBox.Text = serviceApp.Path;
+            this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = serviceApp.Environment;
+            this.ConfigPathLabel.Text = this.ConfigPathTextBox.Text = serviceApp.ConfigFilePath;
+            this.EntryFileLabel.Text = this.EntryFileTextBox.Text = serviceApp.EntryFile;
+            this.AssemblyLabel.Text = this.AssemblyNameTextBox.Text = serviceApp.Assembly;
+            this.IdentityLabel.Text = this.IdentityLabel.Text = serviceApp.Username;
+            this.PasswordHiddenLabel.Text = serviceApp.Password;
+            this.ScheduleLabel.Text = ScheduleUtility.GetFullDescription(serviceApp.Schedule);
+            this.ScheduleHiddenLabel.Text = serviceApp.Schedule;
+
+            this.EditServiceAppButton.IsEnabled = !serviceApp.IsRunning;
+            this.EditMessageTextBlock.Text = serviceApp.IsRunning ? "Stop the app before making changes" : null;
         }
 
         /// <summary>

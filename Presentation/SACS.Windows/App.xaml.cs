@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using SACS.DataAccessLayer.Providers;
+using SACS.Windows.Providers;
 
 namespace SACS.Windows
 {
@@ -13,6 +15,14 @@ namespace SACS.Windows
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="App"/> class.
+        /// </summary>
+        public App()
+        {
+            ImagePathProvider.SetProvider(new WindowsImagePathProvider());
+        }
+
         /// <summary>
         /// Handles the DispatcherUnhandledException event of the Application control.
         /// </summary>
