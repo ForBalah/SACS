@@ -1,4 +1,6 @@
-﻿@model IList<SACS.DataAccessLayer.Models.ServiceApp>
+﻿@using SACS.BusinessLayer.BusinessLogic.Schedule
+
+@model IList<SACS.DataAccessLayer.Models.ServiceApp>
 @{
     ViewBag.Title = "Service Apps";
 }
@@ -12,10 +14,9 @@
 
 <!-- Logs box -->
 <div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Installed List</h3>
-    </div>
     <div class="box-body">
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
         <div class="row">
             <div class="col-md-1 hidden-xs hidden-sm">
                 <strong>Status</strong>
@@ -36,7 +37,7 @@
                 <strong>Actions</strong>
             </div>
         </div>
-        @foreach (var serviceApp in Model)
+        foreach (var serviceApp in Model)
         {
             <div class="row">
                 <div class="row-border"></div>
@@ -47,7 +48,13 @@
                     @serviceApp.Name / @serviceApp.Environment
                 </div>
                 <div class="col-md-3">
-                    @serviceApp.Description
+                    <div>
+                        @serviceApp.Description
+                    </div>
+                    <div>
+                        <strong>Schedule:</strong>
+                        @ScheduleUtility.GetFullDescription(serviceApp.Schedule)
+                    </div>
                 </div>
                 <div class="col-md-1">
                     @serviceApp.StartupTypeEnum
@@ -57,9 +64,11 @@
                 </div>
                 <div class="col-md-2 pull-right">
                     Stop Start Run
+                    @*<input type="submit" name="id" value="@serviceApp.Name" class="btn btn-default" />*@
                 </div>
             </div>
         }
+}
     </div><!-- /.box-body -->
     <div class="box-footer">
         <small>Note: Service Apps can be modified through the Windows console.</small>

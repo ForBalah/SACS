@@ -34,5 +34,12 @@ namespace SACS.Web.Controllers
                 return View("Error");
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Run(string id)
+        {
+            return RedirectToAction("Index");
+        }
     }
 }
