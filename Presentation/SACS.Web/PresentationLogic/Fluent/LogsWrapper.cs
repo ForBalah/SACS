@@ -5,6 +5,7 @@ using System.Web;
 using SACS.BusinessLayer.Presenters;
 using SACS.BusinessLayer.Views;
 using SACS.DataAccessLayer.Factories.Interfaces;
+using SACS.DataAccessLayer.Models;
 
 namespace SACS.Web.PresentationLogic.Fluent
 {
@@ -68,6 +69,33 @@ namespace SACS.Web.PresentationLogic.Fluent
             {
                 return this._overviewView.LogList;
             }
+        }
+
+        /// <summary>
+        /// Gets the log entries.
+        /// </summary>
+        /// <value>
+        /// The log entries.
+        /// </value>
+        public IList<LogEntry> LogEntries
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Loads the log entries into the wrapper.
+        /// </summary>
+        /// <param name="logFileName">Name of the log file.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="query">The query.</param>
+        /// <returns></returns>
+        public LogsWrapper LoadLogEntries(string logFileName, int page, string query)
+        {
+            this._overviewView.ClearException();
+            this._detailView.Clear();
+            this.LogEntries = this._detailPresenter.GetEntries(logFileName, page, query);
+            return this;
         }
 
         /// <summary>

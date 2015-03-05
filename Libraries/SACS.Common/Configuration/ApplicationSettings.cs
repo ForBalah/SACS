@@ -14,11 +14,6 @@ namespace SACS.Common.Configuration
     {
         #region Fields
 
-        /// <summary>
-        /// The AppList.xml location
-        /// </summary>
-        private const string AppListLocationKey = "AppListLocation";
-
         private static object _syncRoot = new object();
         private static IApplicationSettings _Instance;
 
@@ -71,7 +66,41 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return ConfigurationManager.AppSettings[AppListLocationKey];
+                return ConfigurationManager.AppSettings["AppListLocation"];
+            }
+        }
+
+        /// <summary>
+        /// Gets the default paging size.
+        /// </summary>
+        /// <value>
+        /// The default paging size.
+        /// </value>
+        public int DefaultPagingSize
+        {
+            get
+            {
+                int pageSize;
+                if (int.TryParse(ConfigurationManager.AppSettings["System.DefaultPagingSize"], out pageSize))
+                {
+                    return pageSize;
+                }
+
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the encryption key.
+        /// </summary>
+        /// <value>
+        /// The encryption key.
+        /// </value>
+        public string EncryptionSecretKey
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["Security.EncryptionSecretKey"];
             }
         }
 
@@ -113,7 +142,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return ConfigurationManager.AppSettings["SupportEmailAddress"];
+                return ConfigurationManager.AppSettings["System.SupportEmailAddress"];
             }
         }
 
@@ -125,20 +154,6 @@ namespace SACS.Common.Configuration
             get
             {
                 return ConfigurationManager.AppSettings["WebAPI.BaseAddress"];
-            }
-        }
-
-        /// <summary>
-        /// Gets the encryption key.
-        /// </summary>
-        /// <value>
-        /// The encryption key.
-        /// </value>
-        public string EncryptionSecretKey
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["Security.EncryptionSecretKey"];
             }
         }
 

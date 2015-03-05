@@ -1,0 +1,14 @@
+﻿@model IEnumerable<string>
+
+@foreach (var log in Model.OrderBy(m => m).Select(m => Path.GetFileName(m)))
+{
+    <div class="row">
+        <div class="row-border"></div>
+        <div class="col-xs-9">
+            @log
+        </div>
+        <div class="col-xs-3 text-right">
+            @Html.ActionLink("View", "Detail", "Logs", new { id = log, p = 0 }, new { @class = "btn btn-default btn-sm" })
+        </div>
+    </div>
+}

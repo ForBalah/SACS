@@ -30,18 +30,6 @@ namespace SACS.DataAccessLayer.WebAPI
         }
 
         /// <summary>
-        /// Gets the specified resource path.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="resourcePath">The resource path.</param>
-        /// <returns></returns>
-        /// <exception cref="System.Net.Http.HttpRequestException">The exception</exception>
-        protected T Get<T>(string resourcePath)
-        {
-            return this.Get<T>(resourcePath, null);
-        }
-
-        /// <summary>
         /// Gets the specified resource path with the provided parameters
         /// </summary>
         /// <typeparam name="T">The type of resource to return.</typeparam>
@@ -49,7 +37,7 @@ namespace SACS.DataAccessLayer.WebAPI
         /// <param name="parameters">The request query parameters to add.</param>
         /// <returns></returns>
         /// <exception cref="System.Net.Http.HttpRequestException">The REST exception.</exception>
-        protected T Get<T>(string resourcePath, Dictionary<string, string> parameters)
+        protected T Get<T>(string resourcePath, Dictionary<string, string> parameters = null)
         {
             string finalResourcePath = resourcePath;
             if (parameters != null)

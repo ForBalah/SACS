@@ -221,7 +221,7 @@ namespace SACS.Windows.Controls
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    query = query.Where(o => o.LogEntry.Message.ToLower().Contains(message.ToLower()));
+                    query = query.Where(o => o.LogEntry.ContainsText(message));
                 }
 
                 if (!string.IsNullOrWhiteSpace(username))
@@ -348,7 +348,7 @@ namespace SACS.Windows.Controls
         private bool Find(int index)
         {
             LogEntryViewModel item = (LogEntryViewModel)this.LogListView.Items[index];
-            if (item.LogEntry.Message.ToLower().Contains(this.FindTextBox.Text.ToLower()))
+            if (item.LogEntry.ContainsText(this.FindTextBox.Text))
             {
                 this.LogListView.SelectedIndex = index;
                 this.LogListView.ScrollIntoView(this.LogListView.SelectedItem);

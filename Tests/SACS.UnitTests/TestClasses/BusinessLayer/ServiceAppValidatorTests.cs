@@ -66,7 +66,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         [TestMethod]
         public void ValidateStartupType_InvalidSelection()
         {
-            bool isValid = _validator.ValidateStartupType(Common.Enums.StartupType.NotSet);
+            bool isValid = _validator.ValidateStartupType(SACS.Common.Enums.StartupType.NotSet);
             Assert.IsFalse(isValid);
             Assert.IsTrue(_validator.ErrorMessages.Any());
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.ServiceModel;
 using log4net;
 using log4net.Config;
 using SACS.BusinessLayer.BusinessLogic.Email;

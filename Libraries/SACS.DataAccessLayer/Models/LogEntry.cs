@@ -12,6 +12,8 @@ namespace SACS.DataAccessLayer.Models
     /// </summary>
     public class LogEntry
     {
+        #region Properties
+
         /// <summary>
         /// Gets or sets the item.
         /// </summary>
@@ -150,6 +152,26 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The line.
         /// </value>
-        public string Line { get; set; }
+        public string Line { get; set; } 
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Determines whether this instance contains the specified text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns></returns>
+        public bool ContainsText(string text)
+        {
+            bool contains = false;
+
+            contains |= (this.Message ?? string.Empty).IndexOf(text, StringComparison.InvariantCultureIgnoreCase) > -1;
+
+            return contains;
+        }
+
+        #endregion
     }
 }

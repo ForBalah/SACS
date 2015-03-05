@@ -39,10 +39,22 @@ namespace SACS.Web.Controllers
         /// GET log detail
         /// </summary>
         /// <param name="id">The log name.</param>
+        /// <param name="p">The page number.</param>
+        /// <param name="q">The search query.</param>
         /// <returns></returns>
-        public ActionResult Detail(string id)
+        public ActionResult Detail(string id, int? p, string q)
         {
-            return View();
+            var logEntries = new LogsWrapper(this._restFactory).LoadLogEntries(id, p ?? 0, q);
+            if (logEntries.IsValid)
+            {
+                ViewBag.Title = id;
+                return View(logEntries.LogEntries);
+            }
+            else
+            {
+                this.AddError(logEntries.ExceptionItem.Item2);
+                return View("Error");
+            }
         }
     }
 }

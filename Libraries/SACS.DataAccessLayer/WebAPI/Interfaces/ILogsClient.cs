@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SACS.Common.Structs;
 
 namespace SACS.DataAccessLayer.WebAPI.Interfaces
 {
@@ -21,7 +22,10 @@ namespace SACS.DataAccessLayer.WebAPI.Interfaces
         /// Gets the log entries.
         /// </summary>
         /// <param name="logFileName">Name of the log file to get the entries from.</param>
+        /// <param name="page">The page number.</param>
+        /// <param name="search">The search query.</param>
+        /// <param name="size">The page size.</param>
         /// <returns></returns>
-        IList<Models.LogEntry> GetLogEntries(string logFileName);
+        PagingResult<Models.LogEntry> GetLogEntries(string logFileName, int? page, string search, int? size = null);
     }
 }

@@ -32,8 +32,10 @@ namespace SACS.BusinessLayer.Presenters
         /// Gets the entries.
         /// </summary>
         /// <param name="logFileName">Name of the log file.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="searchQuery">The search query.</param>
         /// <returns></returns>
-        public IList<LogEntry> GetEntries(string logFileName)
+        public IList<LogEntry> GetEntries(string logFileName, int? page = null, string searchQuery = null)
         {
             IList<LogEntry> entries = new List<LogEntry>();
 
@@ -41,7 +43,7 @@ namespace SACS.BusinessLayer.Presenters
                 () =>
                 {
                     ILogsClient client = this.factory.Create<ILogsClient>();
-                    entries = client.GetLogEntries(logFileName);
+                    entries = client.GetLogEntries(logFileName, page, searchQuery).Collection.ToList();
                 },
                 null,
                 true);

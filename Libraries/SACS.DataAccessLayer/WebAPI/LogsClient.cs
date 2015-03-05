@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using SACS.Common.Configuration;
+using SACS.Common.Structs;
 using SACS.DataAccessLayer.WebAPI.Interfaces;
 
 namespace SACS.DataAccessLayer.WebAPI
@@ -36,10 +38,34 @@ namespace SACS.DataAccessLayer.WebAPI
         /// Gets the log entries.
         /// </summary>
         /// <param name="logFileName">Name of the log file to get the entries from.</param>
+        /// <param name="page">The page number.</param>
+        /// <param name="search">The search query.</param>
+        /// <param name="size">The page size.</param>
         /// <returns></returns>
-        public IList<Models.LogEntry> GetLogEntries(string logFileName)
+        public PagingResult<Models.LogEntry> GetLogEntries(string logFileName, int? page, string search, int? size = null)
         {
-            return this.Get<IList<Models.LogEntry>>(string.Format("logs/{0}", logFileName));
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+
+            if (page.HasValue)
+            {
+                parameters.Add("page", page.ToString());
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                parameters.Add("search", search);
+            }
+
+            if (size == null)
+            {
+                parameters.Add("size", ApplicationSettings.Current.DefaultPagingSize.ToString());
+            }
+            else
+            {
+                parameters.Add("size", size.ToString());
+            }
+
+            return this.Get<PagingResult<Models.LogEntry>>(string.Format("logs/{0}", logFileName), parameters);
         }
     }
 }

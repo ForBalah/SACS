@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Xml.Linq;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Logs;
+using SACS.Common.Structs;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.WindowsService.WebAPI.Controllers
@@ -40,11 +41,15 @@ namespace SACS.WindowsService.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets the entries.
+        /// Gets the entries. GET /logs/[logname]?page=&amp;search=
         /// </summary>
         /// <param name="id">The identifier.</param>
+        /// <param name="page">The page.</param>
+        /// <param name="search">The search.</param>
+        /// <param name="size">The paging sizesize.</param>
         /// <returns></returns>
-        public IList<LogEntry> GetEntries(string id)
+        /// <exception cref="System.Web.Http.HttpResponseException">Thrown when the log is not found.</exception>
+        public PagingResult<LogEntry> GetEntries(string id, int? page = null, string search = null, int size = 0)
         {
             // id maps to the file name
             string fullPath = GetFullLogPath(id);
@@ -59,7 +64,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
-            return logs;
+            LogSearchCriteria searchCriteria = new LogSearchCriteria { PageNumber = page ?? 0, SearchQuery = search, PagingSize = size };
+            return new PagingResult<LogEntry>(searchCriteria.FilterLogs(logs), logs.Count, size);
         }
 
         /// <summary>

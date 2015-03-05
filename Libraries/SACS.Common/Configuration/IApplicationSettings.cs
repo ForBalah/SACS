@@ -20,6 +20,22 @@ namespace SACS.Common.Configuration
         string AppListLocation { get; }
 
         /// <summary>
+        /// Gets the default paging size.
+        /// </summary>
+        /// <value>
+        /// The default paging size.
+        /// </value>
+        int DefaultPagingSize { get; }
+
+        /// <summary>
+        /// Gets the encryption key.
+        /// </summary>
+        /// <value>
+        /// The encryption key.
+        /// </value>
+        string EncryptionSecretKey { get; }
+
+        /// <summary>
         /// Gets the name of the service.
         /// </summary>
         /// <value>
@@ -47,13 +63,5 @@ namespace SACS.Common.Configuration
         /// Gets the Web API base address
         /// </summary>
         string WebApiBaseAddress { get; }
-
-        /// <summary>
-        /// Gets the encryption key.
-        /// </summary>
-        /// <value>
-        /// The encryption key.
-        /// </value>
-        string EncryptionSecretKey { get; }
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="BusinessLogic\Loader\ServiceAppSchedulingService.cs" />
     <Compile Include="BusinessLogic\Loader\DomainInitializer.cs" />
     <Compile Include="BusinessLogic\Logs\LogLoader.cs" />
+    <Compile Include="BusinessLogic\Logs\LogSearchCriteria.cs" />
     <Compile Include="BusinessLogic\Schedule\DayLogic.cs" />
     <Compile Include="BusinessLogic\Schedule\DayOfWeekLogic.cs" />
     <Compile Include="BusinessLogic\Schedule\DescriptionDirective.cs" />

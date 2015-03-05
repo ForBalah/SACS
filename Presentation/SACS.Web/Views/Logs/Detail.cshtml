@@ -1,7 +1,42 @@
-﻿
-@{
-    ViewBag.Title = "Detail";
-}
+﻿@model IList<SACS.DataAccessLayer.Models.LogEntry>
 
-<h2>Detail</h2>
+<!-- Logs box -->
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Logs</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="table">
+            <tr>
+                <th>Item</th>
+            </tr>
+        </table>
+        <div style="overflow-y: auto; max-height: 350px;">
+            <table class="table">
+                @foreach (var entry in Model)
+                {
+                    <tr>
+                        <td>@entry.Item</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div><!-- /.box-footer-->
+</div><!-- /.box -->
 
+<!-- Logs box -->
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Details</h3>
+    </div>
+    <div class="box-body">
+        Log Detail will go in here
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div><!-- /.box-footer-->
+</div><!-- /.box -->

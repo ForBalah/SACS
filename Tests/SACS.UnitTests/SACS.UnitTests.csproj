@@ -71,11 +71,13 @@
     </Compile>
     <Compile Include="TestClasses\BusinessLayer\FieldLogicTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\LogLoaderTests.cs" />
+    <Compile Include="TestClasses\BusinessLayer\LogSearchCriteriaTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppDomainCollectionTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppDomainTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ScheduleUtilityTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppValidatorTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppListExporterTests.cs" />
+    <Compile Include="TestClasses\Common\PagingResultTests.cs" />
     <Compile Include="TestClasses\DataAccessLayer\AppListDaoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -102,7 +104,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="TestClasses\Common\" />
     <Folder Include="TestClasses\WindowsService\" />
   </ItemGroup>
   <Choose>

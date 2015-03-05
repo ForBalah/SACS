@@ -1,6 +1,4 @@
-﻿@using System.IO
-
-@model IEnumerable<string>
+﻿@model IEnumerable<string>
 
 @{
     ViewBag.Title = "Server Logs";
@@ -21,18 +19,7 @@
         </div>
     </div>
     <div class="box-body">
-            @foreach (var log in Model.OrderBy(m => m).Select(m => Path.GetFileName(m)))
-            {
-                <div class="row">
-                    <div class="row-border"></div>
-                    <div class="col-xs-9">
-                        @log
-                    </div>
-                    <div class="col-xs-3 text-right">
-                        @Html.ActionLink("View", "Detail", new { id = log }, new { @class = "btn btn-default btn-sm" })
-                    </div>
-                </div>
-            }
+        @Html.Partial("_LogList", Model)
     </div><!-- /.box-body -->
     <div class="box-footer">
         <small><strong>Note:</strong> Logs can be downloaded from the server.</small>
