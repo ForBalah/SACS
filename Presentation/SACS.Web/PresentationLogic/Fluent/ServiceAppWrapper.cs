@@ -5,6 +5,7 @@ using System.Web;
 using SACS.BusinessLayer.Presenters;
 using SACS.BusinessLayer.Views;
 using SACS.DataAccessLayer.Factories.Interfaces;
+using SACS.DataAccessLayer.Models;
 
 namespace SACS.Web.PresentationLogic.Fluent
 {
@@ -45,11 +46,11 @@ namespace SACS.Web.PresentationLogic.Fluent
         /// <value>
         /// The logic exception.
         /// </value>
-        public Tuple<string, Exception> LogicException
+        public Tuple<string, Exception> ExceptionItem
         {
             get
             {
-                return this._view.LogicException;
+                return this._view.Exception;
             }
         }
 
@@ -77,7 +78,7 @@ namespace SACS.Web.PresentationLogic.Fluent
         {
             get
             {
-                return this.LogicException == null;
+                return this.ExceptionItem == null;
             }
         }
 
@@ -88,6 +89,39 @@ namespace SACS.Web.PresentationLogic.Fluent
         public ServiceAppWrapper LoadServiceApps()
         {
             this._presenter.LoadServiceApps(true);
+            return this;
+        }
+
+        /// <summary>
+        /// Starts the specified service app.
+        /// </summary>
+        /// <param name="name">The service app name.</param>
+        /// <returns></returns>
+        public ServiceAppWrapper Start(string name)
+        {
+            this._presenter.StartServiceApp(new ServiceApp { Name = name });
+            return this;
+        }
+
+        /// <summary>
+        /// Stops the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public ServiceAppWrapper Stop(string name)
+        {
+            this._presenter.StopServiceApp(new ServiceApp { Name = name });
+            return this;
+        }
+
+        /// <summary>
+        /// Runs the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public ServiceAppWrapper Run(string name)
+        {
+            this._presenter.RunServiceApp(new ServiceApp { Name = name });
             return this;
         }
     }
@@ -127,7 +161,7 @@ namespace SACS.Web.PresentationLogic.Fluent
         /// <value>
         /// The logic exception.
         /// </value>
-        public Tuple<string, Exception> LogicException { get; private set; }
+        public Tuple<string, Exception> Exception { get; private set; }
 
         /// <summary>
         /// Binds the service apps.
@@ -164,7 +198,7 @@ namespace SACS.Web.PresentationLogic.Fluent
         /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {
-            this.LogicException = new Tuple<string, Exception>(title, e);
+            this.Exception = new Tuple<string, Exception>(title, e);
         }
     }
 }

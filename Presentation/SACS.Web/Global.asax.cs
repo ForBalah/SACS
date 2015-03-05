@@ -25,6 +25,7 @@ namespace SACS.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            // used by the service app model
             ImagePathProvider.SetProvider(new WebImagePathProvider());
         }
     }

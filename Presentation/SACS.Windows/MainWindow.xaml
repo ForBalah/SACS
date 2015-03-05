@@ -7,7 +7,7 @@
     mc:Ignorable="d"
     x:Class="SACS.Windows.MainWindow"
     Title="SACS Windows Management Console" Height="825" Width="950">
-    <Grid Background="Black">
+    <Grid Background="#FF1A2226">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
@@ -21,8 +21,10 @@
                 <TextBlock Name="StatusTextBlock" />
             </StatusBarItem>
         </StatusBar>
-        <Label Grid.Row="0" Grid.Column="0" Background="#FF308DDA" Foreground="White" FontWeight="Bold" FontSize="24" Content="Service Application Container Server"/>
-        <TabControl Grid.Row="1" >
+        <Label Grid.Row="0" Grid.Column="0" Background="#FF3C8DBC" Foreground="White" FontWeight="Bold" FontSize="24">
+            ManageSACS
+        </Label>
+        <TabControl Grid.Row="1" Foreground="#FF1A2226" >
             <TabItem Header="Server Management">
                 <ScrollViewer>
                     <StackPanel>

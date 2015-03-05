@@ -60,7 +60,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             catch (Exception e)
             {
                 ILog log = LogManager.GetLogger(this._appName);
-                log.Error(e);
+                log.Error("Execution error in " + this._appName, e);
 
                 if (this.ExecutionError != null)
                 {
@@ -89,7 +89,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (message.Value is Exception)
             {
-                log.Error(message.Value);
+                log.Error(source, message.Value as Exception);
             }
             else
             {

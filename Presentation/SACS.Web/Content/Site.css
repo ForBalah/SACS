@@ -3,3 +3,8 @@
 	margin: 5px;
 	clear: both;
 }
+
+.service-app-buttons {
+	width: 130px;
+	padding: 0 15px 0 0 !important;
+}

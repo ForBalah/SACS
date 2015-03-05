@@ -10,3 +10,12 @@
     @ViewBag.StackTrace
 </p>
 
+@if (ViewBag.InnerExceptionMessage != null)
+{
+    <div style="padding-left: 15px;">
+        <h4>@ViewBag.InnerExceptionMessage</h4>
+        <p>
+            @ViewBag.InnerExceptionStackTrace
+        </p>
+    </div>
+}

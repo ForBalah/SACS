@@ -30,16 +30,41 @@ namespace SACS.Web.Controllers
             }
             else
             {
-                this.AddError(serviceApps.LogicException.Item2);
+                this.AddError(serviceApps.ExceptionItem.Item2);
                 return View("Error");
             }
         }
 
+        /// <summary>
+        /// Updates the specified service app based on the process.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="process">The process.</param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Run(string id)
+        public ActionResult Update(string id, string process)
         {
-            return RedirectToAction("Index");
+            var appWrapper = new ServiceAppWrapper(this._restFactory);
+            string result = string.Empty;
+            switch (process)
+            {
+                case "Start":
+                    appWrapper.Start(id);
+                    result = appWrapper.IsValid ? "successStart" : "error";
+                    break;
+                case "Stop":
+                    appWrapper.Stop(id);
+                    result = appWrapper.IsValid ? "successStop" : "error";
+                    break;
+                case "Run":
+                    appWrapper.Run(id);
+                    result = appWrapper.IsValid ? "successRun" : "error";
+                    break;
+            }
+
+            // TODO: log exception to elmah
+            return new RedirectResult(Url.Action("Index") + "#" + result);
         }
     }
 }
