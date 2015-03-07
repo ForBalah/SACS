@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SACS.BusinessLayer.Views;
+using SACS.Common.Structs;
 using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.Models;
 using SACS.DataAccessLayer.WebAPI.Interfaces;
@@ -35,15 +36,15 @@ namespace SACS.BusinessLayer.Presenters
         /// <param name="page">The page.</param>
         /// <param name="searchQuery">The search query.</param>
         /// <returns></returns>
-        public IList<LogEntry> GetEntries(string logFileName, int? page = null, string searchQuery = null)
+        public PagingResult<LogEntry> GetEntries(string logFileName, int? page = null, string searchQuery = null)
         {
-            IList<LogEntry> entries = new List<LogEntry>();
+            PagingResult<LogEntry> entries = new PagingResult<LogEntry>();
 
             this.TryExecute(
                 () =>
                 {
                     ILogsClient client = this.factory.Create<ILogsClient>();
-                    entries = client.GetLogEntries(logFileName, page, searchQuery).Collection.ToList();
+                    entries = client.GetLogEntries(logFileName, page, searchQuery);
                 },
                 null,
                 true);

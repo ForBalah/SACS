@@ -1,41 +1,210 @@
-﻿@model IList<SACS.DataAccessLayer.Models.LogEntry>
+﻿@using SACS.BusinessLayer.Extensions;
+@using SACS.Common.Enums
+
+@model SACS.Common.Structs.PagingResult<SACS.DataAccessLayer.Models.LogEntry>
+
+@section Breadcrumbs {
+    <li>@Html.ActionLink("Home", "Index", "Server")</li>
+    <li>@Html.ActionLink("Server", "Index", "Server")</li>
+    <li><span class="glyphicon glyphicon-book"></span>&nbsp;@Html.ActionLink("Logs", "Logs", "Server")</li>
+    <li class="active">@ViewBag.Title</li>
+}
+
+@* This is used To map the LogImageType to an icon. *@
+@helper iconify(LogImageType imageType)
+{
+    switch (imageType)
+    {
+        case LogImageType.Debug:
+            <span class="glyphicon glyphicon-question-sign" style="color: #0f1f9c;"></span>
+            break;
+        case LogImageType.Info:
+        <span class="glyphicon glyphicon-info-sign" style="color: #0026ff;"></span>
+            break;
+        case LogImageType.Warn:
+        <span class="glyphicon glyphicon-warning-sign" style="color: #ff6a00;"></span>
+            break;
+        case LogImageType.Error:
+        <span class="glyphicon glyphicon-remove-circle" style="color: #ff0000;"></span>
+            break;
+        case LogImageType.Fatal:
+        <span class="glyphicon glyphicon-remove-sign" style="color: #ff0000;"></span>
+            break;
+        default:
+        <span class="glyphicon glyphicon-cog" style="color: #ff0000;"></span>
+            break;
+    }
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(function ()
+        {
+            // handles the click on the log entry row
+            var entryClick = function (e)
+            {
+                var target = $(e.currentTarget);
+                target.closest('table').find('tr').removeClass('selected');
+                target.addClass('selected');
+                var entry = JSON.parse($(e.currentTarget).find('input[type=hidden]').val());
+
+                if (entry)
+                {
+                    var logDetails = $('#LogDetails');
+                    logDetails.find('#LevelLabel').text(entry.Level);
+                    logDetails.find('#TimestampLabel').text(moment(entry.TimeStamp).format('YYYY/MM/DD hh:mm:ss A'));
+                    logDetails.find('#MachineNameLabel').text(entry.MachineName);
+                    logDetails.find('#ThreadLabel').text(entry.Thread);
+                    logDetails.find('#ItemLabel').text(entry.Item);
+                    logDetails.find('#HostNameLabel').text(entry.HostName);
+                    logDetails.find('#UserNameLabel').text(entry.UserName);
+                    logDetails.find('#AppLabel').text(entry.App);
+                    logDetails.find('#ClassLabel').text(entry.Class);
+                    logDetails.find('#MethodLabel').text(entry.Method);
+                    logDetails.find('#LineLabel').text(entry.Line);
+                    logDetails.find('#FileLabel').text(entry.File);
+                    logDetails.find('#MessageLabel').text(entry.Message);
+                    logDetails.find('#ThrowableLabel').text(entry.Throwable);
+
+                    location.hash = '#details';
+                }
+            };
+
+            $('#Entries tr').click(entryClick);
+        });
+    </script>
+}
 
 <!-- Logs box -->
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Logs</h3>
         <div class="box-tools pull-right">
-            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
         </div>
     </div>
     <div class="box-body">
-        <table class="table">
-            <tr>
-                <th>Item</th>
-            </tr>
-        </table>
+        <div style="overflow: hidden">
+            <table class="table log" style="min-width: 1366px; margin-bottom: 0; table-layout: fixed">
+                <tr>
+                    <th>Item</th>
+                    <th>Time</th>
+                    <th><!-- the icon column --></th>
+                    <th class="visible-lg">Thread</th>
+                    <th>Message</th>
+                    <th class="visible-lg">Host</th>
+                    <th class="visible-md visible-lg">User Name</th>
+                    <th class="visible-lg">Method</th>
+                    <th class="visible-lg">Class</th>
+                    <th><!-- the overflow column 1 --></th>
+                    <th><!-- the overflow column 2 --></th>
+                </tr>
+            </table>
+        </div>
         <div style="overflow-y: auto; max-height: 350px;">
-            <table class="table">
-                @foreach (var entry in Model)
+            <table id="Entries" class="table log hover-highlight" style="table-layout: fixed">
+                @foreach (var entry in Model.Collection)
                 {
                     <tr>
                         <td>@entry.Item</td>
+                        <td>@entry.TimeStamp</td>
+                        <td>@iconify(entry.ImageType)</td>
+                        <td class="visible-lg">@entry.Thread</td>
+                        <td>@entry.Message.Truncate(50, "…")</td>
+                        <td class="visible-lg">@entry.HostName.Truncate(15, "…")</td>
+                        <td class="visible-md visible-lg">@entry.UserName.Truncate(21, "…")</td>
+                        <td class="visible-lg">@entry.Method.Truncate(20, "…")</td>
+                        <td class="visible-lg">@entry.Class.Truncate(30, "…")</td>
+                        <td>
+                            <!-- The overflow column -->
+                            <input type="hidden" value="@Newtonsoft.Json.JsonConvert.SerializeObject(entry)" />
+                        </td>
                     </tr>
                 }
             </table>
         </div>
     </div><!-- /.box-body -->
     <div class="box-footer">
+        @* TODO: Put this into a partial view for reuse *@
+        @{
+            bool showEllipses = true;
+        }
+
+        @for (int i = 0; i < Model.NumberOfPages; i++)
+        {
+            // first/last page
+            bool canShow = i == 0 || i == Model.NumberOfPages - 1;
+
+            // pages around the current page
+            canShow |= (i > ViewBag.CurrentPage - 5 && i < ViewBag.CurrentPage + 5);
+
+            if (canShow)
+            {
+                showEllipses = true; // reset so we can show ellipses
+                if (i == ViewBag.CurrentPage)
+                {
+                    <span class="btn btn-primary btn-sm" disabled>@(i + 1)</span>
+                }
+                else
+                {
+                    @Html.ActionLink((i + 1).ToString(), "Detail", "Logs", new { id = ViewBag.Id, p = i }, new { @class = "btn btn-default btn-sm" });
+                }
+            }
+            else if (showEllipses)
+            {
+                showEllipses = false;
+                <span>...</span>
+            }
+        }
     </div><!-- /.box-footer-->
 </div><!-- /.box -->
-
 <!-- Logs box -->
-<div class="box box-primary">
+<div class="box box-primary" id="LogDetails">
     <div class="box-header with-border">
         <h3 class="box-title">Details</h3>
+        <a name="details"></a>
     </div>
     <div class="box-body">
-        Log Detail will go in here
+        <div class="row">
+            <div class="col-md-1"><label>Level:</label></div>
+            <div class="col-md-1" id="LevelLabel"></div>
+            <div class="col-md-1"><label>Timestamp:</label></div>
+            <div class="col-md-2" id="TimestampLabel"></div>
+            <div class="col-md-1"><label>Machine:</label></div>
+            <div class="col-md-2" id="MachineNameLabel"></div>
+            <div class="col-md-1"><label>Thread:</label></div>
+            <div class="col-md-2" id="ThreadLabel"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"><label>Item:</label></div>
+            <div class="col-md-1" id="ItemLabel"></div>
+            <div class="col-md-1"><label>Host Name:</label></div>
+            <div class="col-md-2" id="HostNameLabel"></div>
+            <div class="col-md-1"><label>User Name:</label></div>
+            <div class="col-md-2" id="UserNameLabel"></div>
+            <div class="col-md-1"><label>App:</label></div>
+            <div class="col-md-2" id="AppLabel"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"><label>Line:</label></div>
+            <div class="col-md-1" id="LineLabel"></div>
+            <div class="col-md-1"><label>Method:</label></div>
+            <div class="col-md-2" id="MethodLabel"></div>
+            <div class="col-md-1"><label>Class:</label></div>
+            <div class="col-md-2" id="ClassLabel"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"><label>File:</label></div>
+            <div class="col-md-11" id="FileLabel"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"><label>Message:</label></div>
+            <div class="col-md-11" id="MessageLabel"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-1"><label>Throwable:</label></div>
+            <div class="col-md-11" id="ThrowableLabel" style="white-space: pre-wrap"></div>
+        </div>
     </div><!-- /.box-body -->
     <div class="box-footer">
     </div><!-- /.box-footer-->

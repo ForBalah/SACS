@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using SACS.BusinessLayer.Presenters;
 using SACS.BusinessLayer.Views;
+using SACS.Common.Structs;
 using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.Models;
 
@@ -77,7 +78,7 @@ namespace SACS.Web.PresentationLogic.Fluent
         /// <value>
         /// The log entries.
         /// </value>
-        public IList<LogEntry> LogEntries
+        public PagingResult<LogEntry> LogEntries
         {
             get;
             private set;

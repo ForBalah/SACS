@@ -56,12 +56,12 @@ namespace SACS.Common.Structs
         }
 
         /// <summary>
-        /// Gets the total count of items.
+        /// Gets or sets the total count of items.
         /// </summary>
         /// <value>
         /// The total.
         /// </value>
-        public int Total { get; private set; }
+        public int Total { get; set; }
 
         /// <summary>
         /// Gets the collection.
@@ -84,12 +84,12 @@ namespace SACS.Common.Structs
         }
 
         /// <summary>
-        /// Gets the size of the page.
+        /// Gets or sets the size of the page.
         /// </summary>
         /// <value>
         /// The size of the page.
         /// </value>
-        public int PageSize { get; private set; }
+        public int PageSize { get; set; }
 
         /// <summary>
         /// Gets the number of pages.

@@ -14,6 +14,10 @@ namespace SACS.WindowsService.WebAPI
         {
             // Configure Web API for self-host. 
             HttpConfiguration config = new HttpConfiguration();
+            
+            // Web API routes
+            config.MapHttpAttributeRoutes();
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

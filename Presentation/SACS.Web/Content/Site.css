@@ -1,4 +1,6 @@
-﻿.row-border {
+﻿/** Elements */
+
+.row-border {
 	border-bottom: 1px solid #e4e4e4;
 	margin: 5px;
 	clear: both;
@@ -7,4 +9,75 @@
 .service-app-buttons {
 	width: 130px;
 	padding: 0 15px 0 0 !important;
+}
+
+.table.hover-highlight tr:hover {
+	background-color: #d4e9f5;
+	cursor: pointer;
+}
+
+.table tr.selected {
+	background-color: #b6e0f7;
+	cursor: pointer;
+}
+
+/** LOGS */
+.table.log tr > th,
+.table.log tr > td {
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/* Item */
+.table.log tr > th:first-child,
+.table.log tr > td:first-child {
+	width: 55px;
+}
+
+/* Time */
+.table.log tr > th:nth-child(2),
+.table.log tr > td:nth-child(2) {
+	width: 155px;
+}
+
+/* Icon */
+.table.log tr > th:nth-child(3),
+.table.log tr > td:nth-child(3) {
+	width: 30px;
+}
+
+/* Thread */
+.table.log tr > th:nth-child(4),
+.table.log tr > td:nth-child(4) {
+	width: 61px;
+}
+
+/* Message */
+.table.log tr > th:nth-child(5),
+.table.log tr > td:nth-child(5) {
+	width: 350px;
+}
+
+/* Host */
+.table.log tr > th:nth-child(6),
+.table.log tr > td:nth-child(6) {
+	width: 150px;
+}
+
+/* User */
+.table.log tr > th:nth-child(7),
+.table.log tr > td:nth-child(7) {
+	width: 160px;
+}
+
+/* Method */
+.table.log tr > th:nth-child(8),
+.table.log tr > td:nth-child(8) {
+	width: 160px;
+}
+
+/* The overflow column 1 */
+.table.log tr > th:nth-child(10),
+.table.log tr > td:nth-child(10) {
+	width: 1px;
 }

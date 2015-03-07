@@ -152,9 +152,11 @@
     <Compile Include="WebAPI\AnalyticsClient.cs" />
     <Compile Include="WebAPI\Interfaces\IAnalyticsClient.cs" />
     <Compile Include="WebAPI\Interfaces\ILogsClient.cs" />
+    <Compile Include="WebAPI\Interfaces\IServerClient.cs" />
     <Compile Include="WebAPI\Interfaces\IServiceAppClient.cs" />
     <Compile Include="WebAPI\Interfaces\IWebApiClient.cs" />
     <Compile Include="WebAPI\LogsClient.cs" />
+    <Compile Include="WebAPI\ServerClient.cs" />
     <Compile Include="WebAPI\ServiceAppClient.cs" />
     <Compile Include="WebAPI\WebApiClient.cs" />
   </ItemGroup>

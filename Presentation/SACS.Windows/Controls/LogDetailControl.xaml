@@ -196,12 +196,12 @@
                 <TextBox Name="AppTextBox" Height="23" Grid.Column="7" Grid.Row="2" IsReadOnly="True" />
 
                 <!-- Row 3-->
-                <Label Name="label7" Height="28" Grid.Column="0" Grid.Row="3">Class</Label>
-                <TextBox Name="ClassTextBox" Height="23" Grid.Column="1" Grid.Row="3" IsReadOnly="True" />
-                <Label Name="label8" Height="28" Grid.Column="2" Grid.Row="3">Method</Label>
+                <Label Height="28" Grid.Column="0" Grid.Row="3">Line</Label>
+                <TextBox Name="LineTextBox" Height="23" Grid.Column="1" Grid.Row="3" IsReadOnly="True" />
+                <Label Height="28" Grid.Column="2" Grid.Row="3">Method</Label>
                 <TextBox Name="MethodTextBox" Height="23" Grid.Column="3" Grid.Row="3" IsReadOnly="True" />
-                <Label Name="label9" Height="28" Grid.Column="4" Grid.Row="3">Line</Label>
-                <TextBox Name="LineTextBox" Height="23" Grid.Column="5" Grid.Row="3" IsReadOnly="True" />
+                <Label Height="28" Grid.Column="4" Grid.Row="3">Class</Label>
+                <TextBox Name="ClassTextBox" Height="23" Grid.Column="5" Grid.ColumnSpan="3" Grid.Row="3" IsReadOnly="True" />
 
                 <!-- Row 4-->
                 <Label Name="labelFile" Height="23" Grid.Column="0" Grid.Row="4">File</Label>

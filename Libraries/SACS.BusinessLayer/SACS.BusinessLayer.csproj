@@ -98,6 +98,7 @@
     <Compile Include="BusinessLogic\Validation\ServiceAppValidator.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\SecureStringExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Presenters\AnalyticsPresenter.cs" />
     <Compile Include="Presenters\LogDetailPresenter.cs" />
     <Compile Include="Presenters\LogOverviewPresenter.cs" />

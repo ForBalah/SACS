@@ -4,11 +4,15 @@ Add Help
 Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
+Rename Analytics to Metrics
+Log detail - Update the column headers
+Log detail - Remove machine name from the list
 
 Presentation Layer - Web:
 -------------------------
 Setup profiler - either MiniProfiler or Glimpse.
 Use flot for graphs
+fix time representation in the log.
 
 Business Layer:
 ---------------
@@ -25,6 +29,10 @@ Data Access Layer:
 ------------------
 Move DAO creation to abstract factory pattern
 Log the Container start and stop to system audit
+
+Server:
+-------
+Fix formatting of email message - add subject
 
 Configuration:
 --------------

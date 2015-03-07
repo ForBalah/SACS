@@ -119,7 +119,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Help\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
@@ -183,7 +182,13 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\Plugins\fastclick\fastclick.js" />
     <Content Include="Scripts\Plugins\fastclick\fastclick.min.js" />
     <Content Include="Scripts\Plugins\slimScroll\jquery.slimscroll.js" />
@@ -210,6 +215,8 @@
     <Content Include="Views\Logs\Detail.cshtml" />
     <Content Include="Views\Logs\Index.cshtml" />
     <Content Include="Views\Shared\_LogList.cshtml" />
+    <Content Include="Views\ServiceApps\Metrics.cshtml" />
+    <Content Include="Views\Help\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\SACS.BusinessLayer\SACS.BusinessLayer.csproj">

@@ -3,9 +3,18 @@
 }
 
 @section Breadcrumbs {
-<li>@Html.ActionLink("Home", "Index", "Server")</li>
-<li>@Html.ActionLink("Server", "Index", "Server")</li>
-<li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
+    <li>@Html.ActionLink("Home", "Index", "Server")</li>
+    <li>@Html.ActionLink("Server", "Index", "Server")</li>
+    <li class="active"><span class="glyphicon glyphicon-dashboard"></span>&nbsp;Dashboard</li>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $(function ()
+        {
+            $('#LogRefresh').click();
+        });
+    </script>
 }
 
 
@@ -16,15 +25,19 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Logs</h3>
                 <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
                 </div>
             </div>
             <div class="box-body">
-                List of logs here<br />
-                List of logs here<br />
-                List of logs here
+                <div id="LogListView"></div>
             </div><!-- /.box-body -->
             <div class="box-footer">
+                @Ajax.ActionLink(linkText: "Refresh",
+                    actionName: "Mini",
+                    controllerName: "Logs",
+                    routeValues: null,
+                    ajaxOptions: new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "LogListView", InsertionMode = InsertionMode.Replace },
+                    htmlAttributes: new { id = "LogRefresh" })
             </div><!-- /.box-footer-->
         </div><!-- /.box -->
     </div>
@@ -34,14 +47,34 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Configuration</h3>
                 <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
                 </div>
             </div>
             <div class="box-body">
-                The configuration inforamtion goes here.
+                <div>
+                    <label>Server API address:</label>
+                    <span>@ViewBag.BaseAddress</span>
+                </div>
+                <div>
+                    <label>Server Version:</label>
+                    <span>
+                        @if (ViewBag.Version != null)
+                        {
+                            @ViewBag.Version
+                        }
+                        else
+                        {
+                            <span class="text-danger">No version info available.</span>
+                        }
+                    </span>
+                </div>
+                <div>
+                    <label>Default paging size:</label>
+                    <span>@ViewBag.PagingSize</span>
+                </div>
             </div><!-- /.box-body -->
             <div class="box-footer">
-                <small>Note: Information only - server updates must be done on the server.</small>
+                <small>Note: Some settings can only be updated on the server.</small>
             </div><!-- /.box-footer-->
         </div><!-- /.box -->
     </div>
@@ -53,7 +86,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">CPU Performance</h3>
                 <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
                 </div>
             </div>
             <div class="box-body">
@@ -70,7 +103,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Memory Performance</h3>
                 <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
                 </div>
             </div>
             <div class="box-body">

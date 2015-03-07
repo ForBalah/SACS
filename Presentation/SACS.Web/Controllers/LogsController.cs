@@ -36,6 +36,24 @@ namespace SACS.Web.Controllers
         }
 
         /// <summary>
+        /// Gets the mini version of the logs
+        /// </summary>
+        /// <returns></returns>
+        public PartialViewResult Mini()
+        {
+            var logList = new LogsWrapper(this._restFactory).LoadLogList();
+            if (logList.IsValid)
+            {
+                return PartialView("_LogList", logList.LogList);
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Failed to load logs list.";
+                return PartialView("_LogList");
+            }
+        }
+
+        /// <summary>
         /// GET log detail
         /// </summary>
         /// <param name="id">The log name.</param>
@@ -47,7 +65,9 @@ namespace SACS.Web.Controllers
             var logEntries = new LogsWrapper(this._restFactory).LoadLogEntries(id, p ?? 0, q);
             if (logEntries.IsValid)
             {
+                ViewBag.Id = id;
                 ViewBag.Title = id;
+                ViewBag.CurrentPage = p ?? 0;
                 return View(logEntries.LogEntries);
             }
             else

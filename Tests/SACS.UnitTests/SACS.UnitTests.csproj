@@ -77,6 +77,7 @@
     <Compile Include="TestClasses\BusinessLayer\ScheduleUtilityTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppValidatorTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppListExporterTests.cs" />
+    <Compile Include="TestClasses\BusinessLayer\StringExtensionTests.cs" />
     <Compile Include="TestClasses\Common\PagingResultTests.cs" />
     <Compile Include="TestClasses\DataAccessLayer\AppListDaoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

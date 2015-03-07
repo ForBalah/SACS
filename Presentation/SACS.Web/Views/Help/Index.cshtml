@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "Help";
+}
+
+@section Breadcrumbs {
+    <li>@Html.ActionLink("Home", "Index", "Server")</li>
+    <li>@Html.ActionLink("Documentation", "Index", "Help")</li>
+    <li class="active"><span class="glyphicon glyphicon-question-sign"></span> Help</li>
+}

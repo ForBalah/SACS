@@ -36,6 +36,17 @@ namespace SACS.Web.Controllers
         }
 
         /// <summary>
+        /// Metricses the specified from.
+        /// </summary>
+        /// <param name="from">From date.</param>
+        /// <param name="to">To date.</param>
+        /// <returns></returns>
+        public ActionResult Metrics(string from = null, string to = null)
+        {
+            return View();
+        }
+
+        /// <summary>
         /// Updates the specified service app based on the process.
         /// </summary>
         /// <param name="id">The identifier.</param>
@@ -63,7 +74,7 @@ namespace SACS.Web.Controllers
                     break;
             }
 
-            // TODO: log exception to elmah
+            // TODO: log any exceptions to elmah
             return new RedirectResult(Url.Action("Index") + "#" + result);
         }
     }

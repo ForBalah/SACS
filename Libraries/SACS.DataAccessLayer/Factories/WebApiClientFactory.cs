@@ -26,7 +26,8 @@ namespace SACS.DataAccessLayer.Factories
             {
                 { typeof(IServiceAppClient), typeof(ServiceAppClient) },
                 { typeof(IAnalyticsClient), typeof(AnalyticsClient) },
-                { typeof(ILogsClient), typeof(LogsClient) }
+                { typeof(ILogsClient), typeof(LogsClient) },
+                { typeof(IServerClient), typeof(ServerClient) }
             };
 
         /// <summary>

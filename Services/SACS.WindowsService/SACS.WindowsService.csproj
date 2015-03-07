@@ -124,6 +124,7 @@
     <Compile Include="Components\ServiceContainer.cs" />
     <Compile Include="WebAPI\Controllers\LogsController.cs" />
     <Compile Include="WebAPI\Controllers\PerformanceController.cs" />
+    <Compile Include="WebAPI\Controllers\ServerController.cs" />
     <Compile Include="WebAPI\Controllers\ServiceAppController.cs" />
     <Compile Include="WebAPI\Startup.cs" />
   </ItemGroup>

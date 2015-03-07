@@ -93,7 +93,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
             else
             {
-                log.Info(message.Value);
+                log.Info(string.Format("{0} - {1}", source, message.Value));
             }
         }
 
