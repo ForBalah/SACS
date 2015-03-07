@@ -36,7 +36,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
         /// <value>
         /// The search query.
         /// </value>
-        public string SearchQuery { get; set; } 
+        public string SearchQuery { get; set; }
+
+        /// <summary>
+        /// Gets the total.
+        /// </summary>
+        /// <value>
+        /// The total.
+        /// </value>
+        public int Total { get; private set; }
 
         #endregion
 
@@ -72,6 +80,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
                 filteredLogs = filteredLogs.Where(l => l.ContainsText(this.SearchQuery));
             }
 
+            // TODO: all this needs to be moved into the paging result - the criteria shouldn't care about
+            // paging because now this is confusing and no longer SRP
+            this.Total = filteredLogs.Count();
             if (this.PagingSize > 0)
             {
                 int skipCount = this.PageNumber * this.PagingSize;

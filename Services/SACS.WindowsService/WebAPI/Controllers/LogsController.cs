@@ -62,7 +62,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
             }
 
             LogSearchCriteria searchCriteria = new LogSearchCriteria { PageNumber = page ?? 0, SearchQuery = search, PagingSize = size };
-            return new PagingResult<LogEntry>(searchCriteria.FilterLogs(logs), logs.Count, size);
+            var filteredLogs = searchCriteria.FilterLogs(logs);
+            return new PagingResult<LogEntry>(filteredLogs, searchCriteria.Total, size);
         }
 
         /// <summary>
