@@ -24,7 +24,10 @@ namespace SACS.Web
             bundles.Add(new ScriptBundle("~/bundles/plugins").Include(
                 "~/Scripts/moment.js",
                 "~/Scripts/Plugins/fastclick/fastclick.js",
-                "~/Scripts/Plugins/slimScroll/jquery.slimscroll.js"));
+                "~/Scripts/Plugins/slimScroll/jquery.slimscroll.js",
+                "~/Scripts/flot/jquery.flot.js",
+                "~/Scripts/flot/jquery.flot.time.js",
+                "~/Scripts/flot/jquery.flot.resize.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
                 "~/Scripts/app.js"));

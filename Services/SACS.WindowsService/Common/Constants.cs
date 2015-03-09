@@ -12,6 +12,11 @@ namespace SACS.WindowsService.Common
     internal sealed class Constants
     {
         /// <summary>
+        /// The date format
+        /// </summary>
+        public const string DateFormat = "yyyyMMddHHmm";
+
+        /// <summary>
         /// The service description
         /// </summary>
         public const string ServiceDescription = "ServiceDescription";

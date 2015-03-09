@@ -15,6 +15,11 @@ namespace SACS.DataAccessLayer.WebAPI
     public class AnalyticsClient : WebApiClient, IAnalyticsClient
     {
         /// <summary>
+        /// The date format
+        /// </summary>
+        private const string DateFormat = "yyyyMMddHHmm";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SACS.DataAccessLayer.WebAPI.AnalyticsClient" /> class
         /// </summary>
         /// <param name="baseAdderss">The base Web API url.</param>
@@ -34,8 +39,8 @@ namespace SACS.DataAccessLayer.WebAPI
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>
             {
-                { "from", fromDate.ToString("yyyyMMdd") },
-                { "to", toDate.ToString("yyyyMMdd") },
+                { "from", fromDate.ToString(DateFormat) },
+                { "to", toDate.ToString(DateFormat) },
             };
 
             return this.Get<IDictionary<string, IList<AppPerformance>>>("Performance", parameters);
@@ -51,8 +56,8 @@ namespace SACS.DataAccessLayer.WebAPI
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>
             {
-                { "cpuFrom", fromDate.ToString("yyyyMMdd") },
-                { "to", toDate.ToString("yyyyMMdd") },
+                { "cpuFrom", fromDate.ToString(DateFormat) },
+                { "to", toDate.ToString(DateFormat) },
             };
 
             return this.Get<IList<SystemPerformance>>("Performance/Cpu", parameters);
@@ -68,8 +73,8 @@ namespace SACS.DataAccessLayer.WebAPI
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>
             {
-                { "memFrom", fromDate.ToString("yyyyMMdd") },
-                { "to", toDate.ToString("yyyyMMdd") },
+                { "memFrom", fromDate.ToString(DateFormat) },
+                { "to", toDate.ToString(DateFormat) },
             };
 
             return this.Get<IList<SystemPerformance>>("Performance/Memory", parameters);

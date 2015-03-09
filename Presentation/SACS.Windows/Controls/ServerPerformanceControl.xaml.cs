@@ -108,8 +108,8 @@ namespace SACS.Windows.Controls
             double lookBackDays;
             if (double.TryParse(ConfigurationManager.AppSettings["Performance.LookBackDays"], out lookBackDays))
             {
-                DateTime fromDate = DateTime.Now.AddDays(-lookBackDays);
-                this._presenter.LoadData(fromDate, DateTime.Today.AddDays(1));
+                DateTime toDate = DateTime.Now.AddMinutes(1);
+                this._presenter.LoadData(toDate.AddDays(-lookBackDays), toDate);
             }
         }
 

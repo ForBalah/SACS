@@ -52,7 +52,7 @@
             </div>
             <div class="box-body">
                 <div>
-                    <label>Server API address:</label>
+                    <label>SACS Service URL:</label>
                     <span>@ViewBag.BaseAddress</span>
                 </div>
                 <div>
@@ -72,6 +72,10 @@
                     <label>Default paging size:</label>
                     <span>@ViewBag.PagingSize</span>
                 </div>
+                <div>
+                    <label>Chart Look-back Days:</label>
+                    <span>@ViewBag.LookBackDays</span>
+                </div>
             </div><!-- /.box-body -->
             <div class="box-footer">
                 <small>Note: Some settings can only be updated on the server.</small>
@@ -84,13 +88,13 @@
         <!-- CPU performance box -->
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title">CPU Performance</h3>
+                <h3 class="box-title">CPU Performance (% Usage)</h3>
                 <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
                 </div>
             </div>
             <div class="box-body">
-                CPU graph here
+                @Html.Partial("_CpuPerformance")
             </div><!-- /.box-body -->
             <div class="box-footer">
                 <small>Note: update frequency is 1 minute.</small>
@@ -101,13 +105,13 @@
         <!-- Memory box -->
         <div class="box box-info">
             <div class="box-header with-border">
-                <h3 class="box-title">Memory Performance</h3>
+                <h3 class="box-title">Memory Performance (MB)</h3>
                 <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
                 </div>
             </div>
             <div class="box-body">
-                Memory graph here
+                @Html.Partial("_MemoryPerformance")
             </div><!-- /.box-body -->
             <div class="box-footer">
                 <small>Note: update frequency is 1 minute.</small>

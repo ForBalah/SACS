@@ -26,6 +26,7 @@ namespace SACS.Windows
         public MainWindow()
         {
             this.InitializeComponent();
+            this.VersionLabel.Content = string.Format("v{0}", this.GetType().Assembly.GetName().Version);
         }
 
         /// <summary>

@@ -4,7 +4,6 @@ Add Help
 Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
-Rename Analytics to Metrics
 Log detail - Update the column headers
 Log detail - Remove machine name from the list
 

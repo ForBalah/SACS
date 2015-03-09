@@ -1,0 +1,75 @@
+﻿@using SACS.Web.PresentationLogic.Extensions
+
+@this.ScriptBlock(
+    @<script type="text/javascript">
+        (function (self)
+        {
+            var _plot,
+                _placeholder = '#MemoryChart';
+
+            // Makes the call to get the data and then update the graph
+            self.getData = function ()
+            {
+                $.getJSON('@Url.Action("MemoryData")', null, function (data, status)
+                {
+                    self.updateGraph(mapTo2DArray(data));
+                });
+            };
+
+            // Updates the graph with the given data
+            self.updateGraph = function (newData)
+            {
+                if (!_plot)
+                {
+                    _plot = $.plot($(_placeholder), [newData], {
+                        grid: {
+                            borderColor: "#f3f3f3",
+                            borderWidth: 1,
+                            tickColor: "#f3f3f3"
+                        },
+                        series: {
+                            bars: {
+                                lineWidth: 3.5,
+                                show: true
+                            }
+                        },
+                        xaxis: {
+                            mode: 'time'
+                        }
+                    });
+                }
+                else
+                {
+                    _plot.setData([newData]);
+                    _plot.setupGrid();
+                    _plot.draw();
+                }
+            };
+
+            // Takes the CPU result from the server and maps it to a 2D array
+            var mapTo2DArray = function (data)
+            {
+                var newArray = [];
+
+                if (data)
+                {
+                    $.map(data, function (el, i)
+                    {
+                        newArray.push([moment(el.AuditTime), el.Value]);
+                    });
+                }
+
+                return newArray;
+            };
+
+            // load events
+            $(function ()
+            {
+                self.getData();
+                window.setInterval(self.getData, 1000 * 60);
+            });
+        })(window.MemoryPerformance = window.MemoryPerformance || {});
+    </script>
+        )
+
+<div id="MemoryChart" style="height: 200px; position: relative;"></div>

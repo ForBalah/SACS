@@ -18,10 +18,10 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Label Content="00:00" Grid.Row="0" FontSize="8"/>
-                        <Label Content="12:00" Grid.Row="1" FontSize="8" />
+                        <Label Content="00:00" Grid.Row="0" FontSize="8" Padding="5,0,0,0" />
+                        <Label Content="12:00" Grid.Row="1" FontSize="8" Padding="5,0,0,0" />
                     </Grid>
-                    <Canvas Name="HourCanvas" Width="50" />
+                    <Canvas Name="HourCanvas" Width="50" Margin="0,5,0,0" />
                 </StackPanel>
             </DockPanel>
             <DockPanel LastChildFill="True" Margin="5,0,0,0">
@@ -34,12 +34,12 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Label Content="00" Grid.Row="0" FontSize="8"/>
-                        <Label Content="15" Grid.Row="1" FontSize="8"/>
-                        <Label Content="30" Grid.Row="2" FontSize="8"/>
-                        <Label Content="45" Grid.Row="3" FontSize="8"/>
+                        <Label Content="00" Grid.Row="0" FontSize="8" Padding="5,0,0,0"/>
+                        <Label Content="15" Grid.Row="1" FontSize="8" Padding="5,0,0,0"/>
+                        <Label Content="30" Grid.Row="2" FontSize="8" Padding="5,0,0,0"/>
+                        <Label Content="45" Grid.Row="3" FontSize="8" Padding="5,0,0,0"/>
                     </Grid>
-                    <Canvas Name="MinuteCanvas" Width="50" />
+                    <Canvas Name="MinuteCanvas" Width="50" Margin="0,5,0,0" />
                 </StackPanel>
             </DockPanel>
         </StackPanel>

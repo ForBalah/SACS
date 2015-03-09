@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Controls="clr-namespace:SACS.Windows.Controls" x:Class="SACS.Windows.Windows.AnalyticsWindow"
-        Title="App Analytics" Height="600" Width="750">
+        Title="App Metrics" Height="600" Width="750">
     <Grid>
         <Controls:AnalyticsControl />
     </Grid>

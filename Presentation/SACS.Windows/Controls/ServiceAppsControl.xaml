@@ -40,7 +40,7 @@
                 <Button Command="ext:Commands.ViewAnalytics" ToolTip="View Application Analytics">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/SACS.Windows;component/Images/Analytics.png" Height="24" Width="24" />
-                        <TextBlock Margin="2,3,0,0">Analytics</TextBlock>
+                        <TextBlock Margin="2,3,0,0">Metrics</TextBlock>
                     </StackPanel>
                 </Button>
             </ToolBar>

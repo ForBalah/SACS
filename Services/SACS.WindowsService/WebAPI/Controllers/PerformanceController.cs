@@ -10,6 +10,7 @@ using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
 using SACS.DataAccessLayer.Models;
+using SACS.WindowsService.Common;
 
 namespace SACS.WindowsService.WebAPI.Controllers
 {
@@ -28,15 +29,15 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <param name="to">To date.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Dates must be formatted as YYYYMMDD.
+        /// Dates must be formatted as yyyyMMddHHmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants"/>).
         /// </remarks>
         [HttpGet]
         public IDictionary<string, IList<AppPerformance>> GetAppPerformanceData(string from, string to)
         {
             try
             {
-                DateTime fromDate = DateTime.ParseExact(from, "yyyyMMdd", CultureInfo.InvariantCulture);
-                DateTime toDate = DateTime.ParseExact(to, "yyyyMMdd", CultureInfo.InvariantCulture);
+                DateTime fromDate = DateTime.ParseExact(from, Constants.DateFormat, CultureInfo.InvariantCulture);
+                DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
                 return this._perfDao.GetAppPerformanceData(fromDate, toDate);
             }
@@ -52,14 +53,17 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <param name="cpuFrom">From date.</param>
         /// <param name="to">To date.</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Dates must be formatted as yyyyMMddhhmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants"/>).
+        /// </remarks>
         [HttpGet]
         [ActionName("Cpu")]
         public IList<SystemPerformance> GetSystemCpuPerformanceData(string cpuFrom, string to)
         {
             try
             {
-                DateTime fromDate = DateTime.ParseExact(cpuFrom, "yyyyMMdd", CultureInfo.InvariantCulture);
-                DateTime toDate = DateTime.ParseExact(to, "yyyyMMdd", CultureInfo.InvariantCulture);
+                DateTime fromDate = DateTime.ParseExact(cpuFrom, Constants.DateFormat, CultureInfo.InvariantCulture);
+                DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
                 return this._systemDao.GetCpuPerformanceData(fromDate, toDate);
             }
@@ -75,14 +79,17 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <param name="memFrom">From date.</param>
         /// <param name="to">To date.</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Dates must be formatted as yyyyMMddhhmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants"/>).
+        /// </remarks>
         [HttpGet]
         [ActionName("Memory")]
         public IList<SystemPerformance> GetSystemMemoryPerformanceData(string memFrom, string to)
         {
             try
             {
-                DateTime fromDate = DateTime.ParseExact(memFrom, "yyyyMMdd", CultureInfo.InvariantCulture);
-                DateTime toDate = DateTime.ParseExact(to, "yyyyMMdd", CultureInfo.InvariantCulture);
+                DateTime fromDate = DateTime.ParseExact(memFrom, Constants.DateFormat, CultureInfo.InvariantCulture);
+                DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
                 return this._systemDao.GetMemoryPerformanceData(fromDate, toDate);
             }

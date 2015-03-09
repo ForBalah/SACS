@@ -15,6 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SACS.Common.Configuration;
+using SACS.DataAccessLayer.Factories;
+using SACS.DataAccessLayer.Factories.Interfaces;
+using SACS.DataAccessLayer.WebAPI.Interfaces;
 
 namespace SACS.Windows.Controls
 {
@@ -23,6 +26,8 @@ namespace SACS.Windows.Controls
     /// </summary>
     public partial class ConfigurationControl : UserControl
     {
+        private readonly IRestClientFactory _factory = new WebApiClientFactory();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationControl"/> class.
         /// </summary>
@@ -59,6 +64,17 @@ namespace SACS.Windows.Controls
             catch
             {
             }
+
+            try
+            {
+                var serverClient = this._factory.Create<IServerClient>();
+                this.VersionInfoLabel.Text = "Server Version: " + serverClient.GetVersionInfo();
+            }
+            catch
+            {
+            }
+
+            this.LookBackDaysLabel.Text = "Chart Look-back Days: " + ConfigurationManager.AppSettings["Performance.LookBackDays"];
         }
     }
 }
