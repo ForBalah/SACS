@@ -78,7 +78,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="xmlData">The XML data.</param>
-        public void LoadLogsFromXml(IList<LogEntry> target, string xmlData)
+        /// <param name="sortDescending">Whether logs should be sorted descending.</param>
+        public void LoadLogsFromXml(IList<LogEntry> target, string xmlData, bool sortDescending)
         {
             if (string.IsNullOrWhiteSpace(xmlData))
             {
@@ -141,7 +142,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
                     }
                 }
 
-                target.Add(entry);
+                if (sortDescending)
+                {
+                    target.Insert(0, entry);
+                }
+                else
+                {
+                    target.Add(entry);
+                }
+                
                 itemIndex++;
             }
         } 

@@ -30,7 +30,8 @@ namespace SACS.Web
                 "~/Scripts/flot/jquery.flot.resize.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/app").Include(
-                "~/Scripts/app.js"));
+                "~/Scripts/app.js",
+                "~/Scripts/common.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                 "~/Content/bootstrap.css",

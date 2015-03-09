@@ -5,24 +5,26 @@ Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
-Log detail - Remove machine name from the list
+Add splash screen as it loads?
+Update metrics section to filter by app
 
 Presentation Layer - Web:
 -------------------------
+Add Help
+Complete Metrics section
 Setup profiler - either MiniProfiler or Glimpse.
-Use flot for graphs
-fix time representation in the log.
 
 Business Layer:
 ---------------
 Fix encryption to use different initialization vectors
 Check the intermittent exception that occurs in the test app when stopping the service - think this is related to running multiple instances of the same code
-Send alert if CPU usage remains high for too long. allow threshold to be configurable
 
 Service layer:
 --------------
 Add DEBUG logging for all the Controllers.
-system performance data needs to take into account hours, minutes and seconds
+Send alert if CPU usage remains high for too long. allow threshold to be configurable
+I think the CPU metrics are wrong (they are going above 100%) so this needs to be reconfigured
+When an exception occurs in a job, save it as a message the performance metric
 
 Data Access Layer:
 ------------------

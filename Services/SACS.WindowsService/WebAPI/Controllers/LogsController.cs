@@ -60,6 +60,10 @@ namespace SACS.WindowsService.WebAPI.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
+            catch (IOException)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
 
             LogSearchCriteria searchCriteria = new LogSearchCriteria { PageNumber = page ?? 0, SearchQuery = search, PagingSize = size };
             var filteredLogs = searchCriteria.FilterLogs(logs);
@@ -73,12 +77,13 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <param name="fileName">Name of the file.</param>
         private static void LoadLogs(IList<LogEntry> logs, string fileName)
         {
-            while (true)
+            int retries = 10;
+            while (retries-- > 0)
             {
                 try
                 {
                     string xmlData = File.ReadAllText(fileName);
-                    logLoader.LoadLogsFromXml(logs, LogLoader.AppendRoot(xmlData));
+                    logLoader.LoadLogsFromXml(logs, LogLoader.AppendRoot(xmlData), true);
                     break;
                 }
                 catch (IOException)
@@ -86,6 +91,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
                     // If there is a lock on the file due to a current log write, retry after a few moments
                     Thread.Sleep(500);
                 }
+            }
+
+            if (retries <= 0)
+            {
+                throw new IOException("Could not get exclusive access to " + fileName);
             }
         }
 

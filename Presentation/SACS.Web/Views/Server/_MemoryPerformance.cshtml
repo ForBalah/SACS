@@ -12,13 +12,14 @@
             {
                 $.getJSON('@Url.Action("MemoryData")', null, function (data, status)
                 {
-                    self.updateGraph(mapTo2DArray(data));
+                    self.updateGraph(GraphHelper.mapAuditTimeTo2DArray(data));
                 });
             };
 
             // Updates the graph with the given data
             self.updateGraph = function (newData)
             {
+                GraphHelper.compactTimeData(newData, 90);  // interval is 1 minute + 30 second deviance
                 if (!_plot)
                 {
                     _plot = $.plot($(_placeholder), [newData], {
@@ -28,9 +29,10 @@
                             tickColor: "#f3f3f3"
                         },
                         series: {
-                            bars: {
-                                lineWidth: 3.5,
-                                show: true
+                            lines: {
+                                show: true,
+                                fill: true,
+                                zero: false
                             }
                         },
                         xaxis: {
@@ -46,22 +48,6 @@
                 }
             };
 
-            // Takes the CPU result from the server and maps it to a 2D array
-            var mapTo2DArray = function (data)
-            {
-                var newArray = [];
-
-                if (data)
-                {
-                    $.map(data, function (el, i)
-                    {
-                        newArray.push([moment(el.AuditTime), el.Value]);
-                    });
-                }
-
-                return newArray;
-            };
-
             // load events
             $(function ()
             {
@@ -70,6 +56,6 @@
             });
         })(window.MemoryPerformance = window.MemoryPerformance || {});
     </script>
-        )
+)
 
 <div id="MemoryChart" style="height: 200px; position: relative;"></div>

@@ -15,7 +15,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
             IList<LogEntry> entries = new List<LogEntry>();
-            loader.LoadLogsFromXml(entries, "    ");
+            loader.LoadLogsFromXml(entries, "    ", false);
 
             Assert.IsTrue(entries.Count == 0);
         }
@@ -27,7 +27,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             IList<LogEntry> entries = new List<LogEntry>();
             string xmlData = @"<log4j:event logger=""Topshelf.HostFactory"" timestamp=""1424119928456"" level=""INFO"" thread=""8""><log4j:message>Configuration Result: SACS.Agent</log4j:message><log4j:properties><log4j:data name=""log4jmachinename"" value=""User-PC"" /><log4j:data name=""log4japp"" value=""SACS.WindowsService.vshost.exe"" /><log4j:data name=""log4net:Identity"" value="""" /><log4j:data name=""log4net:UserName"" value=""User-PC\User"" /><log4j:data name=""log4net:HostName"" value=""User-PC"" /></log4j:properties><log4j:locationInfo class=""Topshelf.Logging.Log4NetLogWriter"" method=""InfoFormat"" file="""" line=""0"" /></log4j:event>";
 
-            loader.LoadLogsFromXml(entries, LogLoader.AppendRoot(xmlData));
+            loader.LoadLogsFromXml(entries, LogLoader.AppendRoot(xmlData), false);
 
             Assert.AreEqual(1, entries.Count, "LogEntry count");
             Assert.IsTrue(entries[0].TimeStamp > new DateTime(1970, 1, 1), "The timestamp is wrong");
@@ -58,7 +58,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
    at SACS.BusinessLayer.BusinessLogic.Loader.DomainInitializer.GetEntryType(String assemblyPath) in e:\Development\SACS\Libraries\SACS.BusinessLayer\BusinessLogic\Loader\DomainInitializer.cs:line 31
    at SACS.BusinessLayer.BusinessLogic.Domain.ServiceAppDomain.Initialize() in e:\Development\SACS\Libraries\SACS.BusinessLayer\BusinessLogic\Domain\ServiceAppDomain.cs:line 186</log4j:throwable><log4j:locationInfo class=""SACS.BusinessLayer.BusinessLogic.Domain.ServiceAppDomain"" method=""Initialize"" file=""e:\Development\SACS\Libraries\SACS.BusinessLayer\BusinessLogic\Domain\ServiceAppDomain.cs"" line=""198"" /></log4j:event>";
 
-            loader.LoadLogsFromXml(entries, LogLoader.AppendRoot(xmlData));
+            loader.LoadLogsFromXml(entries, LogLoader.AppendRoot(xmlData), false);
 
             Assert.AreEqual(1, entries.Count, "LogEntry count");
             Assert.IsTrue(entries[0].TimeStamp > new DateTime(1970, 1, 1), "The timestamp is wrong");
@@ -78,9 +78,20 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [TestMethod]
-        public void ConvertTimestamp_BaseConversionCorrect()
+        public void LoadLogsFromXml_CanSortDescending()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
+            IList<LogEntry> entries = new List<LogEntry>();
+
+            // 2 records
+            string xmlData = @"<log4j:event logger=""Topshelf.HostFactory"" timestamp=""1424119928456"" level=""INFO"" thread=""8""><log4j:message>Configuration Result: SACS.Agent</log4j:message><log4j:properties><log4j:data name=""log4jmachinename"" value=""User-PC"" /><log4j:data name=""log4japp"" value=""SACS.WindowsService.vshost.exe"" /><log4j:data name=""log4net:Identity"" value="""" /><log4j:data name=""log4net:UserName"" value=""User-PC\User"" /><log4j:data name=""log4net:HostName"" value=""User-PC"" /></log4j:properties><log4j:locationInfo class=""Topshelf.Logging.Log4NetLogWriter"" method=""InfoFormat"" file="""" line=""0"" /></log4j:event>
+<log4j:event logger=""Topshelf.HostFactory"" timestamp=""1424119938456"" level=""INFO"" thread=""8""><log4j:message>Configuration Result: SACS.Agent</log4j:message><log4j:properties><log4j:data name=""log4jmachinename"" value=""User-PC"" /><log4j:data name=""log4japp"" value=""SACS.WindowsService.vshost.exe"" /><log4j:data name=""log4net:Identity"" value="""" /><log4j:data name=""log4net:UserName"" value=""User-PC\User"" /><log4j:data name=""log4net:HostName"" value=""User-PC"" /></log4j:properties><log4j:locationInfo class=""Topshelf.Logging.Log4NetLogWriter"" method=""InfoFormat"" file="""" line=""0"" /></log4j:event>";
+
+            // sort descending
+            loader.LoadLogsFromXml(entries, LogLoader.AppendRoot(xmlData), true);
+
+            Assert.AreEqual(2, entries.Count, "LogEntry count");
+            Assert.AreEqual(2, entries[0].Item);
         }
     }
 }
