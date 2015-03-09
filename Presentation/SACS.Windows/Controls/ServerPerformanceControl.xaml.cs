@@ -27,8 +27,8 @@ namespace SACS.Windows.Controls
     public partial class ServerPerformanceControl : UserControl, IServerPerformanceView
     {
         private readonly ServerPerformancePresenter _presenter;
-        private ScatterSeries _seriesCpu = new ScatterSeries();
-        private ScatterSeries _seriesMenory = new ScatterSeries();
+        private AreaSeries _seriesCpu = new AreaSeries();
+        private AreaSeries _seriesMenory = new AreaSeries();
         private Timer _timer;
 
         /// <summary>

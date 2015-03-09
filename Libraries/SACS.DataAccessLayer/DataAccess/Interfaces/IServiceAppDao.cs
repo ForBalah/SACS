@@ -32,8 +32,9 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         /// <param name="performanceId">The performance identifier.</param>
+        /// <param name="message">The message.</param>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">ServiceApplication to log against could not be found</exception>
-        void RecordServiceAppExecutionEnd(string appName, int performanceId);
+        void RecordServiceAppExecutionEnd(string appName, int performanceId, string message);
 
         /// <summary>
         /// Records the service application start.

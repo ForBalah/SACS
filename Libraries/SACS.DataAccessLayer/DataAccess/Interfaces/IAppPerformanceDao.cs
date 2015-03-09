@@ -16,7 +16,8 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// </summary>
         /// <param name="fromDate">From date.</param>
         /// <param name="toDate">To date.</param>
+        /// <param name="appList">The application list.</param>
         /// <returns></returns>
-        IDictionary<string, IList<Models.AppPerformance>> GetAppPerformanceData(DateTime fromDate, DateTime toDate);
+        IDictionary<string, IList<Models.AppPerformance>> GetAppPerformanceData(DateTime fromDate, DateTime toDate, IList<string> appList);
     }
 }

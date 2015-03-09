@@ -19,7 +19,6 @@
             // Updates the graph with the given data
             self.updateGraph = function (newData)
             {
-                GraphHelper.compactTimeData(newData, 90);  // interval is 1 minute + 30 second deviance
                 if (!_plot)
                 {
                     _plot = $.plot($(_placeholder), [newData], {

@@ -28,25 +28,40 @@ namespace SACS.DataAccessLayer.DataAccess
         /// </summary>
         /// <param name="fromDate">From date.</param>
         /// <param name="toDate">To date.</param>
+        /// <param name="appList">The application list.</param>
         /// <returns></returns>
-        public IDictionary<string, IList<Models.AppPerformance>> GetAppPerformanceData(DateTime fromDate, DateTime toDate)
+        public IDictionary<string, IList<Models.AppPerformance>> GetAppPerformanceData(DateTime fromDate, DateTime toDate, IList<string> appList)
         {
+            Expression<Func<IGrouping<string, ServiceApplicationPerfomance>, bool>> containsApp;
+            if (appList.Any())
+            {
+                containsApp = (g) => appList.Contains(g.Key);
+            }
+            else
+            {
+                containsApp = (g) => true;
+            }
+
             // TODO: possibly move this into a sproc? or improve the linq.
             var perfData = (from serviceApp in this.FindAll<ServiceApplication>()
                             join performanceItem in this.FindAll<ServiceApplicationPerfomance>(sap => sap.StartTime >= fromDate && sap.EndTime <= toDate)
                                 on serviceApp.Id equals performanceItem.ServiceApplicationId
                             group performanceItem by serviceApp.Name into groupedData
-                            select new
-                            {
-                                AppName = groupedData.Key,
-                                Data = groupedData.Select(sap => new Models.AppPerformance
-                                {
-                                    Identifier = sap.ServiceApplicationId,
-                                    StartTime = sap.StartTime,
-                                    EndTime = sap.EndTime,
-                                    Message = sap.Message
-                                }).ToList()
-                            }).AsNoTracking().ToList();
+                            select groupedData)
+                                .Where(containsApp)
+                                .Select(gd => new
+                                        {
+                                            AppName = gd.Key,
+                                            Data = gd.Select(sap => new Models.AppPerformance
+                                            {
+                                                Identifier = sap.ServiceApplicationId,
+                                                StartTime = sap.StartTime,
+                                                EndTime = sap.EndTime,
+                                                Message = sap.Message
+                                            }).ToList()
+                                        })
+                                .AsNoTracking()
+                                .ToList();
 
             return perfData.ToDictionary(keySelector: d => d.AppName, elementSelector: d => (IList<Models.AppPerformance>)d.Data);
         }

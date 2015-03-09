@@ -103,8 +103,9 @@ namespace SACS.DataAccessLayer.DataAccess
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         /// <param name="performanceId">The performance identifier.</param>
+        /// <param name="message">The message.</param>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">ServiceApplication to log against could not be found</exception>
-        public void RecordServiceAppExecutionEnd(string appName, int performanceId)
+        public void RecordServiceAppExecutionEnd(string appName, int performanceId, string message)
         {
             ServiceApplication appEntity = this.GetServiceApplication(appName);
             if (appEntity == null)
@@ -121,9 +122,13 @@ namespace SACS.DataAccessLayer.DataAccess
                     ServiceApplication = appEntity,
                     Source = this.GetType().Name,
                     StartTime = DateTime.Now,
-                    Message = string.Format("Original performance record {0} not found. Created new one.", performanceId)
+                    Message = string.Format("Original performance record {0} not found. Created new one. Message: {1}", performanceId, message)
                 };
                 this.Insert(performance);
+            }
+            else
+            {
+                performance.Message = message;
             }
 
             performance.EndTime = DateTime.Now;

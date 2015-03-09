@@ -21,25 +21,34 @@ namespace SACS.WindowsService.WebAPI.Controllers
     {
         private readonly IAppPerformanceDao _perfDao = DaoFactory.Create<IAppPerformanceDao, AppPerformanceDao>();
         private readonly ISystemDao _systemDao = DaoFactory.Create<ISystemDao, SystemDao>();
+        private const int SecondsInterval = 90;
 
         /// <summary>
         /// Gets the application performance data.
         /// </summary>
         /// <param name="from">From date.</param>
         /// <param name="to">To date.</param>
+        /// <param name="apps">The apps.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Dates must be formatted as yyyyMMddHHmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants"/>).
+        /// Dates must be formatted as yyyyMMddHHmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants" />).
         /// </remarks>
         [HttpGet]
-        public IDictionary<string, IList<AppPerformance>> GetAppPerformanceData(string from, string to)
+        public IDictionary<string, IList<AppPerformance>> GetAppPerformanceData(string from, string to, string apps = null)
         {
+            List<string> appList = new List<string>();
+
+            if (apps != null)
+            {
+                appList = apps.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            }
+
             try
             {
                 DateTime fromDate = DateTime.ParseExact(from, Constants.DateFormat, CultureInfo.InvariantCulture);
                 DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
-                return this._perfDao.GetAppPerformanceData(fromDate, toDate);
+                return this._perfDao.GetAppPerformanceData(fromDate, toDate, appList);
             }
             catch (FormatException)
             {
@@ -52,20 +61,28 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// </summary>
         /// <param name="cpuFrom">From date.</param>
         /// <param name="to">To date.</param>
+        /// <param name="raw">Indicates whether to return raw data. Default is to return compacted data.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Dates must be formatted as yyyyMMddhhmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants"/>).
+        /// Dates must be formatted as yyyyMMddHHmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants" />).
         /// </remarks>
         [HttpGet]
         [ActionName("Cpu")]
-        public IList<SystemPerformance> GetSystemCpuPerformanceData(string cpuFrom, string to)
+        public IList<SystemPerformance> GetSystemCpuPerformanceData(string cpuFrom, string to, bool? raw = null)
         {
             try
             {
                 DateTime fromDate = DateTime.ParseExact(cpuFrom, Constants.DateFormat, CultureInfo.InvariantCulture);
                 DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
-                return this._systemDao.GetCpuPerformanceData(fromDate, toDate);
+                var data = this._systemDao.GetCpuPerformanceData(fromDate, toDate);
+
+                if (raw != true)
+                {
+                    SystemPerformance.CompactData(data, SecondsInterval);
+                }
+
+                return data;
             }
             catch (FormatException)
             {
@@ -78,20 +95,28 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// </summary>
         /// <param name="memFrom">From date.</param>
         /// <param name="to">To date.</param>
+        /// <param name="raw">Indicates whether to return raw data. Default is to return compacted data.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Dates must be formatted as yyyyMMddhhmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants"/>).
+        /// Dates must be formatted as yyyyMMddHHmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants" />).
         /// </remarks>
         [HttpGet]
         [ActionName("Memory")]
-        public IList<SystemPerformance> GetSystemMemoryPerformanceData(string memFrom, string to)
+        public IList<SystemPerformance> GetSystemMemoryPerformanceData(string memFrom, string to, bool? raw = null)
         {
             try
             {
                 DateTime fromDate = DateTime.ParseExact(memFrom, Constants.DateFormat, CultureInfo.InvariantCulture);
                 DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
-                return this._systemDao.GetMemoryPerformanceData(fromDate, toDate);
+                var data = this._systemDao.GetMemoryPerformanceData(fromDate, toDate);
+
+                if (raw != true)
+                {
+                    SystemPerformance.CompactData(data, SecondsInterval);
+                }
+
+                return data;
             }
             catch (FormatException)
             {

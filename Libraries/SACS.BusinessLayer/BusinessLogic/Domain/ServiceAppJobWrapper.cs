@@ -50,17 +50,18 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public void Execute()
         {
+            int performanceId = this._dao.RecordServiceAppExecutionStart(this._appName);
             MessageProxy proxy = new MessageProxy(this._serviceAppBase, this.LogMessage);
+            string message = null;
             try
             {
-                int performanceId = this._dao.RecordServiceAppExecutionStart(this._appName);
                 this._impersonator.RunAsUser(this._username, this._password, () => this._serviceAppBase.Execute());
-                this._dao.RecordServiceAppExecutionEnd(this._appName, performanceId);
             }
             catch (Exception e)
             {
                 ILog log = LogManager.GetLogger(this._appName);
                 log.Error("Execution error in " + this._appName, e);
+                message = e.Message;
 
                 if (this.ExecutionError != null)
                 {
@@ -69,6 +70,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
             finally
             {
+                this._dao.RecordServiceAppExecutionEnd(this._appName, performanceId, message);
                 proxy.RemoveMessageListener();
             }
         }
