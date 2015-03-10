@@ -3,10 +3,8 @@ Presentation Layer - Windows:
 Add Help
 Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
-Fix refresh of service app details when the service is stopped.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
-Add splash screen as it loads?
 Update metrics section to filter by app
 
 Presentation Layer - Web:
@@ -21,11 +19,8 @@ Fix encryption to use different initialization vectors?
 
 Service layer:
 --------------
-Add DEBUG logging for all the Controllers.
 Send alert if CPU usage remains high for too long. allow threshold to be configurable
-add name of user who kicked off manual running of service
 Add username to exception being logged from service.
-Detail section not refreshing and schedule window not repopulating when making a change and closing.
 
 Data Access Layer:
 ------------------
@@ -35,6 +30,8 @@ Log the Container start and stop to system audit
 Server:
 -------
 Fix formatting of email message - add subject
+send email when a service has an exception
 
 Configuration:
 --------------
+Set the username in log4net if an exception occurs within a service

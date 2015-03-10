@@ -26,16 +26,19 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
                 string[] parts = username.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
                 string domain = string.Empty;
                 string name = username;
+                LogonType logonType = LogonType.LOGON32_LOGON_INTERACTIVE;
+                LogonProvider provider = LogonProvider.LOGON32_PROVIDER_DEFAULT;
                 if (parts.Length == 2)
                 {
                     domain = parts[0];
                     name = parts[1];
+                    logonType = LogonType.LOGON32_LOGON_NEW_CREDENTIALS; // domain provided so must be network credential
                 }
 
                 string decryptedPassword = StringCipher.Decrypt(password, ApplicationSettings.Current.EncryptionSecretKey);
 
                 // TODO: This assumes that the user is a network user. May have to build in checks for local users too
-                using (Impersonator userImpersonator = new Impersonator(username, domain, decryptedPassword))
+                using (Impersonator userImpersonator = new Impersonator(username, domain, decryptedPassword, logonType, provider))
                 {
                     action();
                 }

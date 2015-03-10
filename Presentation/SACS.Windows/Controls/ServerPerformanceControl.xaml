@@ -7,19 +7,22 @@
              xmlns:chartingprimitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="360" d:DesignWidth="600" Loaded="UserControl_Loaded">
+             d:DesignHeight="425" d:DesignWidth="600" Loaded="UserControl_Loaded">
     <StackPanel>
-        <chartingToolkit:Chart Name="CpuChart" Height="180" TitleStyle="{DynamicResource ChartTitleStyle}" PlotAreaStyle="{DynamicResource ChartPlotAreaStyle}">
+        <chartingToolkit:Chart Name="CpuChart" Height="200" TitleStyle="{DynamicResource ChartTitleStyle}" PlotAreaStyle="{DynamicResource ChartPlotAreaStyle}">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:DateTimeAxis Orientation="X" Title="Time" />
                 <chartingToolkit:LinearAxis Orientation="Y" Title="Usage %" />
             </chartingToolkit:Chart.Axes>
         </chartingToolkit:Chart>
-        <chartingToolkit:Chart Name="MemoryChart" Height="180" TitleStyle="{DynamicResource ChartTitleStyle}" PlotAreaStyle="{DynamicResource ChartPlotAreaStyle}">
+        <chartingToolkit:Chart Name="MemoryChart" Height="200" TitleStyle="{DynamicResource ChartTitleStyle}" PlotAreaStyle="{DynamicResource ChartPlotAreaStyle}">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:DateTimeAxis Orientation="X" Title="Time" />
                 <chartingToolkit:LinearAxis Orientation="Y" Title="Usage (MB)" />
             </chartingToolkit:Chart.Axes>
         </chartingToolkit:Chart>
+        <Label Foreground="#FF4F4F4F" FontSize="11">
+            Note: Update frequency is 1 minute.
+        </Label>
     </StackPanel>
 </UserControl>

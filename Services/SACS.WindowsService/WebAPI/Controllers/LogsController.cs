@@ -48,6 +48,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <exception cref="System.Web.Http.HttpResponseException">Thrown when the log is not found.</exception>
         public PagingResult<LogEntry> GetEntries(string id, int? page = null, string search = null, int size = 0)
         {
+            log.Debug(string.Format("(API) Log -> GetEntries - {0}", id));
+
             // id maps to the file name
             string fullPath = GetFullLogPath(id);
             IList<LogEntry> logs = new List<LogEntry>();

@@ -123,7 +123,9 @@
                         </DockPanel>
                         <Label Content="Schedule:" BorderThickness="0,0,0,1" BorderBrush="Black" />
                         <DockPanel Name="ScheduleDockPanel" LastChildFill="True" Margin="0,0,0,10">
-                            <Button DockPanel.Dock="Right" Name="ScheduleSelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="ScheduleSelectButton_Click" />
+                            <StackPanel DockPanel.Dock="Right">
+                                <Button Name="ScheduleSelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="ScheduleSelectButton_Click" />
+                            </StackPanel>
                             <TextBlock Name="ScheduleHiddenLabel" Visibility="Collapsed" />
                             <TextBlock Name="ScheduleLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
                         </DockPanel>

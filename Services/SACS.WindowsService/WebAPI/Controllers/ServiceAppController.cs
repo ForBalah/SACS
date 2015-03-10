@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using log4net;
 using SACS.BusinessLayer.BusinessLogic.Application;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
@@ -18,6 +19,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
     /// </summary>
     public class ServiceAppController : ApiController
     {
+        private static ILog _log = LogManager.GetLogger(typeof(ServiceAppController));
         private IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
         private IAppListDao _appListDao = DaoFactory.Create<IAppListDao, AppListDao>();
 
@@ -39,8 +41,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
         [ActionName("Start")]
         public IHttpActionResult StartServiceApp(string id)
         {
+            string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
+            _log.Debug("(API) Calling StartServiceApp - " + id);
             try
             {
+                _log.Info(string.Format("REQUEST ({0}) - START service app: {1}", user, id));
                 string error = AppManager.Current.InitializeServiceApp(id, this._dao);
                 if (string.IsNullOrWhiteSpace(error))
                 {
@@ -66,8 +71,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
         [ActionName("Stop")]
         public IHttpActionResult StopServiceApp(string id)
         {
+            string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
+            _log.Debug("(API) Calling StopServiceApp - " + id);
             try
             {
+                _log.Info(string.Format("REQUEST ({0}) - STOP service app immediately: {1}", user, id));
                 AppManager.Current.StopServiceApp(id, this._dao);
                 return Ok();
             }
@@ -86,10 +94,13 @@ namespace SACS.WindowsService.WebAPI.Controllers
         [ActionName("Run")]
         public IHttpActionResult RunServiceApp(string id)
         {
+            string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
+            _log.Debug(string.Format("(API) Calling RunServiceApp ({0}) - {1}", user, id));
             try
             {
                 if (AppManager.Current.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
                 {
+                    _log.Info(string.Format("REQUEST ({0}) - RUN service app immediately: {1}", user, id));
                     AppManager.Current.RunServiceApp(id, this._dao);
                     return Ok();
                 }
@@ -113,8 +124,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
         [ActionName("Update")]
         public IHttpActionResult UpdateServiceApp([FromBody] ServiceApp serviceApp)
         {
+            string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
+            _log.Debug("(API) Calling UpdateServiceApp - " + (serviceApp ?? new ServiceApp()).Name);
             try
             {
+                _log.Info(string.Format("REQUEST ({0}) - UPDATE service app: {1}", user, serviceApp.Name));
                 string result = AppManager.Current.UpdateServiceApp(serviceApp, this._dao, this._appListDao);
                 if (!string.IsNullOrWhiteSpace(result))
                 {
@@ -138,10 +152,13 @@ namespace SACS.WindowsService.WebAPI.Controllers
         [ActionName("Remove")]
         public IHttpActionResult RemoveServiceApp(string id)
         {
+            string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
+            _log.Debug("(API) Calling RemoveServiceApp - " + id);
             try
             {
                 if (AppManager.Current.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
                 {
+                    _log.Info(string.Format("REQUEST ({0}) - DELETE service app: {1}", user, id));
                     AppManager.Current.RemoveServiceApp(id, this._dao, this._appListDao);
                     return Ok();
                 }
