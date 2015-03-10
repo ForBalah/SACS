@@ -22,7 +22,8 @@ namespace SACS.BusinessLayer.Views
         /// Selects the specified service app, or deselects if null is passed in
         /// </summary>
         /// <param name="serviceApp">The service app.</param>
-        void SelectServiceApp(ServiceApp serviceApp);
+        /// <param name="isReadOnly">If the service should be shown as read-only. Default is true.</param>
+        void SelectServiceApp(ServiceApp serviceApp, bool isReadOnly = true);
 
         /// <summary>
         /// Sets the status bar message.

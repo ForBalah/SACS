@@ -76,6 +76,15 @@ namespace SACS.Web.Controllers
             catch
             {
             }
+
+            try
+            {
+                var serverClient = this._factory.Create<IServerClient>();
+                ViewBag.SupportEmail = serverClient.GetSupportEmailAddress();
+            }
+            catch
+            {
+            }
         }
     }
 }

@@ -74,6 +74,15 @@ namespace SACS.Windows.Controls
             {
             }
 
+            try
+            {
+                var serverClient = this._factory.Create<IServerClient>();
+                this.SupportEmailLabel.Text = "Support Email Address: " + serverClient.GetSupportEmailAddress();
+            }
+            catch
+            {
+            }
+
             this.LookBackDaysLabel.Text = "Chart Look-back Days: " + ConfigurationManager.AppSettings["Performance.LookBackDays"];
         }
     }

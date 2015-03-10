@@ -160,7 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppList.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Logs\Default_log_location.txt">

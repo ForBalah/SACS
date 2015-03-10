@@ -138,14 +138,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class.
+        /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class. This is designed
+        /// to work for network credentials. for local machine, use the overloaded constructor, passing in the LOGON32_LOGON_INTERACTIVE
+        /// LogonType.
         /// </summary>
         /// <param name="userName">Name of the user.</param>
         /// <param name="domainName">Name of the domain.</param>
         /// <param name="password">The password. <see cref="System.String"/></param>
         public Impersonator(string userName, string domainName, string password)
         {
-            this.Impersonate(userName, domainName, password, LogonType.LOGON32_LOGON_INTERACTIVE, LogonProvider.LOGON32_PROVIDER_DEFAULT);
+            this.Impersonate(userName, domainName, password, LogonType.LOGON32_LOGON_NEW_CREDENTIALS, LogonProvider.LOGON32_PROVIDER_DEFAULT);
         } 
 
         /// <summary>

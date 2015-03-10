@@ -172,10 +172,9 @@ namespace SACS.Windows.Controls
         private void MenuRefresh_Click(object sender, RoutedEventArgs e)
         {
             this.LoadEntries();
-            this.LogListView.SelectedIndex = this.LogListView.Items.Count - 1;
-            if (this.LogListView.Items.Count > 4)
+            if (this.LogListView.Items.Count > 0)
             {
-                this.LogListView.SelectedIndex -= 3;
+                this.LogListView.SelectedIndex = 0;
             }
 
             this.LogListView.ScrollIntoView(this.LogListView.SelectedItem);

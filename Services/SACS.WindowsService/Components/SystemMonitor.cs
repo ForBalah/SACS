@@ -61,7 +61,7 @@ namespace SACS.WindowsService.Components
 
             monitorDifference = DateTime.Now - (_startServiceTime ?? DateTime.Now);
 
-            decimal? cpuValue = (decimal)cpuCounter.NextValue();
+            decimal? cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
             decimal ramValue = (decimal)ramCounter.NextValue() / 1024 / 1024;
             string message = "Monitor reports as running";
 
@@ -70,7 +70,7 @@ namespace SACS.WindowsService.Components
                     "{0:F} {1}: CPU - {2}%, RAM - {3}MB Remaining, Up-Time: {4}",
                     DateTime.Now,
                     message,
-                    cpuValue > 100 ? 100 : cpuValue,
+                    cpuValue,
                     ramValue,
                     monitorDifference));
 

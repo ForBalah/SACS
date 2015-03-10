@@ -84,7 +84,7 @@ namespace SACS.DataAccessLayer.WebAPI
         /// <param name="appName">Name of the application.</param>
         public ServiceApp GetServiceApp(string appName)
         {
-            throw new NotImplementedException();
+            return this.Get<IList<ServiceApp>>("ServiceApp").FirstOrDefault(o => o.Name.Equals(appName, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

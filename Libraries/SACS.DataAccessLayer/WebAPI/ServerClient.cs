@@ -31,5 +31,14 @@ namespace SACS.DataAccessLayer.WebAPI
         {
             return this.Get<Version>("Server/VersionInfo");
         }
+
+        /// <summary>
+        /// Gets the support email address.
+        /// </summary>
+        /// <returns></returns>
+        public string GetSupportEmailAddress()
+        {
+            return this.Get<string>("Server/SupportEmail");
+        }
     }
 }

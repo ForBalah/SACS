@@ -26,8 +26,8 @@ namespace SACS.TestApp
         public static void Main(string[] args)
         {
             // For debug purposes this program is executed directly. Since this is the entry point when
-            // ran, we simply create an instance of the class containing the ServiceAppBase implementation
-            // ("Program" in this case). The following calls demonstrate what SACS would do too.
+            // run the app, we simply create an instance of the class containing the ServiceAppBase implementation
+            // ("Program" in this case).
             Program p = new Program();
             p.Initialize();
 
@@ -56,7 +56,7 @@ namespace SACS.TestApp
 
             if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwException) && throwException)
             {
-                throw new InvalidOperationException("Shows that happens when an unhandled exception is thrown");
+                throw new InvalidOperationException("Shows what happens when an unhandled exception is thrown");
             }
         }
 

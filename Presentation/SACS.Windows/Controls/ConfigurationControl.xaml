@@ -7,7 +7,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel Loaded="StackPanel_Loaded">
         <TextBox Name="VersionInfoLabel" Text="Server Version: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />
-        <TextBox Name="UrlLabel" Text="Service Agent URL: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />
+        <TextBox Name="UrlLabel" Text="SACS Service URL: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />
+        <TextBox Name="SupportEmailLabel" Text="Support Email Address: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />
         <TextBox Name="NameLabel" Text="Windows Service Name: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />
         <TextBox Name="DisplayNameLabel" Text="Display Name: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />
         <TextBox Name="LookBackDaysLabel" Text="Chart Look-back Days: " Background="Transparent" IsReadOnly="True" BorderBrush="White" />

@@ -158,7 +158,7 @@ namespace SACS.BusinessLayer.Presenters
                 true);
 
             this.LoadServiceApps();
-            this.View.SelectServiceApp(serviceApp);
+            this.GetServiceAppDetails(serviceApp.Name);
         }
 
         /// <summary>
@@ -176,6 +176,7 @@ namespace SACS.BusinessLayer.Presenters
                 true);
 
             this.LoadServiceApps();
+            this.View.SelectServiceApp(null);
         }
 
         /// <summary>

@@ -34,6 +34,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
 
                 string decryptedPassword = StringCipher.Decrypt(password, ApplicationSettings.Current.EncryptionSecretKey);
 
+                // TODO: This assumes that the user is a network user. May have to build in checks for local users too
                 using (Impersonator userImpersonator = new Impersonator(username, domain, decryptedPassword))
                 {
                     action();

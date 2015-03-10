@@ -16,5 +16,11 @@ namespace SACS.DataAccessLayer.WebAPI.Interfaces
         /// </summary>
         /// <returns></returns>
         Version GetVersionInfo();
+
+        /// <summary>
+        /// Gets the support email address.
+        /// </summary>
+        /// <returns></returns>
+        string GetSupportEmailAddress();
     }
 }

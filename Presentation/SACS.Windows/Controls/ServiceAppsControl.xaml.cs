@@ -86,9 +86,7 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void CancelServiceAppButton_Click(object sender, RoutedEventArgs e)
         {
-            this._inEditMode = false;
-            this.ToggleEditFieldVisibility(false);
-            this.SelectServiceApp(this._selectedServiceApp);
+            this.SelectServiceApp(this._selectedServiceApp, true);
         }
 
         /// <summary>
@@ -123,9 +121,7 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void EditServiceAppButton_Click(object sender, RoutedEventArgs e)
         {
-            this._inEditMode = true;
-            this.ToggleEditFieldVisibility(true);
-            this.ShowServiceAppDetails(this._selectedServiceApp, false);
+            this.SelectServiceApp(this._selectedServiceApp, false);
         }
 
         /// <summary>
@@ -152,13 +148,8 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
         private void NewCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            this._inEditMode = true;
-            
-            // TODO: update the selection/deselection of service app to a property and expose on View
             this.ServiceAppListView.SelectedItem = null;
-            this._selectedServiceApp = null;
-            this.ToggleEditFieldVisibility(true);
-            this.ShowServiceAppDetails(null, false);
+            this.SelectServiceApp(null, false);
         }
 
         /// <summary>
@@ -259,7 +250,7 @@ namespace SACS.Windows.Controls
         private void ScheduleSelectButton_Click(object sender, RoutedEventArgs e)
         {
             ScheduleWindow scheduleWindow = new ScheduleWindow();
-            scheduleWindow.UpdateWith(this._selectedServiceApp != null ? this._selectedServiceApp.Schedule : ScheduleUtility.DefaultCrontab);
+            scheduleWindow.UpdateWith(!string.IsNullOrWhiteSpace(this.ScheduleHiddenLabel.Text) ? this.ScheduleHiddenLabel.Text : ScheduleUtility.DefaultCrontab);
             if (scheduleWindow.ShowDialog() == true)
             {
                 this.ScheduleHiddenLabel.Text = scheduleWindow.Schedule;
@@ -275,14 +266,7 @@ namespace SACS.Windows.Controls
         private void ServiceAppListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ServiceApp item = (sender as ListView).SelectedItem as ServiceApp;
-            if (item != null)
-            {
-                this.SelectServiceApp(item);
-            }
-            else
-            {
-                this.ClearServiceAppDetails();
-            }
+            this.SelectServiceApp(item, true);
         }
 
         /// <summary>
@@ -321,7 +305,6 @@ namespace SACS.Windows.Controls
             ServiceApp serviceApp = this.BuildServiceAppFromInput();
             if (serviceApp != null)
             {
-                this.SelectServiceApp(serviceApp);
                 this._presenter.UpdateServiceApp(serviceApp);
                 this._inEditMode = false;
                 this.ToggleEditFieldVisibility(false);
@@ -415,18 +398,13 @@ namespace SACS.Windows.Controls
         /// Selects the specified service app, or deselects if null is passed in
         /// </summary>
         /// <param name="serviceApp">The service app.</param>
-        public void SelectServiceApp(ServiceApp serviceApp)
+        /// <param name="isReadOnly">If the service should be shown as read-only. Default is true.</param>
+        public void SelectServiceApp(ServiceApp serviceApp, bool isReadOnly = true)
         {
+            this._inEditMode = !isReadOnly;
+            this.ToggleEditFieldVisibility(!isReadOnly);
             this._selectedServiceApp = serviceApp;
-
-            if (serviceApp != null)
-            {
-                this.ShowServiceAppDetails(serviceApp, true);
-            }
-            else
-            {
-                this.ClearServiceAppDetails();
-            }
+            this.ShowServiceAppDetails(this._selectedServiceApp, isReadOnly);
         }
 
         /// <summary>
@@ -459,28 +437,6 @@ namespace SACS.Windows.Controls
         }
 
         /// <summary>
-        /// Clears the service application details.
-        /// </summary>
-        private void ClearServiceAppDetails()
-        {
-            this.ServiceAppNameLabel.Content = null;
-            this.StartupTypeLabel.Text = null;
-            this.StartServiceAppButton.IsEnabled = false;
-            this.StopServiceAppButton.IsEnabled = false;
-            this.RunButton.IsEnabled = false;
-            this.ServiceAppDescriptionLabel.Text = null;
-            this.ServiceAppPathLabel.Text = null;
-            this.ServiceAppEnvironmentLabel.Text = null;
-            this.ConfigPathLabel.Text = null;
-            this.EntryFileLabel.Text = null;
-            this.AssemblyLabel.Text = null;
-            this.ScheduleLabel.Text = null;
-            this.ScheduleHiddenLabel.Text = null;
-            this.EditServiceAppButton.IsEnabled = false;
-            this.EditMessageTextBlock.Text = null;
-        }
-
-        /// <summary>
         /// Loads the combo boxes.
         /// </summary>
         private void LoadComboBoxes()
@@ -502,6 +458,7 @@ namespace SACS.Windows.Controls
             ICollectionView view = CollectionViewSource.GetDefaultView(this.ServiceAppListView.ItemsSource);
             view.Refresh();
 
+            this.ServiceAppListView.SelectedIndex = -1; // deselect to force correct refresh
             if (app != null)
             {
                 for (int i = 0; i < this.ServiceAppListView.Items.Count; i++)

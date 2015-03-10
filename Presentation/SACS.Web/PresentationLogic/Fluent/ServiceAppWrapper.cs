@@ -148,6 +148,11 @@ namespace SACS.Web.PresentationLogic.Fluent
         public IList<DataAccessLayer.Models.ServiceApp> ServiceAppList { get; private set; }
 
         /// <summary>
+        /// Gets the current service app
+        /// </summary>
+        public ServiceApp CurrentServiceApp { get; private set; }
+
+        /// <summary>
         /// Gets the message.
         /// </summary>
         /// <value>
@@ -176,10 +181,10 @@ namespace SACS.Web.PresentationLogic.Fluent
         /// Selects the specified service app, or deselects if null is passed in
         /// </summary>
         /// <param name="serviceApp">The service app.</param>
-        /// <exception cref="System.NotImplementedException">Not used in Web project.</exception>
-        public void SelectServiceApp(DataAccessLayer.Models.ServiceApp serviceApp)
+        /// <param name="isReadOnly">If the service should be shown as read-only. Default is true.</param>
+        public void SelectServiceApp(ServiceApp serviceApp, bool isReadOnly = true)
         {
-            throw new NotImplementedException();
+            this.CurrentServiceApp = serviceApp;
         }
 
         /// <summary>

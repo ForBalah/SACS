@@ -195,10 +195,10 @@
   <ItemGroup>
     <Content Include="Entitites\SACSEntities.edmx.sql" />
     <Content Include="SACS.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SACS_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>SACS.mdf</DependentUpon>
     </Content>
   </ItemGroup>
