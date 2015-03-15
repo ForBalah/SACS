@@ -45,7 +45,7 @@ namespace SACS.DataAccessLayer.DataAccess
             this.CreateHistory(appEntity);
 
             appEntity.Name = app.Name;
-            appEntity.Active = app.StartupTypeEnum == Common.Enums.StartupType.Automatic;
+            appEntity.Active = true;
             appEntity.AssemblyName = app.Assembly;
             appEntity.ConfigPath = app.ConfigFilePath;
             appEntity.CronSchedule = app.Schedule;
@@ -182,6 +182,41 @@ namespace SACS.DataAccessLayer.DataAccess
             });
 
             this.SubmitChanges();
+        }
+
+        /// <summary>
+        /// Gets the service apps active history.
+        /// </summary>
+        /// <returns></returns>
+        public IDictionary<string, bool> GetServiceAppActiveHistory()
+        {
+            return this.FindAll<ServiceApplication>()
+                .Select(a => new { a.Name, a.Active })
+                .ToDictionary(item => item.Name, item => item.Active);
+        }
+
+        /// <summary>
+        /// Deletes the service app.
+        /// </summary>
+        /// <param name="appName">Name of the app.</param>
+        public void DeleteServiceApp(string appName)
+        {
+            ServiceApplication appEntity = this.GetServiceApplication(appName);
+
+            if (appEntity != null)
+            {
+                appEntity.Active = false;
+                AuditType appAuditType = AuditType.Delete;
+                appEntity.ServiceApplicationAudits.Add(new ServiceApplicationAudit
+                {
+                    AuditType = appAuditType,
+                    CreatedByUserId = Environment.UserName,
+                    CreatedDate = DateTime.Now,
+                    Message = string.Empty
+                });
+
+                this.SubmitChanges();
+            }
         }
 
         /// <summary>

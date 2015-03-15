@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SACS.Common.Structs;
+using SACS.Common.DTOs;
 
 namespace SACS.UnitTests.TestClasses.Common
 {

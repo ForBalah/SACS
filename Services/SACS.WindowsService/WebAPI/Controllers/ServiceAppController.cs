@@ -33,6 +33,17 @@ namespace SACS.WindowsService.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Gets the service app history.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("api/ServiceApp/ActiveHistory")]
+        public IDictionary<string, bool> GetServiceAppActiveHistory()
+        {
+            return this._dao.GetServiceAppActiveHistory();
+        }
+
+        /// <summary>
         /// Starts the service app with the specified app name
         /// </summary>
         /// <param name="id">The service app identifier.</param>

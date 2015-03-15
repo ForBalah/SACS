@@ -47,5 +47,17 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         void RecordServiceAppStop(string appName);
+
+        /// <summary>
+        /// Gets the service applications active history.
+        /// </summary>
+        /// <returns></returns>
+        IDictionary<string, bool> GetServiceAppActiveHistory();
+
+        /// <summary>
+        /// Deletes the service app.
+        /// </summary>
+        /// <param name="appName">Name of the app.</param>
+        void DeleteServiceApp(string appName);
     }
 }

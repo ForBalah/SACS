@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using SACS.Common.Configuration;
-using SACS.Common.Structs;
+using SACS.Common.DTOs;
 using SACS.DataAccessLayer.WebAPI.Interfaces;
 
 namespace SACS.DataAccessLayer.WebAPI

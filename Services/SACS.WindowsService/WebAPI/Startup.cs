@@ -18,14 +18,15 @@ namespace SACS.WindowsService.WebAPI
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            // NB!! Always put the most restrictive routes first
+            config.Routes.MapHttpRoute(
+                name: "WithActionApi",
+                routeTemplate: "api/{controller}/{id}/{action}");
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
-
-            config.Routes.MapHttpRoute(
-                name: "WithActionApi",
-                routeTemplate: "api/{controller}/{id}/{action}");
 
             appBuilder.UseWebApi(config);
         }

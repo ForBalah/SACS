@@ -317,6 +317,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                     throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be updated or removed.", appName));
                 }
 
+                // An error means that the domain wasn't loaded properly so we can go ahead and remove it
                 if (domain.CurrentState == ServiceAppState.Error)
                 {
                     domain.Unload();
@@ -329,6 +330,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             if (appListDao != null)
             {
                 appListDao.DeleteServiceApp(appName);
+            }
+
+            if (dao != null)
+            {
+                dao.DeleteServiceApp(appName);
             }
         }
 

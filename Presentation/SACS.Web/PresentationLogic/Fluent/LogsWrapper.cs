@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using SACS.BusinessLayer.Presenters;
 using SACS.BusinessLayer.Views;
-using SACS.Common.Structs;
+using SACS.Common.DTOs;
 using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.Models;
 

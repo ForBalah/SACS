@@ -8,7 +8,7 @@ using System.Web.Http;
 using System.Xml.Linq;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Logs;
-using SACS.Common.Structs;
+using SACS.Common.DTOs;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.WindowsService.WebAPI.Controllers

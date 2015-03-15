@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SACS.Common.Structs;
+using SACS.Common.DTOs;
 
 namespace SACS.DataAccessLayer.WebAPI.Interfaces
 {
