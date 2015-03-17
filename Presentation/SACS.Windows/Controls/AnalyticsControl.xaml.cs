@@ -101,6 +101,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Updates the TreeView.
         /// </summary>
+        [Obsolete]
         private void UpdateTreeView()
         {
             this.DataTreeView.Items.Clear();
@@ -141,6 +142,7 @@ namespace SACS.Windows.Controls
         /// <param name="content">The content.</param>
         /// <param name="width">The width.</param>
         /// <returns></returns>
+        [Obsolete]
         private UIElement CreateLabel(Panel panel, string content, double? width)
         {
             var label = new Label
@@ -165,6 +167,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Sets the chart data.
         /// </summary>
+        [Obsolete]
         private void UpdateChartData()
         {
             foreach (var dataItem in this._appPerformances.Where(d => d.IsSelected))

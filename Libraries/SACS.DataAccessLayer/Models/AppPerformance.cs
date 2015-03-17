@@ -11,7 +11,7 @@ namespace SACS.DataAccessLayer.Models
     /// </summary>
     public class AppPerformance
     {
-        private const string DateFormat = "yyyy/MM/dd hh:mm:ss.fff";
+        private const string DateFormat = "yyyy/MM/dd HH:mm:ss.fff";
 
         /// <summary>
         /// Gets or sets the identifier.

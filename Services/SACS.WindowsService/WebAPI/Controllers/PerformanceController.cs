@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using log4net;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
@@ -22,6 +23,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         private readonly IAppPerformanceDao _perfDao = DaoFactory.Create<IAppPerformanceDao, AppPerformanceDao>();
         private readonly ISystemDao _systemDao = DaoFactory.Create<ISystemDao, SystemDao>();
         private const int SecondsInterval = 90;
+        private static ILog _log = LogManager.GetLogger(typeof(PerformanceController));
 
         /// <summary>
         /// Gets the application performance data.
@@ -34,7 +36,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// Dates must be formatted as yyyyMMddHHmm (or as overridden in the <see cref="SACS.WindowsService.Common.Constants" />).
         /// </remarks>
         [HttpGet]
-        public IDictionary<string, IList<AppPerformance>> GetAppPerformanceData(string from, string to, string apps = null)
+        public IDictionary<string, IList<AppPerformance>> GetAverageAppPerformanceData(string from, string to, string apps = null)
         {
             List<string> appList = new List<string>();
 
@@ -50,8 +52,9 @@ namespace SACS.WindowsService.WebAPI.Controllers
 
                 return this._perfDao.GetAppPerformanceData(fromDate, toDate, appList);
             }
-            catch (FormatException)
+            catch (Exception e)
             {
+                _log.Error("REST API Error", e);
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
@@ -84,8 +87,9 @@ namespace SACS.WindowsService.WebAPI.Controllers
 
                 return data;
             }
-            catch (FormatException)
+            catch (Exception e)
             {
+                _log.Error("REST API Error", e);
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }
@@ -118,8 +122,9 @@ namespace SACS.WindowsService.WebAPI.Controllers
 
                 return data;
             }
-            catch (FormatException)
+            catch (Exception e)
             {
+                _log.Error("REST API Error", e);
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
         }

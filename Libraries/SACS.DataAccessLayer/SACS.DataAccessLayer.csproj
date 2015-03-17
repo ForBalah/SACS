@@ -143,6 +143,7 @@
     <Compile Include="Factories\DaoFactory.cs" />
     <Compile Include="Factories\Interfaces\IRestClientFactory.cs" />
     <Compile Include="Factories\WebApiClientFactory.cs" />
+    <Compile Include="Models\AppMetrics.cs" />
     <Compile Include="Models\AppPerformance.cs" />
     <Compile Include="Models\LogEntry.cs" />
     <Compile Include="Models\ServiceApp.cs" />

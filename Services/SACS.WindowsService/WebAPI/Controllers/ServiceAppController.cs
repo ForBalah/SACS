@@ -37,7 +37,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/ServiceApp/ActiveHistory")]
+        [Route("api/ServiceApp/MetricSummary")]
         public IDictionary<string, bool> GetServiceAppActiveHistory()
         {
             return this._dao.GetServiceAppActiveHistory();

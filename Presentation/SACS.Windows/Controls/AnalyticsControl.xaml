@@ -16,12 +16,18 @@
                 <DatePicker Name="ToDatePicker" CalendarClosed="ToDatePicker_CalendarClosed" />
                 <Button Name="RefreshButton" Width="100" Content="Refresh" Style="{StaticResource ButtonStyle}" Click="RefreshButton_Click" />
             </StackPanel>
-            <chartingToolkit:Chart Name="DurationChart" Title="Service App Execution Duration" Height="250" TitleStyle="{DynamicResource ChartTitleStyle}">
-                <chartingToolkit:Chart.Axes>
-                    <chartingToolkit:DateTimeAxis Orientation="X" Title="Execution Date" />
-                    <chartingToolkit:LinearAxis Orientation="Y" Title="Duration (seconds)" />
-                </chartingToolkit:Chart.Axes>
-            </chartingToolkit:Chart>
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left">
+                    <Label FontSize="14" FontWeight="Bold">Service App</Label>
+                    <StackPanel Name="ServiceAppsListPanel"></StackPanel>
+                </StackPanel>
+                <chartingToolkit:Chart Name="DurationChart" Title="Service App Execution Duration" Height="250" TitleStyle="{DynamicResource ChartTitleStyle}">
+                    <chartingToolkit:Chart.Axes>
+                        <chartingToolkit:DateTimeAxis Orientation="X" Title="Execution Date" />
+                        <chartingToolkit:LinearAxis Orientation="Y" Title="Duration (seconds)" />
+                    </chartingToolkit:Chart.Axes>
+                </chartingToolkit:Chart>
+            </DockPanel>
             <DockPanel LastChildFill="True" Margin="31,10,7,0">
                 <Label Content="Start Time" FontWeight="Bold" BorderBrush="Black" BorderThickness="1" Width="180" />
                 <Label Content="End Time" FontWeight="Bold" BorderBrush="Black" BorderThickness="1" Width="180" />
