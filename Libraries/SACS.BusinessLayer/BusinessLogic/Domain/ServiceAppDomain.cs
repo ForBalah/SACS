@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Timers;
@@ -200,7 +201,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             catch (Exception e)
             {
                 this._log.Error(string.Format("{0} ServiceApp could not be initialized.", this.ServiceApp.Name, this._appDomain.FriendlyName), e);
-                if (e is EntryPointNotFoundException)
+                if (e is EntryPointNotFoundException || e is Win32Exception)
                 {
                     this.Messages.Add(new Tuple<string, ServiceAppState>(ServiceAppMessages.InitializedWithError, ServiceAppState.Error));
                     this.Unload(); // put it into a stable state

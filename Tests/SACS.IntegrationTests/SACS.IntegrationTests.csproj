@@ -74,6 +74,7 @@
     <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
       <Link>AssemblyVersion.cs</Link>
     </Compile>
+    <Compile Include="Security\ImpersonatorTests.cs" />
     <Compile Include="ServiceAppDomain\ServiceAppDomainIntegration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceAppDomain\TestService.cs" />
