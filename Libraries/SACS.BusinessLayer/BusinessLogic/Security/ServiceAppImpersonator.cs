@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SACS.Common.Configuration;
 
@@ -12,6 +13,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
     /// The Impersonator wrapper for ServiceApps
     /// </summary>
     [Serializable]
+    [Obsolete]
     public class ServiceAppImpersonator
     {
         /// <summary>
@@ -28,7 +30,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
                 string domain = string.Empty;
                 string name = username;
                 LogonType logonType = LogonType.LOGON32_LOGON_INTERACTIVE;
-                LogonProvider provider = LogonProvider.LOGON32_PROVIDER_DEFAULT;
+                LogonProvider provider = LogonProvider.LOGON32_PROVIDER_WINNT50;
                 if (parts.Length == 2)
                 {
                     domain = parts[0];
@@ -40,14 +42,21 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
 
                 using (Impersonator userImpersonator = new Impersonator(username, domain, decryptedPassword, logonType, provider))
                 {
-                    action();
+                    RunInNewThread(action);
                 }
             }
             else
             {
                 // run as built-in user
-                action();
+                RunInNewThread(action);
             }
+        }
+
+        private static void RunInNewThread(Action action)
+        {
+            Thread thread = new Thread(new ThreadStart(action));
+            thread.Start();
+            thread.Join();
         }
     }
 }

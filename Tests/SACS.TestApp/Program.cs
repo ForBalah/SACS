@@ -7,14 +7,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SACS.Implementation;
+using SACS.Implementation.Execution;
 
 namespace SACS.TestApp
 {
     /// <summary>
-    /// This test app shows an example of how to setup an app for loading into a Service Application 
+    /// This test app shows an example of how to setup an app for loading into a Service Application
     /// Container This example is a typical console app which can also be executed in any separate
     /// process such as debugging or as an independent Scheduled Task. For simplicity the ServiceAppBase
-    /// is implemented directly on the executable, but in a real app, it could be implemented in a 
+    /// is implemented directly on the executable, but in a real app, it could be implemented in a
     /// separate class.
     /// </summary>
     public class Program : ServiceAppBase
@@ -41,7 +42,7 @@ namespace SACS.TestApp
             //p.DomainInitialize();
 
             // The Execute method is the same method that SACS will call
-            p.Execute();
+            //p.Execute();
 
             // Assumes our program is interactive (since we are debugging in this case). You can also check
             // for interactivity if your intention is to use the app in another domain
@@ -55,7 +56,7 @@ namespace SACS.TestApp
         /// <summary>
         /// Executes this instance.
         /// </summary>
-        public override void Execute()
+        public override void Execute(ref ServiceAppContext context)
         {
             // only seen when debugging
             Console.WriteLine(ConfigurationManager.AppSettings["Message"]);

@@ -2,16 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Security;
+using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 
 namespace SACS.BusinessLayer.BusinessLogic.Security
 {
     /// <summary>
     /// The Logon type
     /// </summary>
+    [Obsolete("Dropped in favour of inbuilt functionality on the Process class")]
     public enum LogonType
     {
         /// <summary>
@@ -53,6 +58,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
     /// <summary>
     /// The logon provider.
     /// </summary>
+    [Obsolete("Dropped in favour of inbuilt functionality on the Process class")]
     public enum LogonProvider
     {
         /// <summary>
@@ -79,6 +85,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
     /// <summary>
     /// The impersonation level.
     /// </summary>
+    [Obsolete("Dropped in favour of inbuilt functionality on the Process class")]
     public enum ImpersonationLevel
     {
         /// <summary>
@@ -105,7 +112,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
     /// <summary>
     /// Allows code to be executed under the security context of a specified user account.
     /// </summary>
-    /// <remarks> 
+    /// <remarks>
     /// Implements IDispose, so can be used via a using-directive or method calls;
     /// ...
     /// var imp = new Impersonator( "myUsername", "myDomainname", "myPassword" );
@@ -124,12 +131,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
     /// ...
     /// Taken from: http://platinumdogs.me/2008/10/30/net-c-impersonation-with-network-credentials/
     /// </remarks>
+    [Obsolete("Dropped in favour of inbuilt functionality on the Process class")]
     public class Impersonator : IDisposable
     {
         private WindowsImpersonationContext _wic;
+        private SafeTokenHandle _handle;
 
         #region Constructors and Destructors
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class.
         /// </summary>
@@ -148,7 +157,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         public Impersonator(string userName, string domainName, string password)
         {
             this.Impersonate(userName, domainName, password, LogonType.LOGON32_LOGON_NEW_CREDENTIALS, LogonProvider.LOGON32_PROVIDER_DEFAULT);
-        } 
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SACS.BusinessLayer.BusinessLogic.Security.Impersonator"/> class.
@@ -158,15 +167,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         /// <param name="password">The password. <see cref="System.String"/></param>
         /// <param name="logonType">Type of the logon.</param>
         /// <param name="logonProvider">The logon provider. <see cref="Mit.Sharepoint.WebParts.EventLogQuery.Network.LogonProvider"/></param>
+        [PermissionSetAttribute(SecurityAction.Demand, Name = "FullTrust")]
         public Impersonator(string userName, string domainName, string password, LogonType logonType, LogonProvider logonProvider)
         {
             this.Impersonate(userName, domainName, password, logonType, logonProvider);
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Methods
-        
+
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -196,7 +206,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         /// <param name="logonProvider">The logon provider. <see cref="Mit.Sharepoint.WebParts.EventLogQuery.Network.LogonProvider"/></param>
         public void Impersonate(string userName, string domainName, string password, LogonType logonType, LogonProvider logonProvider)
         {
-           this.UndoImpersonation();
+            this.UndoImpersonation();
 
             IntPtr logonToken = IntPtr.Zero;
             IntPtr logonTokenDuplicate = IntPtr.Zero;
@@ -214,15 +224,21 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
                     (int)logonProvider,
                     ref logonToken) != 0)
                 {
-                    if (Win32NativeMethods.DuplicateToken(logonToken, (int)ImpersonationLevel.SecurityImpersonation, ref logonTokenDuplicate) != 0)
-                    {
-                        var wi = new WindowsIdentity(logonTokenDuplicate);
-                        wi.Impersonate(); // discard the returned identity context (which is the context of the application pool)
-                    }
-                    else
+                    if (Win32NativeMethods.ImpersonateLoggedOnUser(logonToken) == 0)
                     {
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     }
+                    //var wi = new WindowsIdentity(logonToken);
+                    //this._wic = wi.Impersonate();
+                    //if (Win32NativeMethods.DuplicateToken(logonToken, (int)ImpersonationLevel.SecurityImpersonation, ref logonTokenDuplicate) != 0)
+                    //{
+                    //    var wi = new WindowsIdentity(logonTokenDuplicate);
+                    //    this._wic = wi.Impersonate(); // discard the returned identity context (which is the context of the application pool)
+                    //}
+                    //else
+                    //{
+                    //    throw new Win32Exception(Marshal.GetLastWin32Error());
+                    //}
                 }
                 else
                 {
@@ -248,6 +264,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
         /// </summary>
         private void UndoImpersonation()
         {
+            Win32NativeMethods.RevertToSelf();
+
             // restore saved requestor identity
             if (this._wic != null)
             {
@@ -255,16 +273,40 @@ namespace SACS.BusinessLayer.BusinessLogic.Security
             }
 
             this._wic = null;
-        } 
+        }
 
-        #endregion
+        #endregion Methods
+    }
+
+    [Obsolete("Dropped in favour of inbuilt functionality on the Process class")]
+    public sealed class SafeTokenHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        private SafeTokenHandle()
+            : base(true)
+        {
+        }
+
+        [DllImport("kernel32.dll")]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CloseHandle(IntPtr handle);
+
+        protected override bool ReleaseHandle()
+        {
+            return CloseHandle(handle);
+        }
     }
 
     /// <summary>
     /// Handles to the native methods
     /// </summary>
+    [Obsolete("Dropped in favour of inbuilt functionality on the Process class")]
     internal class Win32NativeMethods
     {
+        [DllImport("advapi32.dll", SetLastError = true)]
+        public static extern int ImpersonateLoggedOnUser(IntPtr hToken);
+
         [DllImport("advapi32.dll", SetLastError = true)]
         public static extern int LogonUser(
             string lpszUserName,

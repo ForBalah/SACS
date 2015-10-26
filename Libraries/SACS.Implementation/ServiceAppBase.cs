@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SACS.Implementation.Commands;
+using SACS.Implementation.Execution;
+using SACS.Implementation.Utils;
 
 namespace SACS.Implementation
 {
@@ -19,53 +22,68 @@ namespace SACS.Implementation
 
         private readonly CommandLineProcessor _commandProcessor;
         private readonly object _syncRoot = new object();
-        
-        #endregion
+        private readonly object _syncExecution = new object();
+        private IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
+
+        #endregion Fields
 
         #region Events
 
         [Obsolete("dropped in favour of writing to the standard output")]
         public event EventHandler<MessageEventArgs> LogMessage;
 
-        #endregion
+        #endregion Events
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServiceAppBase" /> class.
+        /// </summary>
         public ServiceAppBase()
         {
             this._commandProcessor = new CommandLineProcessor();
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether the ServiceAppBase is loaded.
+        /// Gets or sets the service app's execution mode when calling run.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if the ServiceAppBase is loaded; otherwise, <c>false</c>.
-        /// </value>
-        [Obsolete("Dropped in favour of IsRunning")]
-        public bool IsLoaded { get; set; }
+        public ExecutionMode ExecutionMode { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the ServiceAppBase is running.
+        /// Gets or sets a value indicating whether the Service App is executing.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the ServiceAppBase is running; otherwise, <c>false</c>.
+        ///   <c>true</c> if the Service App is executing; otherwise, <c>false</c>.
         /// </value>
-        public bool IsRunning { get; private set; }
+        public bool IsExecuting
+        {
+            get
+            {
+                return _executionContexts.Any(c => c.IsExecuting);
+            }
+        }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the ServiceAppBase has been stopped.
+        /// Gets or sets a value indicating whether the Service App is loaded.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if the ServiceAppBase has been stopped; otherwise, <c>false</c>.
+        ///   <c>true</c> if the Service App is loaded; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsLoaded { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Service App has been stopped.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the Service App has been stopped; otherwise, <c>false</c>.
         /// </value>
         public bool IsStopped { get; private set; }
 
-        #endregion
+        #endregion Properties
 
         #region Event Handlers
 
@@ -79,7 +97,7 @@ namespace SACS.Implementation
             this.IsLoaded = false;
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -102,7 +120,7 @@ namespace SACS.Implementation
         /// <param name="exception">The exception.</param>
         /// <remarks>
         /// <para>There are a lot of intricacies involved when raising events within a child domain that involves quite
-        /// a bit of marshalling and serialization of assemblies between parent and child domains. Because the SAC and the 
+        /// a bit of marshalling and serialization of assemblies between parent and child domains. Because the SAC and the
         /// Service App could sit in different locations, there can be quite a bit of time spent, by .NET, looking for
         /// the right assemblies. The codename for the assembly loader in .NET is "Fusion" and, if enabled, you can see all
         /// the locations that are checked for the right assembly to load.
@@ -113,7 +131,7 @@ namespace SACS.Implementation
         /// implementation and the GAC.
         /// </para>
         /// <para>
-        /// The easiest solution, without having to specify fairly complex "assembly resolving" for the binder, involves 
+        /// The easiest solution, without having to specify fairly complex "assembly resolving" for the binder, involves
         /// sticking to exception classes which are known to be common to both the service app container, and the service
         /// app. And all the derived exception classes within the BCL (E.g. ArgumentException or InvalidOperationException)
         /// meet the criteria.
@@ -135,14 +153,14 @@ namespace SACS.Implementation
         /// Obtains a lifetime service object to control the lifetime policy for this instance.
         /// </summary>
         /// <returns>
-        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy 
-        /// for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a 
-        /// new lifetime service object initialized to the value of the 
+        /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy
+        /// for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a
+        /// new lifetime service object initialized to the value of the
         /// <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
         /// </returns>
         /// <remarks>
         /// <para>
-        /// This is overridden to prevent the service app from being garbage collected before it executes (typically if 
+        /// This is overridden to prevent the service app from being garbage collected before it executes (typically if
         /// there is a delay of more than 4 minutes between executions). This happens, even though there is a reference
         /// to the object in the SAC, because this is marked as Marshall By Ref, which means that a proxy is used to
         /// communicate between app domains. The consequence being that the reference to the proxy might still be
@@ -163,14 +181,85 @@ namespace SACS.Implementation
         }
 
         /// <summary>
-        /// Executes this instance.
+        /// Executes this instance using the specified execution context.
         /// </summary>
-        public abstract void Execute();
+        /// <param name="context">The current execution context. In derived classes that implement this method, this object
+        /// information about the current execution.</param>
+        /// <remarks>
+        /// <para>
+        /// The context is passed in by ref to prevent running this outside of the SACS.Implemetation and passing in a null.
+        /// </para>
+        /// <para>
+        /// ServiceAppContext is sealed and cannot be instantiated outside of the SACS.Implementation assembly. To run this
+        /// method, use Run().
+        /// </para></remarks>
+        public abstract void Execute(ref ServiceAppContext context);
+
+        /// <summary>
+        /// Performs the execution of this service app instance
+        /// </summary>
+        protected void Run()
+        {
+            lock (this._syncRoot)
+            {
+                if (!this.IsLoaded || this.IsStopped)
+                {
+                    throw new InvalidOperationException("Cannot execute ServiceApp is not loaded or has stopped.");
+                }
+
+                lock (this._syncExecution)
+                {
+                    bool createContext = true;
+                    bool executeImmediately = false;
+
+                    switch (this.ExecutionMode)
+                    {
+                        case ExecutionMode.Default:
+                        case ExecutionMode.Idempotent:
+                            if (this._executionContexts.Any(c => c.IsExecuting))
+                            {
+                                createContext = false;
+                            }
+                            else
+                            {
+                                executeImmediately = true;
+                            }
+                            break;
+
+                        case ExecutionMode.Inline:
+                            executeImmediately = !this._executionContexts.Any(c => c.IsExecuting);
+                            break;
+
+                        case ExecutionMode.Unbounded:
+                            executeImmediately = true;
+                            break;
+
+                        default:
+                            throw new NotImplementedException("Execution mode not implemented");
+                    }
+
+                    if (createContext)
+                    {
+                        // TODO: refactor
+                        var context = new ServiceAppContext()
+                        {
+                            Failed = false,
+                            IsExecuting = executeImmediately,
+                            QueuedTime = DateTimeResolver.Resolve(),
+                            ContextId = Thread.CurrentThread.ManagedThreadId
+                        };
+
+                        this._executionContexts.Add(context);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// The main method to start the program as a service app
         /// </summary>
-        protected void Start()
+        /// <param name="mode">The execution mode to start this service app as.</param>
+        protected void Start(ExecutionMode mode)
         {
             lock (this._syncRoot)
             {
@@ -179,10 +268,11 @@ namespace SACS.Implementation
                     throw new InvalidOperationException("Cannot start ServiceApp that has already stopped");
                 }
 
-                if (!this.IsRunning)
+                if (!this.IsLoaded)
                 {
+                    this.ExecutionMode = mode;
                     this.Initialze();
-                    this.IsRunning = true;
+                    this.IsLoaded = true;
                     var startupArgs = Environment.GetCommandLineArgs();
                     this._commandProcessor.Process(startupArgs);
                     this.AwaitCommand();
@@ -197,7 +287,7 @@ namespace SACS.Implementation
         {
             lock (this._syncRoot)
             {
-                this.IsRunning = false;
+                this.IsLoaded = false;
                 this.CleanUp();
                 this.IsStopped = true;
             }
@@ -220,13 +310,13 @@ namespace SACS.Implementation
         /// </summary>
         private void AwaitCommand()
         {
-            while (this.IsRunning)
+            while (this.IsLoaded)
             {
                 string command = Console.ReadLine();
                 this._commandProcessor.Process(command);
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }

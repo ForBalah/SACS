@@ -5,17 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SACS.Implementation;
+using SACS.Implementation.Execution;
 
 namespace SACS.IntegrationTests.ServiceAppDomain
 {
     public class TestService : ServiceAppBase
     {
-        public override void Execute()
+        protected override void Initialze()
         {
             // do nothing
         }
 
-        protected override void Initialze()
+        public override void Execute(ref ServiceAppContext context)
         {
             // do nothing
         }

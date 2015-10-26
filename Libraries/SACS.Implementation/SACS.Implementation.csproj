@@ -51,11 +51,14 @@
       <Link>AssemblyVersion.cs</Link>
     </Compile>
     <Compile Include="Commands\CommandLineProcessor.cs" />
+    <Compile Include="Execution\ExecutionMode.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="MessageProxy.cs" />
     <Compile Include="ServiceAppBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Execution\ServiceAppContext.cs" />
+    <Compile Include="Utils\DateTimeResolver.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -55,7 +55,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             string message = null;
             try
             {
-                this._impersonator.RunAsUser(this._username, this._password, () => this._serviceAppBase.Execute());
+                // this._impersonator.RunAsUser(this._username, this._password, () => this._serviceAppBase.Execute(ref null));
             }
             catch (Exception e)
             {
@@ -99,6 +99,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }

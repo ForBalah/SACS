@@ -34,7 +34,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         private ILog _log;
         private ServiceAppImpersonator _impersonator;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors and Destructors
 
@@ -67,9 +67,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._impersonator = impersonator;
             this._unloadCheckTimer = new Timer(1000);
             this._unloadCheckTimer.Elapsed += this.UnloadCheckTimer_Elapsed;
-        } 
+        }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Properties
 
@@ -132,7 +132,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             private set;
         }
 
-        #endregion
+        #endregion Properties
 
         #region Event Handlers
 
@@ -159,7 +159,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -193,7 +193,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
                 this._serviceImpl = (ServiceAppBase)this._appDomain.CreateInstanceAndUnwrap(this.ServiceApp.Assembly, entryType);
                 //this._impersonator.RunAsUser(this.ServiceApp.Username, this.ServiceApp.Password, () => this._serviceImpl.DomainInitialize());
-                this._serviceImpl.IsLoaded = true;
+                //this._serviceImpl.IsLoaded = true;
                 this._appDomain.DomainUnload += this._serviceImpl.ServiceAppBase_DomainUnload;
 
                 this.Messages.Add(new Tuple<string, ServiceAppState>(ServiceAppMessages.SuccesfulInitialization, ServiceAppState.Initialized));
@@ -251,7 +251,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 DisallowBindingRedirects = false, // important especially if an app has its .NET version upgraded
                 DisallowCodeDownload = true, // prevents services from downloading partially trusted code, and keeps our server safe
                 ConfigurationFile = this.ServiceApp.ConfigFilePath,
-                PrivateBinPath = Path.GetDirectoryName(this.GetType().Assembly.Location)
+                ////PrivateBinPath = Path.GetDirectoryName(this.GetType().Assembly.Location)
             };
 
             this._appDomain = AppDomain.CreateDomain(string.Format("ServiceApp.{0}", this.ServiceApp.Name), null, ads);
@@ -266,6 +266,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._log.Error(message.Value);
         }
 
-        #endregion
+        #endregion Methods
     }
 }

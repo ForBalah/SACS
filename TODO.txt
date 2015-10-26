@@ -16,6 +16,8 @@ Setup profiler - either MiniProfiler or Glimpse.
 Business Layer:
 ---------------
 Fix encryption to use different initialization vectors?
+Release asembly file after unloading it.
+When stopping a service make sure that it retries stopping when either the service is running or when it has errored out during stoppage.
 
 Service layer:
 --------------
@@ -24,7 +26,7 @@ Add username to exception being logged from service.
 
 Data Access Layer:
 ------------------
-Move DAO creation to abstract factory pattern
+Move DAO creation to IoC
 Log the Container start and stop to system audit
 
 Server:
