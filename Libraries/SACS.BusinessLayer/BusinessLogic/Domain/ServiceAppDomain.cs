@@ -20,6 +20,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
     /// ServiceApp domain business entity wrapper
     /// </summary>
     [Serializable]
+    [Obsolete("Dropped in favour or ServiceAppProcess")]
     public class ServiceAppDomain : MarshalByRefObject
     {
         #region Fields
@@ -191,7 +192,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 string entryType = this.initializer.GetEntryType(this.ServiceApp.AssemblyPath);
 
                 this._serviceImpl = (ServiceAppBase)this._appDomain.CreateInstanceAndUnwrap(this.ServiceApp.Assembly, entryType);
-                this._impersonator.RunAsUser(this.ServiceApp.Username, this.ServiceApp.Password, () => this._serviceImpl.Initialize());
+                //this._impersonator.RunAsUser(this.ServiceApp.Username, this.ServiceApp.Password, () => this._serviceImpl.DomainInitialize());
                 this._serviceImpl.IsLoaded = true;
                 this._appDomain.DomainUnload += this._serviceImpl.ServiceAppBase_DomainUnload;
 
@@ -224,7 +225,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 try
                 {
                     this._log.Info("Unloading ServiceApp " + this.ServiceApp.Name);
-                    this._impersonator.RunAsUser(this.ServiceApp.Username, this.ServiceApp.Password, () => this._serviceImpl.CleanUp());
+                    //this._impersonator.RunAsUser(this.ServiceApp.Username, this.ServiceApp.Password, () => this._serviceImpl.DomainCleanUp());
                 }
                 catch (Exception e)
                 {

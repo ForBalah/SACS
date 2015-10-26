@@ -50,12 +50,14 @@
     <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
       <Link>AssemblyVersion.cs</Link>
     </Compile>
+    <Compile Include="Commands\CommandLineProcessor.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="MessageProxy.cs" />
     <Compile Include="ServiceAppBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

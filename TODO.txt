@@ -35,3 +35,18 @@ send email when a service has an exception
 Configuration:
 --------------
 Set the username in log4net if an exception occurs within a service
+
+
+=================
+ServiceAppBase
+--------------
+Start()
+Initialize()
+Execute()
+CleanUp()
+Stop()
+ProcessCommand()
+Output()
+Version()
+AppVersion()
+Capabilities()

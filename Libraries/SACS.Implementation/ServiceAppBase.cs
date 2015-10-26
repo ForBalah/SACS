@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SACS.Implementation.Commands;
 
 namespace SACS.Implementation
 {
@@ -14,9 +15,26 @@ namespace SACS.Implementation
     [Serializable]
     public abstract class ServiceAppBase : MarshalByRefObject
     {
+        #region Fields
+
+        private readonly CommandLineProcessor _commandProcessor;
+        private readonly object _syncRoot = new object();
+        
+        #endregion
+
         #region Events
 
+        [Obsolete("dropped in favour of writing to the standard output")]
         public event EventHandler<MessageEventArgs> LogMessage;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public ServiceAppBase()
+        {
+            this._commandProcessor = new CommandLineProcessor();
+        }
 
         #endregion
 
@@ -28,7 +46,24 @@ namespace SACS.Implementation
         /// <value>
         ///   <c>true</c> if the ServiceAppBase is loaded; otherwise, <c>false</c>.
         /// </value>
+        [Obsolete("Dropped in favour of IsRunning")]
         public bool IsLoaded { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the ServiceAppBase is running.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the ServiceAppBase is running; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the ServiceAppBase has been stopped.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the ServiceAppBase has been stopped; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsStopped { get; private set; }
 
         #endregion
 
@@ -128,19 +163,69 @@ namespace SACS.Implementation
         }
 
         /// <summary>
-        /// Initializes this ServiceApp implementation.
-        /// </summary>
-        public abstract void Initialize();
-
-        /// <summary>
         /// Executes this instance.
         /// </summary>
         public abstract void Execute();
 
         /// <summary>
+        /// The main method to start the program as a service app
+        /// </summary>
+        protected void Start()
+        {
+            lock (this._syncRoot)
+            {
+                if (this.IsStopped)
+                {
+                    throw new InvalidOperationException("Cannot start ServiceApp that has already stopped");
+                }
+
+                if (!this.IsRunning)
+                {
+                    this.Initialze();
+                    this.IsRunning = true;
+                    var startupArgs = Environment.GetCommandLineArgs();
+                    this._commandProcessor.Process(startupArgs);
+                    this.AwaitCommand();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The main method to stop the program as a service app
+        /// </summary>
+        protected void Stop()
+        {
+            lock (this._syncRoot)
+            {
+                this.IsRunning = false;
+                this.CleanUp();
+                this.IsStopped = true;
+            }
+        }
+
+        /// <summary>
         /// Called when the service is being unloaded. this method should contain details on how to free up unmanaged resources.
         /// </summary>
-        public abstract void CleanUp();
+        protected virtual void CleanUp()
+        {
+        }
+
+        /// <summary>
+        /// Initializes this ServiceApp implementation. Place any once-off initializations in here.
+        /// </summary>
+        protected abstract void Initialze();
+
+        /// <summary>
+        /// listens for lines from the standard input stream and processes them as commands.
+        /// </summary>
+        private void AwaitCommand()
+        {
+            while (this.IsRunning)
+            {
+                string command = Console.ReadLine();
+                this._commandProcessor.Process(command);
+            }
+        }
 
         #endregion
     }

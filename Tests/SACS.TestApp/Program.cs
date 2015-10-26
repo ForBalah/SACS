@@ -25,11 +25,20 @@ namespace SACS.TestApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            LegacyTestRun();
+        }
+
+        /// <summary>
+        /// The old service app test
+        /// </summary>
+        [Obsolete("Will no longer be run by a ServiceAppDomain")]
+        private static void LegacyTestRun()
+        {
             // For debug purposes this program is executed directly. Since this is the entry point when
             // run the app, we simply create an instance of the class containing the ServiceAppBase implementation
             // ("Program" in this case).
             Program p = new Program();
-            p.Initialize();
+            //p.DomainInitialize();
 
             // The Execute method is the same method that SACS will call
             p.Execute();
@@ -40,7 +49,7 @@ namespace SACS.TestApp
 
             // because it is good to clean up afterwards. In SACS this only gets called when the app is being
             // stopped.
-            p.CleanUp();
+            //p.DomainCleanUp();
         }
 
         /// <summary>
@@ -64,19 +73,9 @@ namespace SACS.TestApp
             }
         }
 
-        /// <summary>
-        /// Initializes this ServiceApp implementation.
-        /// </summary>
-        public override void Initialize()
+        protected override void Initialze()
         {
-            // Can initialize your service here
-        }
-
-        /// <summary>
-        /// Called when the service is being unloaded. this method should contain details on how to free up unmanaged resources.
-        /// </summary>
-        public override void CleanUp()
-        {
+            // can initialize app here
         }
     }
 }
