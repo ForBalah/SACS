@@ -41,7 +41,8 @@ namespace SACS.Implementation
         /// </summary>
         public ServiceAppBase()
         {
-            this._commandProcessor = new CommandLineProcessor();
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            this._commandProcessor = new JsonCommandProcessor();
         }
 
         #endregion Constructors and Destructors
@@ -92,9 +93,20 @@ namespace SACS.Implementation
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        [Obsolete]
         public void ServiceAppBase_DomainUnload(object sender, EventArgs e)
         {
             this.IsLoaded = false;
+        }
+
+        /// <summary>
+        /// Handles the UnhandledException event of the CurrentDomain control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
+        protected void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            // todo: send error message
         }
 
         #endregion Event Handlers
@@ -200,57 +212,65 @@ namespace SACS.Implementation
         /// </summary>
         protected void Run()
         {
-            lock (this._syncRoot)
+            lock (this._syncExecution)
             {
                 if (!this.IsLoaded || this.IsStopped)
                 {
                     throw new InvalidOperationException("Cannot execute ServiceApp is not loaded or has stopped.");
                 }
 
+                bool createContext = true;
+                bool executeImmediately = false;
+
+                switch (this.ExecutionMode)
+                {
+                    case ExecutionMode.Default:
+                    case ExecutionMode.Idempotent:
+                        if (this._executionContexts.Any(c => c.IsExecuting))
+                        {
+                            createContext = false;
+                        }
+                        else
+                        {
+                            executeImmediately = true;
+                        }
+                        break;
+
+                    case ExecutionMode.Inline:
+                    case ExecutionMode.Unbounded:
+                    default:
+                        throw new NotImplementedException("Execution mode not implemented");
+                }
+
+                if (createContext)
+                {
+                    var context = new ServiceAppContext()
+                    {
+                        Failed = false,
+                        IsExecuting = executeImmediately,
+                        QueuedTime = DateTimeResolver.Resolve(),
+                        ContextId = Thread.CurrentThread.ManagedThreadId
+                    };
+
+                    this._executionContexts.Add(context);
+                }
+            }
+
+            bool canExecute = true;
+            while (canExecute)
+            {
+                ServiceAppContext currentContext;
+
                 lock (this._syncExecution)
                 {
-                    bool createContext = true;
-                    bool executeImmediately = false;
+                    currentContext = this._executionContexts.FirstOrDefault(c => !c.Failed);
+                }
 
-                    switch (this.ExecutionMode)
-                    {
-                        case ExecutionMode.Default:
-                        case ExecutionMode.Idempotent:
-                            if (this._executionContexts.Any(c => c.IsExecuting))
-                            {
-                                createContext = false;
-                            }
-                            else
-                            {
-                                executeImmediately = true;
-                            }
-                            break;
-
-                        case ExecutionMode.Inline:
-                            executeImmediately = !this._executionContexts.Any(c => c.IsExecuting);
-                            break;
-
-                        case ExecutionMode.Unbounded:
-                            executeImmediately = true;
-                            break;
-
-                        default:
-                            throw new NotImplementedException("Execution mode not implemented");
-                    }
-
-                    if (createContext)
-                    {
-                        // TODO: refactor
-                        var context = new ServiceAppContext()
-                        {
-                            Failed = false,
-                            IsExecuting = executeImmediately,
-                            QueuedTime = DateTimeResolver.Resolve(),
-                            ContextId = Thread.CurrentThread.ManagedThreadId
-                        };
-
-                        this._executionContexts.Add(context);
-                    }
+                if (currentContext != null)
+                {
+                    currentContext.StartTime = DateTimeResolver.Resolve();
+                    this.Execute(ref currentContext);
+                    currentContext.EndTime = DateTimeResolver.Resolve();
                 }
             }
         }
@@ -259,7 +279,7 @@ namespace SACS.Implementation
         /// The main method to start the program as a service app
         /// </summary>
         /// <param name="mode">The execution mode to start this service app as.</param>
-        protected void Start(ExecutionMode mode)
+        protected void Start(ExecutionMode mode = Execution.ExecutionMode.Default)
         {
             lock (this._syncRoot)
             {
@@ -273,7 +293,7 @@ namespace SACS.Implementation
                     this.ExecutionMode = mode;
                     this.Initialze();
                     this.IsLoaded = true;
-                    var startupArgs = Environment.GetCommandLineArgs();
+                    var startupArgs = Environment.CommandLine;
                     this._commandProcessor.Process(startupArgs);
                     this.AwaitCommand();
                 }

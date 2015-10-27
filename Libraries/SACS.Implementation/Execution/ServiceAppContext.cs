@@ -19,23 +19,33 @@ namespace SACS.Implementation.Execution
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the context is executing.
+        /// Gets a value indicating whether the context is executing.
         /// </summary>
         public bool IsExecuting { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether there was a failure during execution.
+        /// Gets a value indicating whether there was a failure during execution.
         /// </summary>
         public bool Failed { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the time that the context was created (and queued)
+        /// Gets the time that the context was created (and queued)
         /// </summary>
         public DateTime QueuedTime { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the ID that the current context uses.
+        /// Gets the ID that the current context uses.
         /// </summary>
         public int ContextId { get; internal set; }
+
+        /// <summary>
+        /// Gets the current context's start execution time.
+        /// </summary>
+        public DateTime? StartTime { get; internal set; }
+
+        /// <summary>
+        /// Gets the current context's end execution time
+        /// </summary>
+        public DateTime EndTime { get; internal set; }
     }
 }

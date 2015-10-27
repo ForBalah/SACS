@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class LogSearchCriteriaTests
     {
         private IList<LogEntry> EmptyList = new List<LogEntry>();
@@ -22,7 +22,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             new LogEntry { Item = 5, Message = "ef" }
         };
 
-        [TestMethod]
+        [Test]
         public void FilterLogs_EmptySearchCriteriaReturnsOriginalList()
         {
             //

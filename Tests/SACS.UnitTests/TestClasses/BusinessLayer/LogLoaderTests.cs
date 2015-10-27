@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.BusinessLayer.BusinessLogic.Logs;
 using SACS.Common.Enums;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class LogLoaderTests
     {
-        [TestMethod]
+        [Test]
         public void LoadLogsFromXml_CanHandleEmptyStrings()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
@@ -20,7 +20,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.IsTrue(entries.Count == 0);
         }
 
-        [TestMethod]
+        [Test]
         public void LoadLogsFromXml_CanProcessAnXmlEntryCorrectlyNoThrowable()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
@@ -45,7 +45,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.AreEqual("0", entries[0].Line, "Line");
         }
 
-        [TestMethod]
+        [Test]
         public void LoadLogsFromXml_CanProcessAnXmlEntryCorrectlyWithThrowable()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
@@ -77,7 +77,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.AreEqual("198", entries[0].Line, "Line");
         }
 
-        [TestMethod]
+        [Test]
         public void LoadLogsFromXml_CanSortDescending()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);

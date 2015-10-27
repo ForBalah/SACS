@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.BusinessLayer.BusinessLogic.Security;
 
 namespace SACS.IntegrationTests.Security
 {
-    [TestClass]
+    [TestFixture]
     public class ImpersonatorTests
     {
-        [TestMethod]
+        [Test]
         public void RunAs_CheckThatAWrongUserDoesNotCrashTheSystem()
         {
             ServiceAppImpersonator impersonator = new ServiceAppImpersonator();

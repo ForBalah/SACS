@@ -49,6 +49,25 @@
     <Reference Include="NSubstitute">
       <HintPath>..\..\packages\NSubstitute.1.7.2.0\lib\NET45\NSubstitute.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.core">
+      <HintPath>..\..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>..\..\packages\NUnitTestAdapter.2.0.0\lib\nunit.util.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NUnit.VisualStudio.TestAdapter">
+      <HintPath>..\..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
     <Reference Include="System.XML" />
@@ -60,11 +79,7 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
@@ -83,6 +98,7 @@
     <Compile Include="TestClasses\DataAccessLayer\AppListDaoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClasses\DataAccessLayer\SystemPerformanceTests.cs" />
+    <Compile Include="TestClasses\Implementation\JsonCommandProcessorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -100,6 +116,18 @@
     <ProjectReference Include="..\..\Libraries\SACS.DataAccessLayer\SACS.DataAccessLayer.csproj">
       <Project>{1b505841-5594-4aed-87b8-403a78c6da1d}</Project>
       <Name>SACS.DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\SACS.Implementation\SACS.Implementation.csproj">
+      <Project>{ef46e159-c1de-4e63-a306-80579728b548}</Project>
+      <Name>SACS.Implementation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\SACS.Scheduler\SACS.Scheduler.csproj">
+      <Project>{60d32251-1be4-4a40-8366-0a2584becef0}</Project>
+      <Name>SACS.Scheduler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Presentation\SACS.Windows\SACS.Windows.csproj">
+      <Project>{eb1e93d5-d542-45c7-97b5-eece3bb81dcb}</Project>
+      <Name>SACS.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Services\SACS.WindowsService\SACS.WindowsService.csproj">
       <Project>{25f058de-deb2-4b34-9186-0a86524c3d01}</Project>

@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using NSubstitute;
 using SACS.BusinessLayer.BusinessLogic.Domain;
 using SACS.BusinessLayer.BusinessLogic.Security;
@@ -7,18 +7,18 @@ using SACS.DataAccessLayer.Models;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class ServiceAppDomainCollectionTests
     {
         private log4net.ILog _log;
 
-        [TestInitialize]
+        [SetUp]
         public void InitializeTests()
         {
             _log = Substitute.For<log4net.ILog>();
         }
 
-        [TestMethod]
+        [Test]
         public void GetIndex_CanReturnServiceAppDomainFromCollectionUsingString()
         {
             ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
@@ -28,7 +28,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.AreEqual(saDomain, collection["Test"]);
         }
 
-        [TestMethod]
+        [Test]
         public void Add_CanInsertUniqueDomainToCollection()
         {
             ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
@@ -38,7 +38,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.AreEqual(1, collection.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void Add_CannotAddDuplicateDomainToCollection()
         {
             ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
@@ -57,7 +57,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_CanRemoveInstalledDomainFromCollection()
         {
             ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
@@ -69,7 +69,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.IsTrue(success);
         }
 
-        [TestMethod]
+        [Test]
         public void Remove_CannotRemoveDomainFromEmptyCollection()
         {
             ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());

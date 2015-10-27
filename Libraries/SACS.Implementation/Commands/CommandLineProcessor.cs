@@ -8,16 +8,19 @@ namespace SACS.Implementation.Commands
     /// <summary>
     /// Class responsible for processing data received from the command line
     /// </summary>
-    internal class CommandLineProcessor
+    internal abstract class CommandLineProcessor
     {
-        internal void Process(string[] startupArgs)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Processes the specified command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        internal abstract void Process(string command);
 
-        internal void Process(string command)
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Parses the specified command.
+        /// </summary>
+        /// <param name="command">The command.</param>
+        /// <returns></returns>
+        internal abstract IDictionary<string, object> Parse(string command);
     }
 }

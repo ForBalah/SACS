@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.Common.Enums;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
@@ -9,7 +9,7 @@ using SACS.DataAccessLayer.Models;
 
 namespace SACS.UnitTests.TestClasses.DataAccessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class AppListDaoTests
     {
         private string xml = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
@@ -60,7 +60,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
          username=""username""
          password=""password""></serviceApp>";
 
-        [TestMethod]
+        [Test]
         public void FindAll_CanReturnAllServiceApps()
         {
             IAppListDao dao = DaoFactory.Create<IAppListDao, AppListDao>(xml);
@@ -69,7 +69,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             Assert.AreEqual(2, apps.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void FindAll_CanReturnServiceAppByName()
         {
             IAppListDao dao = DaoFactory.Create<IAppListDao, AppListDao>(xml);
@@ -88,7 +88,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             Assert.AreEqual("", app.Password);
         }
 
-        [TestMethod]
+        [Test]
         public void CastToServiceApp_CanCastWithoutIdentity()
         {
             XElement serviceAppXml = XElement.Parse(serviceAppWithoutIdentityXml);
@@ -104,7 +104,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }
         }
 
-        [TestMethod]
+        [Test]
         public void CastToServiceApp_CanCastWithIdentity()
         {
             XElement serviceAppXml = XElement.Parse(serviceAppWithIdentityXml);
@@ -120,7 +120,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }
         }
 
-        [TestMethod]
+        [Test]
         public void PersistServiceApp_CanAddUserNameAndPassword()
         {
             IAppListDao dao = DaoFactory.Create<IAppListDao, AppListDao>(xml);

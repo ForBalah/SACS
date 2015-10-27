@@ -26,31 +26,8 @@ namespace SACS.TestApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
-            LegacyTestRun();
-        }
-
-        /// <summary>
-        /// The old service app test
-        /// </summary>
-        [Obsolete("Will no longer be run by a ServiceAppDomain")]
-        private static void LegacyTestRun()
-        {
-            // For debug purposes this program is executed directly. Since this is the entry point when
-            // run the app, we simply create an instance of the class containing the ServiceAppBase implementation
-            // ("Program" in this case).
             Program p = new Program();
-            //p.DomainInitialize();
-
-            // The Execute method is the same method that SACS will call
-            //p.Execute();
-
-            // Assumes our program is interactive (since we are debugging in this case). You can also check
-            // for interactivity if your intention is to use the app in another domain
-            Console.ReadKey();
-
-            // because it is good to clean up afterwards. In SACS this only gets called when the app is being
-            // stopped.
-            //p.DomainCleanUp();
+            p.Start(ExecutionMode.Idempotent);
         }
 
         /// <summary>

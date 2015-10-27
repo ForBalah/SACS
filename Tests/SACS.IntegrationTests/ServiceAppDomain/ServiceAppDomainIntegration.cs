@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Domain = SACS.BusinessLayer.BusinessLogic.Domain;
 using SACS.DataAccessLayer.Models;
 using log4net;
@@ -9,22 +9,23 @@ using NSubstitute;
 using System.Collections.Generic;
 using SACS.Common.Enums;
 using System.Threading;
+using NUnit.Framework;
 
 namespace SACS.IntegrationTests.ServiceAppDomain
 {
-    [TestClass]
+    [TestFixture]
     public class ServiceAppDomainIntegration
     {
         private List<Domain.ServiceAppDomain> domains = new List<Domain.ServiceAppDomain>();
 
-        [TestMethod]
+        [Test]
         public void ServiceAppDomainCanInitializeNewAppDomain()
         {
             Domain.ServiceAppDomain domain = InitializeDomain();
             Assert.AreEqual(ServiceAppState.Initialized, domain.CurrentState);
         }
 
-        [TestMethod]
+        [Test]
         public void ServiceAppDomainCanUnloadAppDomain()
         {
             Domain.ServiceAppDomain domain = InitializeDomain();
@@ -72,7 +73,7 @@ namespace SACS.IntegrationTests.ServiceAppDomain
             }
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             domains.ForEach(d =>

@@ -1,13 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.BusinessLayer.Extensions;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class StringExtensionTests
     {
-        [TestMethod]
+        [Test]
         public void Truncate_DoesNotBreakWhenGivenNull()
         {
             string nullString = null;
@@ -22,14 +22,14 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Truncate_NoTruncationIfStringIsJustTooShort()
         {
             string result = "hello".Truncate(5);
             Assert.AreEqual("hello", result);
         }
 
-        [TestMethod]
+        [Test]
         public void Truncate_TruncatesStringIfItIsTooLong()
         {
             string result = "hello world".Truncate(10, "...");

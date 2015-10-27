@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.DataAccessLayer.Models;
 using System.Linq;
 
 namespace SACS.UnitTests.TestClasses.DataAccessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class SystemPerformanceTests
     {
         private const int secondsInterval = 90;
 
-        [TestMethod]
+        [Test]
         public void CompactData_WorksWithEmptyList()
         {
             IList<SystemPerformance> data = new List<SystemPerformance>();
@@ -19,7 +19,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             CollectionAssert.AreEqual(new List<SystemPerformance>(), data.ToList());
         }
 
-        [TestMethod]
+        [Test]
         public void CompatData_WorksWithSingleEntry()
         {
             IList<SystemPerformance> data = new List<SystemPerformance> 
@@ -34,7 +34,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
-        [TestMethod]
+        [Test]
         public void CompactData_WorksWithTwoEntriesThatAreTheSameValue()
         {
             IList<SystemPerformance> data = new List<SystemPerformance> 
@@ -51,7 +51,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
-        [TestMethod]
+        [Test]
         public void CompactData_WorksWithTwoEntriesThatAreDifferent()
         {
             IList<SystemPerformance> data = new List<SystemPerformance> 
@@ -68,7 +68,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
-        [TestMethod]
+        [Test]
         public void CompactData_WorksWithTwoEntriesThatAreFarApart()
         {
             // Since it will be greater than the secondsInterval, 2 should be inserted to represent the gap
@@ -88,7 +88,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList(), string.Format("Different number of elements: {0}", data.Count));
         }
 
-        [TestMethod]
+        [Test]
         public void CompactData_WorksWithThreeEntriesThatAreDifferent()
         {
             IList<SystemPerformance> data = new List<SystemPerformance> 
@@ -107,7 +107,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
-        [TestMethod]
+        [Test]
         public void CompactData_WorksWithThreeEntriesThatAreTheSame()
         {
             IList<SystemPerformance> data = new List<SystemPerformance> 

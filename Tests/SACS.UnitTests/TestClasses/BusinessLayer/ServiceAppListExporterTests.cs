@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.BusinessLayer.BusinessLogic.Export;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
-    [TestClass]
+    [TestFixture]
     public class ServiceAppListExporterTests
     {
-        [TestMethod]
+        [Test]
         public void ExportCsv_CanExportCsvHeadersOnly()
         {
             ServiceAppListExporter exporter = new ServiceAppListExporter();
@@ -21,7 +21,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.IsTrue(result.Contains("Name,"));
         }
 
-        [TestMethod]
+        [Test]
         public void ExportCsv_CanExportCsvWithDetails()
         {
             var list = new List<ServiceApp>

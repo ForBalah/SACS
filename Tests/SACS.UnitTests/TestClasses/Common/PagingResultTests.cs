@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using SACS.Common.DTOs;
 
 namespace SACS.UnitTests.TestClasses.Common
 {
-    [TestClass]
+    [TestFixture]
     public class PagingResultTests
     {
-        [TestMethod]
+        [Test]
         public void Constructor_CanInitializeEmptyList()
         {
             PagingResult<string> emptyResult = new PagingResult<string>();
@@ -19,7 +19,7 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(0, emptyResult.PageSize, "struct PageSize must be zero");
         }
 
-        [TestMethod]
+        [Test]
         public void Constructor_CannotInitializeNullList()
         {
             try
@@ -33,7 +33,7 @@ namespace SACS.UnitTests.TestClasses.Common
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Constructor_CannotInitializeWithAnyNegativeValues()
         {
             try
@@ -55,7 +55,7 @@ namespace SACS.UnitTests.TestClasses.Common
             }
         }
 
-        [TestMethod]
+        [Test]
         public void Constructor_TotalCannotBeLessThanCollectionSize()
         {
             try
@@ -68,42 +68,42 @@ namespace SACS.UnitTests.TestClasses.Common
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NumberOfPages_ZeroTotalCountResultsInZeroNumberOfPages()
         {
             PagingResult<string> zeroTotal = new PagingResult<string>(new List<string>(), 0, 10);
             Assert.AreEqual(0, zeroTotal.NumberOfPages);
         }
 
-        [TestMethod]
+        [Test]
         public void NumberOfPages_ZeroPageSizeAlwaysEqualsOne()
         {
             PagingResult<string> zeroPageSize = new PagingResult<string>(new List<string> { "a", "b" }, 2, 0);
             Assert.AreEqual(1, zeroPageSize.NumberOfPages);
         }
 
-        [TestMethod]
+        [Test]
         public void NumberOfPages_PageSizeOfOneAlwaysReturnsTotal()
         {
             PagingResult<string> onePageSize = new PagingResult<string>(new List<string> { "a", "b" }, 10, 1);
             Assert.AreEqual(10, onePageSize.NumberOfPages);
         }
 
-        [TestMethod]
+        [Test]
         public void NumberOfPages_PageSizeOf5_OneLessThanTheEdgeCaseShouldReturnOnePage()
         {
             PagingResult<string> fivePager = new PagingResult<string>(new List<string> { "a", "b" }, 4, 5);
             Assert.AreEqual(1, fivePager.NumberOfPages);
         }
 
-        [TestMethod]
+        [Test]
         public void NumberOfPages_PageSizeOf5_OnFiveTotalShouldReturnOnePage()
         {
             PagingResult<string> fivePager = new PagingResult<string>(new List<string> { "a", "b" }, 5, 5);
             Assert.AreEqual(1, fivePager.NumberOfPages);
         }
 
-        [TestMethod]
+        [Test]
         public void NumberOfPages_PageSizeOf5_OneOneMoreTheEdgeShouldReturn2Pages()
         {
             PagingResult<string> fivePager = new PagingResult<string>(new List<string> { "a", "b" }, 6, 5);
