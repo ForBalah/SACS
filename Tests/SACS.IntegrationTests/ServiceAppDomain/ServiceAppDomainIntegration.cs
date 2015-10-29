@@ -13,19 +13,17 @@ using NUnit.Framework;
 
 namespace SACS.IntegrationTests.ServiceAppDomain
 {
-    [TestFixture]
+    [Obsolete("ServiceAppDomain is no longer used")]
     public class ServiceAppDomainIntegration
     {
         private List<Domain.ServiceAppDomain> domains = new List<Domain.ServiceAppDomain>();
 
-        [Test]
         public void ServiceAppDomainCanInitializeNewAppDomain()
         {
             Domain.ServiceAppDomain domain = InitializeDomain();
             Assert.AreEqual(ServiceAppState.Initialized, domain.CurrentState);
         }
 
-        [Test]
         public void ServiceAppDomainCanUnloadAppDomain()
         {
             Domain.ServiceAppDomain domain = InitializeDomain();
@@ -73,7 +71,6 @@ namespace SACS.IntegrationTests.ServiceAppDomain
             }
         }
 
-        [TearDown]
         public void Cleanup()
         {
             domains.ForEach(d =>
@@ -84,6 +81,7 @@ namespace SACS.IntegrationTests.ServiceAppDomain
 
         private Domain.ServiceAppDomain InitializeDomain()
         {
+            /*
             ILog log = Substitute.For<ILog>();
             ServiceApp app = new ServiceApp
             {
@@ -102,7 +100,9 @@ namespace SACS.IntegrationTests.ServiceAppDomain
             domains.Add(domain);
             domain.Initialize();
 
-            return domain;
+            return domain;*/
+
+            return null;
         }
     }
 }

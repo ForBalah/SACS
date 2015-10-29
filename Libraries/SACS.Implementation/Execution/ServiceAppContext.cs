@@ -36,7 +36,7 @@ namespace SACS.Implementation.Execution
         /// <summary>
         /// Gets the ID that the current context uses.
         /// </summary>
-        public int ContextId { get; internal set; }
+        public string Guid { get; internal set; }
 
         /// <summary>
         /// Gets the current context's start execution time.

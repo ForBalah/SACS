@@ -38,6 +38,7 @@ namespace SACS.UnitTests.TestClasses.Implementation
         [Category("SACS.Implementation.Commands")]
         [TestCase("action: 'run'")]
         [TestCase("{action: 'run'}")]
+        [TestCase("c:\\temp\\test.exe action:'run'")]
         [TestCase("c:\\temp\\test.exe {action: 'run'}")]
         public void Parse_CanReturnSingleJsonParam(string input)
         {

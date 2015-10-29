@@ -194,7 +194,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 this._serviceImpl = (ServiceAppBase)this._appDomain.CreateInstanceAndUnwrap(this.ServiceApp.Assembly, entryType);
                 //this._impersonator.RunAsUser(this.ServiceApp.Username, this.ServiceApp.Password, () => this._serviceImpl.DomainInitialize());
                 //this._serviceImpl.IsLoaded = true;
-                this._appDomain.DomainUnload += this._serviceImpl.ServiceAppBase_DomainUnload;
+                //this._appDomain.DomainUnload += this._serviceImpl.ServiceAppBase_DomainUnload;
 
                 this.Messages.Add(new Tuple<string, ServiceAppState>(ServiceAppMessages.SuccesfulInitialization, ServiceAppState.Initialized));
                 this._log.Info(string.Format("{0} initialized successfully. Domain name is: {1}", this.ServiceApp.Name, this._appDomain.FriendlyName));

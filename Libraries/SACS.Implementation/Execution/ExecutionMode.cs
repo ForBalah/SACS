@@ -31,6 +31,6 @@ namespace SACS.Implementation.Execution
         /// Indicates that if there are multiple execution invocations that happen simultaneously,
         /// each will be occur as requested.
         /// </summary>
-        Unbounded = 3
+        Concurrent = 3
     }
 }

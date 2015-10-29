@@ -20,10 +20,15 @@ namespace SACS.Implementation
     {
         #region Fields
 
+        /// <summary>
+        /// The interval (in milliseconds) between each check for execution.
+        /// </summary>
+        protected const int ExecutionInterval = 1000;
         private readonly CommandLineProcessor _commandProcessor;
         private readonly object _syncRoot = new object();
         private readonly object _syncExecution = new object();
-        private IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
+        private readonly Timer _executionTimer;
+        private readonly IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
 
         #endregion Fields
 
@@ -41,6 +46,7 @@ namespace SACS.Implementation
         /// </summary>
         public ServiceAppBase()
         {
+            this._executionTimer = new Timer(ExecutionTimer_Tick, null, 0, ExecutionInterval);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this._commandProcessor = new JsonCommandProcessor();
         }
@@ -89,17 +95,6 @@ namespace SACS.Implementation
         #region Event Handlers
 
         /// <summary>
-        /// Handles the DomainUnload event of the ServiceAppBase object.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        [Obsolete]
-        public void ServiceAppBase_DomainUnload(object sender, EventArgs e)
-        {
-            this.IsLoaded = false;
-        }
-
-        /// <summary>
         /// Handles the UnhandledException event of the CurrentDomain control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -107,6 +102,24 @@ namespace SACS.Implementation
         protected void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             // todo: send error message
+        }
+
+        /// <summary>
+        /// Handles the 'tick' event of the executionTimer
+        /// </summary>
+        /// <param name="state">The state.</param>
+        private void ExecutionTimer_Tick(object state)
+        {
+            ServiceAppContext currentContext = this._executionContexts.FirstOrDefault(c => !c.Failed);
+
+            if (currentContext != null)
+            {
+                currentContext.IsExecuting = true;
+                currentContext.StartTime = DateTimeResolver.Resolve();
+                this.Execute(ref currentContext);
+                currentContext.EndTime = DateTimeResolver.Resolve();
+                currentContext.IsExecuting = false;
+            }
         }
 
         #endregion Event Handlers
@@ -122,42 +135,6 @@ namespace SACS.Implementation
             if (message != null && this.LogMessage != null)
             {
                 this.LogMessage(null, new MessageEventArgs { Message = new Message(this.GetType().Name, message) });
-            }
-        }
-
-        /// <summary>
-        /// Helper method for sending errors to a pre-defined logger. NOTE: stick to BCL (Base Class Library) exceptions
-        /// as there could potentially be issues sending custom exceptions from a service app to its host SAC.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        /// <remarks>
-        /// <para>There are a lot of intricacies involved when raising events within a child domain that involves quite
-        /// a bit of marshalling and serialization of assemblies between parent and child domains. Because the SAC and the
-        /// Service App could sit in different locations, there can be quite a bit of time spent, by .NET, looking for
-        /// the right assemblies. The codename for the assembly loader in .NET is "Fusion" and, if enabled, you can see all
-        /// the locations that are checked for the right assembly to load.
-        /// </para>
-        /// <para>
-        /// Because of the way in which the App Domains are setup to contain the service app, it proved to be difficult to
-        /// indicate to Fusion where exactly to look for assemblies outside of the directory containing this service app
-        /// implementation and the GAC.
-        /// </para>
-        /// <para>
-        /// The easiest solution, without having to specify fairly complex "assembly resolving" for the binder, involves
-        /// sticking to exception classes which are known to be common to both the service app container, and the service
-        /// app. And all the derived exception classes within the BCL (E.g. ArgumentException or InvalidOperationException)
-        /// meet the criteria.
-        /// </para>
-        /// <para>
-        /// For an explanation around what communication steps take place between app domains, see:
-        /// http://stackoverflow.com/questions/1277346/net-problem-with-raising-and-handling-events-using-appdomains.
-        /// </para>
-        /// </remarks>
-        public void SendError(Exception exception)
-        {
-            if (exception != null && this.LogMessage != null)
-            {
-                this.LogMessage(this.GetType(), new MessageEventArgs { Message = new Message(this.GetType().Name, exception) });
             }
         }
 
@@ -199,81 +176,14 @@ namespace SACS.Implementation
         /// information about the current execution.</param>
         /// <remarks>
         /// <para>
-        /// The context is passed in by ref to prevent running this outside of the SACS.Implemetation and passing in a null.
+        /// The context is passed in by ref to prevent direct invocation of this outside of the SACS.Implemetation and 
+        /// passing in a null.
         /// </para>
         /// <para>
         /// ServiceAppContext is sealed and cannot be instantiated outside of the SACS.Implementation assembly. To run this
-        /// method, use Run().
+        /// method, use <see cref="QueueExecution"/>.
         /// </para></remarks>
         public abstract void Execute(ref ServiceAppContext context);
-
-        /// <summary>
-        /// Performs the execution of this service app instance
-        /// </summary>
-        protected void Run()
-        {
-            lock (this._syncExecution)
-            {
-                if (!this.IsLoaded || this.IsStopped)
-                {
-                    throw new InvalidOperationException("Cannot execute ServiceApp is not loaded or has stopped.");
-                }
-
-                bool createContext = true;
-                bool executeImmediately = false;
-
-                switch (this.ExecutionMode)
-                {
-                    case ExecutionMode.Default:
-                    case ExecutionMode.Idempotent:
-                        if (this._executionContexts.Any(c => c.IsExecuting))
-                        {
-                            createContext = false;
-                        }
-                        else
-                        {
-                            executeImmediately = true;
-                        }
-                        break;
-
-                    case ExecutionMode.Inline:
-                    case ExecutionMode.Unbounded:
-                    default:
-                        throw new NotImplementedException("Execution mode not implemented");
-                }
-
-                if (createContext)
-                {
-                    var context = new ServiceAppContext()
-                    {
-                        Failed = false,
-                        IsExecuting = executeImmediately,
-                        QueuedTime = DateTimeResolver.Resolve(),
-                        ContextId = Thread.CurrentThread.ManagedThreadId
-                    };
-
-                    this._executionContexts.Add(context);
-                }
-            }
-
-            bool canExecute = true;
-            while (canExecute)
-            {
-                ServiceAppContext currentContext;
-
-                lock (this._syncExecution)
-                {
-                    currentContext = this._executionContexts.FirstOrDefault(c => !c.Failed);
-                }
-
-                if (currentContext != null)
-                {
-                    currentContext.StartTime = DateTimeResolver.Resolve();
-                    this.Execute(ref currentContext);
-                    currentContext.EndTime = DateTimeResolver.Resolve();
-                }
-            }
-        }
 
         /// <summary>
         /// The main method to start the program as a service app
@@ -334,6 +244,50 @@ namespace SACS.Implementation
             {
                 string command = Console.ReadLine();
                 this._commandProcessor.Process(command);
+            }
+        }
+
+        /// <summary>
+        /// Signals to start a new execution at the next available slot.
+        /// </summary>
+        protected void QueueExecution()
+        {
+            lock (this._syncExecution)
+            {
+                if (!this.IsLoaded || this.IsStopped)
+                {
+                    throw new InvalidOperationException("Cannot execute ServiceApp is not loaded or has stopped.");
+                }
+
+                bool createContext = true;
+
+                switch (this.ExecutionMode)
+                {
+                    case ExecutionMode.Default:
+                    case ExecutionMode.Idempotent:
+                        if (this._executionContexts.Any(c => c.IsExecuting))
+                        {
+                            createContext = false;
+                        }
+                        break;
+
+                    case ExecutionMode.Inline:
+                    case ExecutionMode.Concurrent:
+                    default:
+                        throw new NotImplementedException("Execution mode not yet implemented");
+                }
+
+                if (createContext)
+                {
+                    var context = new ServiceAppContext()
+                    {
+                        Failed = false,
+                        QueuedTime = DateTimeResolver.Resolve(),
+                        Guid = Guid.NewGuid().ToString()
+                    };
+
+                    this._executionContexts.Add(context);
+                }
             }
         }
 
