@@ -10,6 +10,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
     /// <summary>
     /// Job wrapper for the ServiceAppBase execution
     /// </summary>
+    [Obsolete]
     internal class ServiceAppJobWrapper
     {
         private readonly string _appName;

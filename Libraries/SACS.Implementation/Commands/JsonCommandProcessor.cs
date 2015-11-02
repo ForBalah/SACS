@@ -13,14 +13,6 @@ namespace SACS.Implementation.Commands
     internal class JsonCommandProcessor : CommandLineProcessor
     {
         /// <summary>
-        /// Processes the specified command.
-        /// </summary>
-        /// <param name="command">The command.</param>
-        internal override void Process(string command)
-        {
-        }
-
-        /// <summary>
         /// Parses the specified command.
         /// </summary>
         /// <param name="command">The command.</param>
@@ -73,6 +65,7 @@ namespace SACS.Implementation.Commands
                 commandTree.Add("commands", result);
 
                 // TODO: process the left-hand side
+                ParseArgs(leftCommand, commandTree);
             }
             catch (ArgumentException)
             {

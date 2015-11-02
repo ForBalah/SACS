@@ -24,3 +24,4 @@ using System.Runtime.InteropServices;
 
 // For unit tests
 [assembly: InternalsVisibleTo("SACS.UnitTests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

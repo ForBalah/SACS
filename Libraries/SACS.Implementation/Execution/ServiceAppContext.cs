@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SACS.Implementation.Execution
 {
@@ -21,7 +22,13 @@ namespace SACS.Implementation.Execution
         /// <summary>
         /// Gets a value indicating whether the context is executing.
         /// </summary>
-        public bool IsExecuting { get; internal set; }
+        public bool IsExecuting
+        {
+            get
+            {
+                return this.StartTime.HasValue && !this.EndTime.HasValue;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether there was a failure during execution.
@@ -46,6 +53,38 @@ namespace SACS.Implementation.Execution
         /// <summary>
         /// Gets the current context's end execution time
         /// </summary>
-        public DateTime EndTime { get; internal set; }
+        public DateTime? EndTime { get; internal set; }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the current context's execution handle
+        /// </summary>
+        internal Task Handle { get; set; }
+
+        /// <summary>
+        /// Gets the duration of the execution.
+        /// </summary>
+        /// <value>
+        /// The duration.
+        /// </value>
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (this.StartTime.HasValue && this.EndTime.HasValue)
+                {
+                    return this.EndTime.Value.Subtract(this.StartTime.Value);
+                }
+
+                return new TimeSpan(0);
+            }
+        }
     }
 }

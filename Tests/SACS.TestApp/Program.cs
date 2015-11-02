@@ -38,17 +38,6 @@ namespace SACS.TestApp
             // only seen when debugging
             Console.WriteLine(ConfigurationManager.AppSettings["Message"]);
             Console.WriteLine(string.Format("Test App ran at {0:F} as user: {1}", DateTime.Now, WindowsIdentity.GetCurrent().Name));
-
-            // this will appear in the log.
-            this.SendMessage("Test app has sent this message to the log successfully");
-
-            bool throwException;
-
-            if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwException) && throwException)
-            {
-                // this is an unhandled exception that will automatically get logged.
-                throw new InvalidOperationException("Shows what happens when an unhandled exception is thrown");
-            }
         }
 
         protected override void Initialze()

@@ -5,10 +5,9 @@ using SACS.BusinessLayer.BusinessLogic.Security;
 
 namespace SACS.IntegrationTests.Security
 {
-    [TestFixture]
+    [Obsolete]
     public class ImpersonatorTests
     {
-        [Test]
         public void RunAs_CheckThatAWrongUserDoesNotCrashTheSystem()
         {
             ServiceAppImpersonator impersonator = new ServiceAppImpersonator();
