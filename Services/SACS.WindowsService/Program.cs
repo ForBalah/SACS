@@ -41,9 +41,9 @@ namespace SACS.WindowsService
                 _log.Error("Unhandled Exception occured in SACS service", ex);
 
                 EmailTemplateProvider templater = new HtmlEmailTemplateProvider(ApplicationSettings.Current.SupportEmailTemplatePath);
-                templater.AddTemplateValue("MachineName", Environment.MachineName);
-                templater.AddTemplateValue("Message", ex.Message);
-                templater.AddTemplateValue("StackTrace", ex.StackTrace);
+                templater.AddValue("MachineName", Environment.MachineName);
+                templater.AddValue("Message", ex.Message);
+                templater.AddValue("StackTrace", ex.StackTrace);
 
                 EmailMessage email = templater.GetEmailMessage();
                 email.FromAddress = ApplicationSettings.Current.SupportEmailAddress;
@@ -54,7 +54,7 @@ namespace SACS.WindowsService
             catch
             {
                 // At this point there is nothing more we can do but let the app die
-                Console.WriteLine("goodbye");
+                Console.WriteLine("goodbye--^v--^v-----^v------------");
             }
         }
 
@@ -76,6 +76,9 @@ namespace SACS.WindowsService
             {
                 case TopshelfExitCode.Ok:
                     _log.Info("SACS stopped successfully.");
+                    break;
+                default:
+                    _log.Info("Problem stopping SACS.");
                     break;
             }
         }

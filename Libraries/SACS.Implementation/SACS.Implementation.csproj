@@ -57,14 +57,13 @@
     </Compile>
     <Compile Include="Commands\ActionProcessor.cs" />
     <Compile Include="Commands\CommandLineProcessor.cs" />
+    <Compile Include="Commands\CommandObject.cs" />
     <Compile Include="Commands\CommandProcessorType.cs" />
     <Compile Include="Commands\ICommandProcessor.cs" />
     <Compile Include="Commands\JsonCommandProcessor.cs" />
     <Compile Include="Commands\ArgsProcessor.cs" />
+    <Compile Include="Enums\State.cs" />
     <Compile Include="Execution\ExecutionMode.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageEventArgs.cs" />
-    <Compile Include="MessageProxy.cs" />
     <Compile Include="ServiceAppBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Execution\ServiceAppContext.cs" />
@@ -72,6 +71,7 @@
     <Compile Include="Utils\JsonMessageProvider.cs" />
     <Compile Include="Utils\MessageProvider.cs" />
     <Compile Include="Utils\Messages.cs" />
+    <Compile Include="Utils\ProcessExtensions.cs" />
     <Compile Include="Utils\Settings.cs" />
   </ItemGroup>
   <ItemGroup />

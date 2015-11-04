@@ -17,9 +17,9 @@ namespace SACS.Implementation.Commands
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns></returns>
-        internal override IDictionary<string, object> Parse(string command)
+        internal override CommandObject Parse(string command)
         {
-            var commandTree = new Dictionary<string, object>();
+            var commandTree = new CommandObject();
 
             if (string.IsNullOrWhiteSpace(command))
             {

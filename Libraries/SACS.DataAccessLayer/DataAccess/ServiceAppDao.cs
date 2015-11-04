@@ -26,7 +26,8 @@ namespace SACS.DataAccessLayer.DataAccess
         /// Saves the service app, updating the existing record, if found, or creating a new record.
         /// </summary>
         /// <param name="app">The service app.</param>
-        public void SaveServiceApp(Models.ServiceApp app)
+        /// <param name="lastMessage">The last message.</param>
+        public void SaveServiceApp(Models.ServiceApp app, string lastMessage)
         {
             ServiceApplication appEntity = this.GetServiceApplication(app);
 

@@ -8,7 +8,7 @@ using SACS.DataAccessLayer.Models;
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
     [TestFixture]
-    public class ServiceAppDomainCollectionTests
+    public class ServiceAppProcessCollectionTests
     {
         private log4net.ILog _log;
 
@@ -19,10 +19,10 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
-        public void GetIndex_CanReturnServiceAppDomainFromCollectionUsingString()
+        public void GetIndex_CanReturnServiceAppProcessFromCollectionUsingString()
         {
-            ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
-            ServiceAppDomain saDomain = new ServiceAppDomain(new ServiceApp() { Name = "Test" }, _log, new ServiceAppImpersonator());
+            ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
+            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
             collection.Add(saDomain);
 
             Assert.AreEqual(saDomain, collection["Test"]);
@@ -31,8 +31,8 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         [Test]
         public void Add_CanInsertUniqueDomainToCollection()
         {
-            ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
-            ServiceAppDomain saDomain = new ServiceAppDomain(new ServiceApp() { Name = "Test" }, _log, new ServiceAppImpersonator());
+            ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
+            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
             collection.Add(saDomain);
 
             Assert.AreEqual(1, collection.Count);
@@ -41,9 +41,9 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         [Test]
         public void Add_CannotAddDuplicateDomainToCollection()
         {
-            ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
-            ServiceAppDomain saDomain1 = new ServiceAppDomain(new ServiceApp() { Name = "Test" }, _log, new ServiceAppImpersonator());
-            ServiceAppDomain saDomain2 = new ServiceAppDomain(new ServiceApp() { Name = "Test" }, _log, new ServiceAppImpersonator());
+            ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
+            ServiceAppProcess saDomain1 = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
+            ServiceAppProcess saDomain2 = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
             collection.Add(saDomain1);
 
             try
@@ -60,8 +60,8 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         [Test]
         public void Remove_CanRemoveInstalledDomainFromCollection()
         {
-            ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
-            ServiceAppDomain saDomain = new ServiceAppDomain(new ServiceApp() { Name = "Test" }, _log, new ServiceAppImpersonator());
+            ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
+            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
             collection.Add(saDomain);
 
             bool success = collection.Remove(saDomain);
@@ -72,8 +72,8 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         [Test]
         public void Remove_CannotRemoveDomainFromEmptyCollection()
         {
-            ServiceAppDomainCollection collection = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
-            ServiceAppDomain saDomain = new ServiceAppDomain(new ServiceApp() { Name = "Test" }, _log, new ServiceAppImpersonator());
+            ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
+            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
 
             bool success = collection.Remove(saDomain);
 

@@ -66,6 +66,7 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The assembly.
         /// </value>
+        [Obsolete]
         public string Assembly { get; set; }
 
         /// <summary>
@@ -74,7 +75,8 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The assembly path.
         /// </value>
-        public string AssemblyPath
+        [Obsolete("Replace with Path (and rename to FilePath)")]
+        public string FullEntryFilePath
         {
             get
             {
@@ -146,6 +148,7 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The configuration file path.
         /// </value>
+        [Obsolete]
         public string ConfigFilePath { get; set; }
 
         /// <summary>
@@ -154,6 +157,7 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The last message.
         /// </value>
+        [Obsolete]
         public string LastMessage { get; set; }
 
         /// <summary>
@@ -193,6 +197,7 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The entry file.
         /// </value>
+        [Obsolete("Replace with Path (and rename to FilePath)")]
         public string EntryFile { get; set; }
 
         /// <summary>

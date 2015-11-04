@@ -22,19 +22,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
         /// <summary>
         /// Schedules the service application domain.
         /// </summary>
-        /// <param name="domain">The domain wrapper to schedule for.</param>
-        /// <param name="dao">The DAO.</param>
+        /// <param name="process">The process to schedule.</param>
         /// <returns>
         /// Any errors that occured when trying to create the schedule.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// The ServiceAppDomain cannot schedule an uninitialized ServiceApp.
+        /// <exception cref="System.InvalidOperationException">The ServiceAppDomain cannot schedule an uninitialized ServiceApp.
         /// or
-        /// The ServiceAppDomain has already been marked to unload. Create a new ServiceAppDomain.
-        /// </exception>
-        public string ScheduleServiceApp(ServiceAppDomain domain, IServiceAppDao dao)
+        /// The ServiceAppDomain has already been marked to unload. Create a new ServiceAppDomain.</exception>
+        public string ScheduleServiceApp(ServiceAppProcess process)
         {
-            switch (domain.CurrentState)
+            switch (process.CurrentState)
             {
                 case ServiceAppState.NotLoaded:
                     throw new InvalidOperationException("The ServiceAppDomain cannot schedule an uninitialized ServiceApp.");
@@ -43,23 +40,21 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
             }
 
             string errorMessage = string.Empty;
-            string appName = domain.ServiceApp.Name;
+            string appName = process.ServiceApp.Name;
 
-            if (string.IsNullOrEmpty(domain.ServiceApp.Schedule))
+            if (string.IsNullOrEmpty(process.ServiceApp.Schedule))
             {
-                domain.Messages.Add(new Tuple<string, ServiceAppState>(ServiceAppMessages.InvalidSchedule, ServiceAppState.Error));
+                process.Messages.Add(new Tuple<string, ServiceAppState>(ServiceAppMessages.InvalidSchedule, ServiceAppState.Error));
                 this._log.Warn(string.Format("{0} ServiceApp schedule was not provided.", appName));
                 errorMessage = string.Format("Schedule for '{0}' was not defined", appName);
             }
-            else if (domain.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic ||
-                domain.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Manual)
+            else if (process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic ||
+                process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Manual)
             {
                 if (!this.HasJob(appName))
                 {
-                    this.AddJob(appName, domain.ServiceApp.Schedule, () => { domain.RunServiceApp(); });
+                    this.AddJob(appName, process.ServiceApp.Schedule, () => { process.ExecuteServiceApp(); });
                 }
-
-                dao.RecordServiceAppStart(domain.ServiceApp.Name);
             }
             else
             {

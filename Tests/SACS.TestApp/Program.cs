@@ -38,6 +38,12 @@ namespace SACS.TestApp
             // only seen when debugging
             Console.WriteLine(ConfigurationManager.AppSettings["Message"]);
             Console.WriteLine(string.Format("Test App ran at {0:F} as user: {1}", DateTime.Now, WindowsIdentity.GetCurrent().Name));
+
+            bool throwEx;
+            if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwEx) && throwEx)
+            {
+                throw new TestException("Testing exception throwing");
+            }
         }
 
         protected override void Initialze()

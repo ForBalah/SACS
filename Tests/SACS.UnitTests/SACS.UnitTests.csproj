@@ -88,7 +88,7 @@
     <Compile Include="TestClasses\BusinessLayer\FieldLogicTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\LogLoaderTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\LogSearchCriteriaTests.cs" />
-    <Compile Include="TestClasses\BusinessLayer\ServiceAppDomainCollectionTests.cs" />
+    <Compile Include="TestClasses\BusinessLayer\ServiceAppProcessCollectionTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ScheduleUtilityTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppValidatorTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppListExporterTests.cs" />

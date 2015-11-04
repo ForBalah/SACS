@@ -20,22 +20,16 @@ namespace SACS.Implementation.Commands
         {
             var commandObject = this.Parse(command);
 
-            if (commandObject.ContainsKey("commands"))
+            var commands = commandObject.GetCommands();
+            foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Command))
             {
-                var commands = commandObject["commands"] as Dictionary<string, object>;
-                foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Command))
-                {
-                    processor.Process(commands);
-                }
+                processor.Process(commands);
             }
 
-            if (commandObject.ContainsKey("args"))
+            var args = commandObject.GetArgs();
+            foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Args))
             {
-                var args = commandObject["args"] as List<string>;
-                foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Args))
-                {
-                    processor.Process(args);
-                }
+                processor.Process(args);
             }
         }
 
@@ -44,7 +38,7 @@ namespace SACS.Implementation.Commands
         /// </summary>
         /// <param name="command">The command.</param>
         /// <returns></returns>
-        internal abstract IDictionary<string, object> Parse(string command);
+        internal abstract CommandObject Parse(string command);
 
         /// <summary>
         /// Creates a new command processor that will be associated with this <see cref="CommandLineProcessor"/>.

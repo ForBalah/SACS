@@ -112,7 +112,7 @@ namespace SACS.DataAccessLayer.DataAccess
                 this.AppListDoc.Root.Element("collection").Add(appElement);
             }
 
-            bool isBackedUp = this.BackupXmlFile(app, SafeCastToServiceApp(appElement));
+            bool isBackedUp = this.TryBackupXmlFile(app, TryCastToServiceApp(appElement));
 
             appElement.ReplaceAttributes(
                 new XAttribute("name", app.Name),
@@ -145,7 +145,7 @@ namespace SACS.DataAccessLayer.DataAccess
             if (appElement != null)
             {
                appElement.Remove();
-               this.BackupXmlFile(null, null);
+               this.TryBackupXmlFile(null, null);
 
                if (this._isLoadFromFile)
                {
@@ -166,11 +166,11 @@ namespace SACS.DataAccessLayer.DataAccess
         }
 
         /// <summary>
-        /// Safe casts to service app.
+        /// Wraps the cast to a service app in a try/catch.
         /// </summary>
         /// <param name="element">The element.</param>
         /// <returns></returns>
-        private static ServiceApp SafeCastToServiceApp(XElement element)
+        private static ServiceApp TryCastToServiceApp(XElement element)
         {
             try
             {
@@ -218,7 +218,7 @@ namespace SACS.DataAccessLayer.DataAccess
         /// <param name="compare1">The compare1.</param>
         /// <param name="compare2">The compare2.</param>
         /// <returns></returns>
-        private bool BackupXmlFile(ServiceApp compare1, ServiceApp compare2)
+        private bool TryBackupXmlFile(ServiceApp compare1, ServiceApp compare2)
         {
             if (compare1 == null || compare2 == null || !compare1.Equals(compare2))
             {

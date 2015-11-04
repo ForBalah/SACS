@@ -9,7 +9,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
     /// <summary>
     /// Comparer used for ServiceAppDomains
     /// </summary>
-    internal class ServiceAppDomainComparer : IEqualityComparer<ServiceAppDomain>
+    internal class ServiceAppProcessComparer : IEqualityComparer<ServiceAppProcess>
     {
         /// <summary>
         /// Determines whether the specified objects are equal.
@@ -19,7 +19,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <returns>
         /// true if the specified objects are equal; otherwise, false.
         /// </returns>
-        public bool Equals(ServiceAppDomain x, ServiceAppDomain y)
+        public bool Equals(ServiceAppProcess x, ServiceAppProcess y)
         {
             return x.ServiceApp != null && y.ServiceApp != null &&
                 x.ServiceApp.Name.Equals(y.ServiceApp.Name, StringComparison.InvariantCultureIgnoreCase);
@@ -32,7 +32,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <returns>
         /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
-        public int GetHashCode(ServiceAppDomain obj)
+        public int GetHashCode(ServiceAppProcess obj)
         {
             return obj.ServiceApp != null ? obj.ServiceApp.Name.GetHashCode() : obj.GetHashCode();
         }

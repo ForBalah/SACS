@@ -45,6 +45,10 @@
     <Reference Include="NCrontab">
       <HintPath>..\..\packages\ncrontab.2.0.0\lib\net20\NCrontab.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -67,12 +71,10 @@
     </Compile>
     <Compile Include="BusinessLogic\Application\AppManager.cs" />
     <Compile Include="BusinessLogic\Application\IAppManager.cs" />
-    <Compile Include="BusinessLogic\Domain\ServiceAppDomainComparer.cs" />
-    <Compile Include="BusinessLogic\Domain\ServiceAppDomain.cs" />
-    <Compile Include="BusinessLogic\Domain\ServiceAppDomainCollection.cs" />
-    <Compile Include="BusinessLogic\Domain\ServiceAppDomainState.cs" />
-    <Compile Include="BusinessLogic\Domain\ServiceAppJobWrapper.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppProcessComparer.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppProcessCollection.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppMessages.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppProcess.cs" />
     <Compile Include="BusinessLogic\Email\EmailMessage.cs" />
     <Compile Include="BusinessLogic\Email\EmailProvider.cs" />
     <Compile Include="BusinessLogic\Email\EmailTemplateProvider.cs" />

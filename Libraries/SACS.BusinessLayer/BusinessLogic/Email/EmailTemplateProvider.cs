@@ -29,7 +29,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
-        public void AddTemplateValue(string key, string value)
+        public void AddValue(string key, string value)
         {
             this.values.Add(key, value);
         }

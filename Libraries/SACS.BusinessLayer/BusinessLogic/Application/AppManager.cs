@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Domain;
 using SACS.BusinessLayer.BusinessLogic.Loader.Interfaces;
 using SACS.BusinessLayer.BusinessLogic.Validation;
 using SACS.Common.Enums;
+using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
+using SACS.DataAccessLayer.Factories;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.BusinessLayer.BusinessLogic.Application
@@ -21,10 +22,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
         private readonly ILog _log = LogManager.GetLogger(typeof(AppManager));
 
+        // TODO: THIS IS BAD! CHANGE TO IoC ASAP
+        public static IServiceAppDao Dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
         private static object _syncRoot = new object();
         private static IAppManager _Current;
 
-        private ServiceAppDomainCollection _ServiceAppDomains;
+        private ServiceAppProcessCollection _ServiceAppProcess;
         private IServiceAppSchedulingService _SchedulingService;
 
         #endregion
@@ -98,7 +101,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         {
             get
             {
-                return this.ServiceAppDomains.Select(dom => dom.ServiceApp).ToList();
+                return this.ServiceAppProcesses.Select(dom => dom.ServiceApp).ToList();
             }
         }
 
@@ -108,31 +111,68 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <value>
         /// The service application domains.
         /// </value>
-        protected ServiceAppDomainCollection ServiceAppDomains
+        protected ServiceAppProcessCollection ServiceAppProcesses
         {
             get
             {
-                if (this._ServiceAppDomains == null)
+                if (this._ServiceAppProcess == null)
                 {
-                    this._ServiceAppDomains = new ServiceAppDomainCollection(new ServiceAppDomainComparer());
+                    this._ServiceAppProcess = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
                 }
 
-                return this._ServiceAppDomains;
+                return this._ServiceAppProcess;
             }
         }
 
         #endregion
 
-        #region Methods
+        #region Event Handlers
 
         /// <summary>
-        /// Gets the list of app domains that have been loaded.
+        /// Handles the Started event of the ServiceAppProcess object.
         /// </summary>
-        /// <returns></returns>
-        public IList<AppDomain> GetDomains()
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ServiceAppProcess_Started(object sender, EventArgs e)
         {
-            return this.ServiceAppDomains.Select(d => d.AppDomain).ToList();
+            string errorMessage = string.Empty;
+            ServiceAppProcess process = sender as ServiceAppProcess;
+
+            if (sender != null)
+            {
+                if (process.CurrentState == ServiceAppState.Initialized)
+                {
+                    Dao.RecordServiceAppStart(process.ServiceApp.Name);
+                    if (process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic)
+                    {
+                        errorMessage = this.SchedulingService.ScheduleServiceApp(process);
+                    }
+                }
+                else
+                {
+                    errorMessage = string.Format("Failed to initialize ServiceApp '{0}'", process.ServiceApp.Name);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                this._log.Warn(errorMessage);
+            }
         }
+
+        /// <summary>
+        /// Handles the Failed event of the ServiceAppProcess control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ServiceAppProcess_Failed(object sender, EventArgs e)
+        {
+            // TODO: send support email.
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Loads all the service apps and schedules them.
@@ -144,7 +184,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         {
             foreach (ServiceApp app in appList)
             {
-                string errorMessage = this.PersistServiceApp(app, dao, null);
+                string errorMessage = this.SyncServiceApp(app, dao, null);
 
                 if (string.IsNullOrWhiteSpace(errorMessage))
                 {
@@ -168,47 +208,32 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <exception cref="System.InvalidOperationException">The ServiceApp is not in a stopped state.</exception>
         public string InitializeServiceApp(string appName, IServiceAppDao dao)
         {
-            string errorMessage = string.Empty;
-            ServiceAppDomain domain = this.ServiceAppDomains[appName];
+            ServiceAppProcess process = this.ServiceAppProcesses[appName];
 
-            if (domain == null)
+            if (process == null)
             {
                 var e = new IndexOutOfRangeException(string.Format("ServiceApp '{0}' could not be found to initialize.", appName));
                 this._log.Error("Error in InitializeServiceApp", e);
                 throw e;
             }
-            else if (domain.CurrentState != ServiceAppState.NotLoaded &&
-                domain.CurrentState != ServiceAppState.Unknown &&
-                domain.CurrentState != ServiceAppState.Error)
+            else if (process.CurrentState != ServiceAppState.NotLoaded &&
+                process.CurrentState != ServiceAppState.Unknown &&
+                process.CurrentState != ServiceAppState.Error)
             {
                 var e = new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be reinitialized.", appName));
                 this._log.Error("Error in InitializeServiceApp", e);
                 throw e;
             }
 
-            if (domain.ServiceApp.StartupTypeEnum != StartupType.Disabled)
+            if (process.ServiceApp.StartupTypeEnum != StartupType.Disabled)
             {
-                domain.Initialize();
-
-                if (domain.CurrentState == ServiceAppState.Initialized)
-                {
-                    if (domain.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic)
-                    {
-                        errorMessage = this.SchedulingService.ScheduleServiceApp(domain, dao);
-                    }
-                }
-                else
-                {
-                    errorMessage = string.Format("Failed to initialize ServiceApp '{0}'", appName);
-                }
+                process.Start();
+                return string.Empty;
             }
-
-            if (!string.IsNullOrWhiteSpace(errorMessage))
+            else
             {
-                this._log.Warn(errorMessage);
+                return string.Format("ServiceApp '{0}' is disabled", appName);
             }
-
-            return errorMessage;
         }
 
         /// <summary>
@@ -217,7 +242,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <param name="dao">The ServiceApp DAO</param>
         public void StopAllServiceApps(IServiceAppDao dao)
         {
-            foreach (var dom in this.ServiceAppDomains.Where(d => d.CurrentState != ServiceAppState.Unloading))
+            foreach (var dom in this.ServiceAppProcesses.Where(d => d.CurrentState != ServiceAppState.Unloading))
             {
                 this.StopServiceApp(dom.ServiceApp.Name, dao);
             }
@@ -231,17 +256,17 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <exception cref="System.IndexOutOfRangeException">The app name could not be found.</exception>
         public void StopServiceApp(string appName, IServiceAppDao dao)
         {
-            ServiceAppDomain domain = this.ServiceAppDomains[appName];
+            ServiceAppProcess process = this.ServiceAppProcesses[appName];
 
-            if (domain == null)
+            if (process == null)
             {
                 var e = new IndexOutOfRangeException(string.Format("appName '{0}' could not be found to stop.", appName));
                 this._log.Error("Error in StopServiceApp", e);
             }
 
-            if (domain.CurrentState == ServiceAppState.Initialized || domain.CurrentState == ServiceAppState.Error)
+            if (process.CurrentState == ServiceAppState.Initialized || process.CurrentState == ServiceAppState.Error)
             {
-                domain.Unload();
+                process.Stop();
                 this.SchedulingService.RemoveJob(appName);
                 dao.RecordServiceAppStop(appName);
             }
@@ -254,16 +279,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <param name="dao">The DAO.</param>
         /// <param name="appListDao">The application list DAO.</param>
         /// <exception cref="System.InvalidOperationException">The service app is added and is still running.</exception>
-        public string PersistServiceApp(ServiceApp app, IServiceAppDao dao, IAppListDao appListDao)
+        public string SyncServiceApp(ServiceApp app, IServiceAppDao dao, IAppListDao appListDao)
         {
             string errorMessage = string.Empty;
             this.RemoveServiceApp(app.Name, dao);
 
-            ServiceAppDomain newDomain = new ServiceAppDomain(app, this._log, new Security.ServiceAppImpersonator());
+            ServiceAppProcess process = new ServiceAppProcess(app, this._log);
             try
             {
-                this.ServiceAppDomains.Add(newDomain);
-                dao.SaveServiceApp(app);
+                this.ServiceAppProcesses.Add(process);
+                dao.SaveServiceApp(app, process.LastMessage);
                 
                 if (appListDao != null)
                 {
@@ -277,6 +302,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                         errorMessage = string.Format("ServiceApp '{0}' could not be saved to the configuration.", app.Name);
                     }
                 }
+
+                process.Started += ServiceAppProcess_Started;
+                process.Failed += ServiceAppProcess_Failed;
             }
             catch (ArgumentException)
             {
@@ -308,23 +336,23 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <exception cref="System.InvalidOperationException">The ServiceApp was not stopped first.</exception>
         public void RemoveServiceApp(string appName, IServiceAppDao dao, IAppListDao appListDao)
         {
-            ServiceAppDomain domain = this.ServiceAppDomains[appName];
+            ServiceAppProcess process = this.ServiceAppProcesses[appName];
 
-            if (domain != null)
+            if (process != null)
             {
-                if (domain.CurrentState == ServiceAppState.Initialized)
+                if (process.CurrentState == ServiceAppState.Initialized)
                 {
                     throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be updated or removed.", appName));
                 }
 
                 // An error means that the domain wasn't loaded properly so we can go ahead and remove it
-                if (domain.CurrentState == ServiceAppState.Error)
+                if (process.CurrentState == ServiceAppState.Error)
                 {
-                    domain.Unload();
+                    process.Stop();
                     dao.RecordServiceAppStop(appName);
                 }
 
-                this.ServiceAppDomains.Remove(domain);
+                this.ServiceAppProcesses.Remove(process);
             }
 
             if (appListDao != null)
@@ -346,24 +374,19 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         public void RunServiceApp(string appName, IServiceAppDao dao)
         {
             string errorMessage = string.Empty;
-            ServiceAppDomain domain = this.ServiceAppDomains[appName];
+            ServiceAppProcess process = this.ServiceAppProcesses[appName];
 
-            if (domain == null)
+            if (process == null)
             {
                 throw new IndexOutOfRangeException(string.Format("ServiceApp '{0}' could not be found to execute.", appName));
             }
-            else if (domain.CurrentState != ServiceAppState.Initialized)
+            else if (process.CurrentState != ServiceAppState.Initialized)
             {
                 throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be initialized before it can be run.", appName));
             }
 
             // run the service app as if the timer elapsed
-            Task runTask = new Task(() =>
-            {
-                domain.RunServiceApp();
-            });
-
-            runTask.Start();
+            process.ExecuteServiceApp();
         }
 
         /// <summary>
@@ -389,7 +412,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 return string.Format("Service app to update is invalid. Reason: {0}", string.Join(", ", validator.ErrorMessages));
             }
 
-            return this.PersistServiceApp(serviceApp, dao, appListDao);
+            return this.SyncServiceApp(serviceApp, dao, appListDao);
         }
 
         #endregion

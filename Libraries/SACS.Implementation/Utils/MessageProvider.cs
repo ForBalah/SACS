@@ -12,6 +12,13 @@ namespace SACS.Implementation.Utils
     public abstract class MessageProvider
     {
         /// <summary>
+        /// Serializes the message as a debug message.
+        /// </summary>
+        /// <param name="message">The message to serialize.</param>
+        /// <returns></returns>
+        internal abstract string SerializeAsDebug(string message);
+
+        /// <summary>
         /// Serializes the message as an info message.
         /// </summary>
         /// <param name="message">The message to serialize.</param>
@@ -25,5 +32,18 @@ namespace SACS.Implementation.Utils
         /// <param name="message">The message to serialize.</param>
         /// <returns></returns>
         internal abstract string SerializeAsPerformance(ServiceAppContext context, string message);
+
+        /// <summary>
+        /// Serializes the message as an error message.
+        /// </summary>
+        /// <param name="message">The message to serialize.</param>
+        /// <returns></returns>
+        internal abstract string SerializeAsError(Exception exception, string message);
+
+        /// <summary>
+        /// Serializes the enum as a state message.
+        /// </summary>
+        /// <param name="state">The state.</param>
+        internal abstract string SerializeAsState(Enums.State state);
     }
 }

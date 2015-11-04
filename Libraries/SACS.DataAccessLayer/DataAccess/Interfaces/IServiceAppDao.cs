@@ -15,7 +15,8 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// Saves the service app, updating the existing record, if found, or creating a new record.
         /// </summary>
         /// <param name="app">The service app.</param>
-        void SaveServiceApp(Models.ServiceApp app);
+        /// <param name="lastMessage">The last message.</param>
+        void SaveServiceApp(Models.ServiceApp app, string lastMessage);
 
         /// <summary>
         /// Records the service app start.

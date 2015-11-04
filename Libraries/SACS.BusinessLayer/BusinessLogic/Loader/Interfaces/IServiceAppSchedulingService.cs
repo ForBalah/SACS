@@ -17,16 +17,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader.Interfaces
         /// <summary>
         /// Schedules the service application domain.
         /// </summary>
-        /// <param name="domain">The scheduling service.</param>
-        /// <param name="dao">The DAO.</param>
+        /// <param name="process">The process to schedule.</param>
         /// <returns>
         /// Any errors that occured when trying to create the schedule.
         /// </returns>
-        /// <exception cref="System.InvalidOperationException">
-        /// The ServiceAppDomain cannot schedule an uninitialized ServiceApp.
+        /// <exception cref="System.InvalidOperationException">The ServiceAppDomain cannot schedule an uninitialized ServiceApp.
         /// or
-        /// The ServiceAppDomain has already been marked to unload. Create a new ServiceAppDomain.
-        /// </exception>
-        string ScheduleServiceApp(ServiceAppDomain domain, IServiceAppDao dao);
+        /// The ServiceAppDomain has already been marked to unload. Create a new ServiceAppDomain.</exception>
+        string ScheduleServiceApp(ServiceAppProcess process);
     }
 }

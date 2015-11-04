@@ -16,7 +16,6 @@ Setup profiler - either MiniProfiler or Glimpse.
 Business Layer:
 ---------------
 Fix encryption to use different initialization vectors?
-Release asembly file after unloading it.
 When stopping a service make sure that it retries stopping when either the service is running or when it has errored out during stoppage.
 
 Service layer:
@@ -38,10 +37,10 @@ Configuration:
 --------------
 Set the username in log4net if an exception occurs within a service
 
-
-=================
 ServiceAppBase
 --------------
+specify that command is invalid if nothing processes it.
+
 ProcessCommand()
 Output()
 Version()

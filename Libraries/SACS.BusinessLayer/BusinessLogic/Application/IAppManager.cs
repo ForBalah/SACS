@@ -37,12 +37,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         #region Methods
 
         /// <summary>
-        /// Gets the list of app domains that have been loaded.
-        /// </summary>
-        /// <returns></returns>
-        IList<AppDomain> GetDomains();
-
-        /// <summary>
         /// Loads all the service apps and schedules them.
         /// </summary>
         /// <param name="appList">The application list.</param>
@@ -81,7 +75,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <param name="dao">The DAO.</param>
         /// <param name="appListDao">The application list DAO.</param>
         /// <exception cref="System.InvalidOperationException">The service app is added and is still running.</exception>
-        string PersistServiceApp(ServiceApp app, IServiceAppDao dao, IAppListDao appListDao);
+        string SyncServiceApp(ServiceApp app, IServiceAppDao dao, IAppListDao appListDao);
 
         /// <summary>
         /// Removes the specified service app from the container without removing from the app List.

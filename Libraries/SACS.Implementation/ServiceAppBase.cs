@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,20 +26,20 @@ namespace SACS.Implementation
         /// The interval (in milliseconds) between each check for execution.
         /// </summary>
         protected const int ExecutionInterval = 1000;
+
+        /// <summary>
+        /// The interval between when failed execution contexts (and other info) are cleaned up
+        /// </summary>
+        private const int CleanUpInterval = 60;
         private readonly CommandLineProcessor _commandProcessor;
-        private readonly object _syncRoot = new object();
-        private readonly object _syncExecution = new object();
         private readonly Timer _executionTimer;
         private readonly IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
+        private static object _syncRoot = new object();
+        private static object _syncExecution = new object();
+        private static int cleanUpTimer = 0;
+        private int _parentProcessId = 0;
 
         #endregion Fields
-
-        #region Events
-
-        [Obsolete("dropped in favour of writing to the standard output")]
-        public event EventHandler<MessageEventArgs> LogMessage;
-
-        #endregion Events
 
         #region Constructors and Destructors
 
@@ -47,16 +48,19 @@ namespace SACS.Implementation
         /// </summary>
         public ServiceAppBase()
         {
-            this._executionTimer = new Timer(ExecutionTimer_Tick, null, 0, ExecutionInterval);
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             // TODO: move this into it's own composition method.
             this._commandProcessor = new JsonCommandProcessor();
             this._commandProcessor.HoistWith<ActionProcessor>()
-                .For("run", () => this.QueueExecution());
+                .For("run", () => this.QueueExecution())
+                .For("stop", () => this.Stop());
 
             this._commandProcessor.HoistWith<ArgsProcessor>()
                 .For("exit", () => this.Stop());
+
+            this._executionTimer = new Timer(ExecutionTimer_Tick, null, 0, ExecutionInterval);
+            cleanUpTimer = CleanUpInterval;
         }
 
         #endregion Constructors and Destructors
@@ -141,7 +145,7 @@ namespace SACS.Implementation
         /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
         protected void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            // todo: send error message
+            this.HandleException(e.ExceptionObject as Exception, true);
         }
 
         /// <summary>
@@ -157,10 +161,10 @@ namespace SACS.Implementation
                 case Execution.ExecutionMode.Default:
                 case Execution.ExecutionMode.Idempotent:
                 case Execution.ExecutionMode.Concurrent:
-                    currentContext = this._executionContexts.FirstOrDefault(CanExecute);
+                    currentContext = this._executionContexts.FirstOrDefault(c => c.CanExecute);
                     break;
                 case Execution.ExecutionMode.Inline:
-                    currentContext = this._executionContexts.FirstOrDefault(c => CanExecute(c) && !this.IsExecuting);
+                    currentContext = this._executionContexts.FirstOrDefault(c => c.CanExecute && !this.IsExecuting);
                     break;
                 default:
                     throw new NotImplementedException("Execution mode not yet implemented");
@@ -170,19 +174,36 @@ namespace SACS.Implementation
             {
                 Task executionTask = Task.Run(() =>
                 {
-                    Messages.WriteInfo("Starting exection for {0}. Time: {1}", this.DisplayName, currentContext.StartTime);
+                    Messages.WriteState(Enums.State.Executing);
+                    Messages.WriteDebug("Starting exection for {0}. Time: {1}", this.DisplayName, currentContext.StartTime);
                     currentContext.StartTime = DateTimeResolver.Resolve();
                     Messages.WritePerformance(currentContext, null);
-                    this.Execute(ref currentContext);
-                    currentContext.EndTime = DateTimeResolver.Resolve();
-                    Messages.WriteInfo("Ending exection for {0}. Duration: {1}", this.DisplayName, currentContext.Duration);
-                    Messages.WritePerformance(currentContext, null);
+                    try
+                    {
+                        this.Execute(ref currentContext);
+                        Messages.WriteState(Enums.State.Idle);
+                    }
+                    catch (Exception e)
+                    {
+                        currentContext.Failed = true;
+                        this.HandleException(e, false);
+                        Messages.WriteState(Enums.State.Failed);
+                    }
+                    finally
+                    {
+                        currentContext.EndTime = DateTimeResolver.Resolve();
+                        Messages.WriteDebug("Ended exection for {0}. Duration: {1}", this.DisplayName, currentContext.Duration);
+                        Messages.WritePerformance(currentContext, null);
+                    }
 
                     this._executionContexts.Remove(currentContext);
                 });
 
                 currentContext.Handle = executionTask;
             }
+
+            this.CleanUpServiceAppContexts();
+            this.CheckParentProcessAlive();
         }
 
         #endregion Event Handlers
@@ -204,18 +225,6 @@ namespace SACS.Implementation
         /// method, use <see cref="QueueExecution"/>.
         /// </para></remarks>
         public abstract void Execute(ref ServiceAppContext context);
-
-        /// <summary>
-        /// Helper method for sending info messages to a pre-defined logger.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public void SendMessage(string message)
-        {
-            if (message != null && this.LogMessage != null)
-            {
-                this.LogMessage(null, new MessageEventArgs { Message = new Message(this.GetType().Name, message) });
-            }
-        }
 
         /// <summary>
         /// Obtains a lifetime service object to control the lifetime policy for this instance.
@@ -273,7 +282,7 @@ namespace SACS.Implementation
         /// <param name="mode">The execution mode to start this service app as.</param>
         protected internal void Start(ExecutionMode mode = Execution.ExecutionMode.Default)
         {
-            lock (this._syncRoot)
+            lock (_syncRoot)
             {
                 if (this.IsStopped)
                 {
@@ -286,9 +295,10 @@ namespace SACS.Implementation
                     this.StartupCommands = this._commandProcessor.Parse(startupArgs);
                     this.ExecutionMode = mode;
 
-                    Messages.WriteInfo("Starting {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
+                    Messages.WriteDebug("Starting {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
                     this.Initialze();
                     this.IsLoaded = true;
+                    Messages.WriteState(Enums.State.Started);
                     this.AwaitCommand();
                 }
             }
@@ -299,9 +309,10 @@ namespace SACS.Implementation
         /// </summary>
         internal void Stop()
         {
-            lock (this._syncRoot)
+            Messages.WriteDebug("Stopping {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
+            this._executionTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            if (this.IsLoaded)
             {
-                Messages.WriteInfo("Stopping {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
                 this.IsLoaded = false;
                 this.CleanUp();
                 ThreadPool.QueueUserWorkItem((o) =>
@@ -310,6 +321,7 @@ namespace SACS.Implementation
                     IntPtr stdin = GetStdHandle(StdHandle.Stdin);
                     CloseHandle(stdin);
                     this.IsStopped = true;
+                    Messages.WriteState(Enums.State.Stopped);
                 });
             }
         }
@@ -324,7 +336,7 @@ namespace SACS.Implementation
         /// </summary>
         protected void QueueExecution()
         {
-            lock (this._syncExecution)
+            lock (_syncExecution)
             {
                 if (!this.IsLoaded || this.IsStopped)
                 {
@@ -374,13 +386,69 @@ namespace SACS.Implementation
         }
 
         /// <summary>
-        /// Determines if the execution context can actually be executed on.
+        /// Checks if the parent process is still alive.
         /// </summary>
-        /// <param name="context">The service app execution context to test.</param>
-        /// <returns></returns>
-        private static bool CanExecute(ServiceAppContext context)
+        private void CheckParentProcessAlive()
         {
-            return context != null && !context.Failed && !context.StartTime.HasValue;
+            var parent = Process.GetCurrentProcess().Parent();
+            bool canStop = false;
+
+            if (parent != null)
+            {
+                this._parentProcessId = parent.Id;
+                if (parent.HasExited)
+                {
+                    canStop = true;
+                }
+            }
+            else if (this._parentProcessId != 0)
+            {
+                // this means that there was a parent process, but it nolonger exists. exit the app
+                canStop = true;
+            }
+
+            if (canStop)
+            {
+                this.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Cleans up service application contexts.
+        /// </summary>
+        private void CleanUpServiceAppContexts()
+        {
+            cleanUpTimer--;
+
+            if (cleanUpTimer <= 0)
+            {
+                for (int i = this._executionContexts.Count - 1; i >= 0; i--)
+                {
+                    var context = this._executionContexts[i];
+                    if (context.Failed)
+                    {
+                        this._executionContexts.Remove(context);
+                    }
+                }
+
+                cleanUpTimer = CleanUpInterval;
+            }
+        }
+
+        /// <summary>
+        /// Handles the exception.
+        /// </summary>
+        /// <param name="e">The exception to handle.</param>
+        /// <param name="clearContexts">if set to <c>true</c> [clear contexts].</param>
+        private void HandleException(Exception e, bool clearContexts)
+        {
+            string message = "Unhandled exception in {0}";
+            Messages.WriteError(e, message, this.DisplayName);
+
+            if (clearContexts)
+            {
+                this._executionContexts.Clear();
+            }
         }
 
         #endregion Methods
@@ -390,9 +458,19 @@ namespace SACS.Implementation
         // P/Invoke:
         private enum StdHandle { Stdin = -10, Stdout = -11, Stderr = -12 };
 
+        /// <summary>
+        /// Gets the standard handle.
+        /// </summary>
+        /// <param name="std">The standard.</param>
+        /// <returns></returns>
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetStdHandle(StdHandle std);
 
+        /// <summary>
+        /// Closes the handle.
+        /// </summary>
+        /// <param name="hdl">The HDL.</param>
+        /// <returns></returns>
         [DllImport("kernel32.dll")]
         private static extern bool CloseHandle(IntPtr hdl);
 

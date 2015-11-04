@@ -20,6 +20,19 @@ namespace SACS.Implementation.Execution
         }
 
         /// <summary>
+        /// Determines if the execution context can actually be executed on.
+        /// </summary>
+        /// <param name="context">The service app execution context to test.</param>
+        /// <returns></returns>
+        public bool CanExecute
+        {
+            get
+            {
+                return !this.Failed && !this.StartTime.HasValue;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the context is executing.
         /// </summary>
         public bool IsExecuting
@@ -56,7 +69,7 @@ namespace SACS.Implementation.Execution
         public DateTime? EndTime { get; internal set; }
 
         /// <summary>
-        /// Gets the name.
+        /// Gets the name of the service app that this context is associated with.
         /// </summary>
         /// <value>
         /// The name.

@@ -7,26 +7,26 @@ using System.Threading.Tasks;
 namespace SACS.BusinessLayer.BusinessLogic.Domain
 {
     /// <summary>
-    /// The collection of ServiceAppDomains
+    /// The collection of ServiceAppProcesss
     /// </summary>
-    public class ServiceAppDomainCollection : ICollection<ServiceAppDomain>
+    public class ServiceAppProcessCollection : ICollection<ServiceAppProcess>
     {
         #region Fields
 
-        private List<ServiceAppDomain> _collection;
-        private IEqualityComparer<ServiceAppDomain> _comparer;
+        private List<ServiceAppProcess> _collection;
+        private IEqualityComparer<ServiceAppProcess> _comparer;
 
         #endregion
 
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceAppDomainCollection" /> class.
+        /// Initializes a new instance of the <see cref="ServiceAppProcessCollection" /> class.
         /// </summary>
         /// <param name="comparer">The comparer.</param>
-        public ServiceAppDomainCollection(IEqualityComparer<ServiceAppDomain> comparer)
+        public ServiceAppProcessCollection(IEqualityComparer<ServiceAppProcess> comparer)
         {
-            this._collection = new List<ServiceAppDomain>();
+            this._collection = new List<ServiceAppProcess>();
             this._comparer = comparer;
         }
 
@@ -53,14 +53,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         }
 
         /// <summary>
-        /// Gets the <see cref="ServiceAppDomain"/> with the specified name.
+        /// Gets the <see cref="ServiceAppProcess"/> with the specified name.
         /// </summary>
         /// <value>
-        /// The <see cref="ServiceAppDomain"/>.
+        /// The <see cref="ServiceAppProcess"/>.
         /// </value>
         /// <param name="name">The name.</param>
         /// <returns></returns>
-        public ServiceAppDomain this[string name]
+        public ServiceAppProcess this[string name]
         {
             get
             {
@@ -76,16 +76,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
         /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1" />.</param>
-        public void Add(ServiceAppDomain item)
+        public void Add(ServiceAppProcess item)
         {
             if (item == null)
             {
-                throw new ArgumentNullException("item", "ServiceAppDomain cannot be null");
+                throw new ArgumentNullException("item", "ServiceAppProcess cannot be null");
             }
 
             if (item.ServiceApp == null)
             {
-                throw new ArgumentNullException("item", "ServiceApp inside ServiceAppDomain cannot be null");
+                throw new ArgumentNullException("item", "ServiceApp inside ServiceAppProcess cannot be null");
             }
 
             if (string.IsNullOrWhiteSpace(item.ServiceApp.Name))
@@ -95,7 +95,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (this._collection.Contains(item, this._comparer))
             {
-                throw new ArgumentException("ServiceAppDomain already exists in collection", "item");
+                throw new ArgumentException("ServiceAppProcess already exists in collection", "item");
             }
 
             this._collection.Add(item);
@@ -106,10 +106,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public void Clear()
         {
-            // make sure to unload because we are going to lose all references to the domains in this call.
-            foreach (var domain in this._collection)
+            // make sure to unload because we are going to lose all references to the processs in this call.
+            foreach (var process in this._collection)
             {
-                domain.Unload();
+                process.Stop();
             }
 
             this._collection.Clear();
@@ -122,7 +122,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <returns>
         /// true if <paramref name="item" /> is found in the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false.
         /// </returns>
-        public bool Contains(ServiceAppDomain item)
+        public bool Contains(ServiceAppProcess item)
         {
             return this._collection.Contains(item, this._comparer);
         }
@@ -132,7 +132,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         /// <param name="array">The array.</param>
         /// <param name="arrayIndex">Index of the array.</param>
-        public void CopyTo(ServiceAppDomain[] array, int arrayIndex)
+        public void CopyTo(ServiceAppProcess[] array, int arrayIndex)
         {
             if (array == null)
             {
@@ -160,7 +160,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <returns>
         /// true if <paramref name="item" /> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1" />; otherwise, false. This method also returns false if <paramref name="item" /> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </returns>
-        public bool Remove(ServiceAppDomain item)
+        public bool Remove(ServiceAppProcess item)
         {
             if (this._collection.Contains(item))
             {
@@ -177,7 +177,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <returns>
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<ServiceAppDomain> GetEnumerator()
+        public IEnumerator<ServiceAppProcess> GetEnumerator()
         {
             return this._collection.GetEnumerator();
         }
