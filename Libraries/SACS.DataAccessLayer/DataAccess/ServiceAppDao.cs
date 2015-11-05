@@ -26,8 +26,7 @@ namespace SACS.DataAccessLayer.DataAccess
         /// Saves the service app, updating the existing record, if found, or creating a new record.
         /// </summary>
         /// <param name="app">The service app.</param>
-        /// <param name="lastMessage">The last message.</param>
-        public void SaveServiceApp(Models.ServiceApp app, string lastMessage)
+        public void SaveServiceApp(Models.ServiceApp app)
         {
             ServiceApplication appEntity = this.GetServiceApplication(app);
 
@@ -84,7 +83,7 @@ namespace SACS.DataAccessLayer.DataAccess
             {
                 throw new KeyNotFoundException("ServiceApplication to log against could not be found");
             }
-            
+
             var performance = new ServiceApplicationPerfomance
             {
                 ServiceApplication = appEntity,

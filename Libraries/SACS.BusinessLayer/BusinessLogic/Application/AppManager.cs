@@ -24,13 +24,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
         // TODO: THIS IS BAD! CHANGE TO IoC ASAP
         public static IServiceAppDao Dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
+
         private static object _syncRoot = new object();
         private static IAppManager _Current;
 
         private ServiceAppProcessCollection _ServiceAppProcess;
         private IServiceAppSchedulingService _SchedulingService;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors and Destructors
 
@@ -41,7 +42,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         {
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Properties
 
@@ -124,7 +125,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Event Handlers
 
@@ -140,7 +141,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
             if (sender != null)
             {
-                if (process.CurrentState == ServiceAppState.Initialized)
+                if (process.IsRunning)
                 {
                     Dao.RecordServiceAppStart(process.ServiceApp.Name);
                     if (process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic)
@@ -170,7 +171,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             // TODO: send support email.
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -216,9 +217,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 this._log.Error("Error in InitializeServiceApp", e);
                 throw e;
             }
-            else if (process.CurrentState != ServiceAppState.NotLoaded &&
-                process.CurrentState != ServiceAppState.Unknown &&
-                process.CurrentState != ServiceAppState.Error)
+            else if (process.IsRunning)
             {
                 var e = new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be reinitialized.", appName));
                 this._log.Error("Error in InitializeServiceApp", e);
@@ -242,7 +241,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <param name="dao">The ServiceApp DAO</param>
         public void StopAllServiceApps(IServiceAppDao dao)
         {
-            foreach (var dom in this.ServiceAppProcesses.Where(d => d.CurrentState != ServiceAppState.Unloading))
+            foreach (var dom in this.ServiceAppProcesses.Where(d => d.IsRunning))
             {
                 this.StopServiceApp(dom.ServiceApp.Name, dao);
             }
@@ -263,8 +262,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 var e = new IndexOutOfRangeException(string.Format("appName '{0}' could not be found to stop.", appName));
                 this._log.Error("Error in StopServiceApp", e);
             }
-
-            if (process.CurrentState == ServiceAppState.Initialized || process.CurrentState == ServiceAppState.Error)
+            else if (process.IsRunning)
             {
                 process.Stop();
                 this.SchedulingService.RemoveJob(appName);
@@ -288,8 +286,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             try
             {
                 this.ServiceAppProcesses.Add(process);
-                dao.SaveServiceApp(app, process.LastMessage);
-                
+                dao.SaveServiceApp(app);
+
                 if (appListDao != null)
                 {
                     try
@@ -340,16 +338,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
             if (process != null)
             {
-                if (process.CurrentState == ServiceAppState.Initialized)
+                if (process.IsRunning)
                 {
                     throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be updated or removed.", appName));
-                }
-
-                // An error means that the domain wasn't loaded properly so we can go ahead and remove it
-                if (process.CurrentState == ServiceAppState.Error)
-                {
-                    process.Stop();
-                    dao.RecordServiceAppStop(appName);
                 }
 
                 this.ServiceAppProcesses.Remove(process);
@@ -380,7 +371,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             {
                 throw new IndexOutOfRangeException(string.Format("ServiceApp '{0}' could not be found to execute.", appName));
             }
-            else if (process.CurrentState != ServiceAppState.Initialized)
+            else if (!process.IsRunning)
             {
                 throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be initialized before it can be run.", appName));
             }
@@ -415,6 +406,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             return this.SyncServiceApp(serviceApp, dao, appListDao);
         }
 
-        #endregion
+        #endregion Methods
     }
 }

@@ -94,8 +94,6 @@
     <Compile Include="BusinessLogic\Schedule\MonthLogic.cs" />
     <Compile Include="BusinessLogic\Schedule\ScheduleBuildResult.cs" />
     <Compile Include="BusinessLogic\Schedule\ScheduleUtility.cs" />
-    <Compile Include="BusinessLogic\Security\Impersonator.cs" />
-    <Compile Include="BusinessLogic\Security\ServiceAppImpersonator.cs" />
     <Compile Include="BusinessLogic\Security\StringCipher.cs" />
     <Compile Include="BusinessLogic\Validation\ServiceAppValidator.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />

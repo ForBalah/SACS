@@ -21,6 +21,7 @@ using SACS.DataAccessLayer.WebAPI.Interfaces;
 using SACS.Windows.ViewModels;
 using SACS.Windows.Windows;
 using Enums = SACS.Common.Enums;
+
 using Models = SACS.DataAccessLayer.Models;
 
 namespace SACS.Windows.Controls
@@ -58,7 +59,7 @@ namespace SACS.Windows.Controls
 
         public ICommand Export { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Event Handlers
 
@@ -352,8 +353,8 @@ namespace SACS.Windows.Controls
             this.ServiceAppListView.Focus();
         }
 
-        #endregion
-  
+        #endregion Event Handlers
+
         #region Methods
 
         /// <summary>
@@ -493,7 +494,7 @@ namespace SACS.Windows.Controls
 
             this.StartServiceAppButton.IsEnabled = serviceApp.CanStart && isReadOnly;
             this.StopServiceAppButton.IsEnabled = serviceApp.CanStop && isReadOnly;
-            this.RunButton.IsEnabled = serviceApp.IsRunning && isReadOnly;
+            this.RunButton.IsEnabled = serviceApp.CanRun && isReadOnly;
 
             this.StartupTypeLabel.Text = serviceApp.StartupTypeEnum.GetName();
             this.StartupTypeComboBox.SelectedValue = serviceApp.StartupTypeEnum;
@@ -508,8 +509,8 @@ namespace SACS.Windows.Controls
             this.ScheduleLabel.Text = ScheduleUtility.GetFullDescription(serviceApp.Schedule);
             this.ScheduleHiddenLabel.Text = serviceApp.Schedule;
 
-            this.EditServiceAppButton.IsEnabled = !serviceApp.IsRunning;
-            this.EditMessageTextBlock.Text = serviceApp.IsRunning ? "Stop the app before making changes" : null;
+            this.EditServiceAppButton.IsEnabled = !serviceApp.CanRun;
+            this.EditMessageTextBlock.Text = serviceApp.CanRun ? "Stop the app before making changes" : null;
         }
 
         /// <summary>
@@ -588,6 +589,6 @@ namespace SACS.Windows.Controls
             return isVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        #endregion
+        #endregion Methods
     }
 }

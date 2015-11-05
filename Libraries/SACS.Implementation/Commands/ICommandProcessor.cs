@@ -6,7 +6,7 @@ using System.Text;
 namespace SACS.Implementation.Commands
 {
     /// <summary>
-    /// The command processors
+    /// The command processors.
     /// </summary>
     internal interface ICommandProcessor
     {
@@ -17,6 +17,11 @@ namespace SACS.Implementation.Commands
         /// The command.
         /// </value>
         string Command { get; }
+
+        /// <summary>
+        /// Gets the command processor type.
+        /// </summary>
+        CommandProcessorType Type { get; }
 
         /// <summary>
         /// Instructs the command processor to perform the action given the specified argument.
@@ -37,13 +42,5 @@ namespace SACS.Implementation.Commands
         /// </summary>
         /// <param name="argsList">The arguments list.</param>
         void Process(IList<string> argsList);
-
-        /// <summary>
-        /// Gets the command processor type.
-        /// </summary>
-        /// <value>
-        /// The type.
-        /// </value>
-        CommandProcessorType Type { get; }
     }
 }

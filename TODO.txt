@@ -5,7 +5,7 @@ Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
-Update metrics section to filter by app
+Remove metrics section - will use a separate metrics solution
 
 Presentation Layer - Web:
 -------------------------
@@ -41,8 +41,6 @@ ServiceAppBase
 --------------
 specify that command is invalid if nothing processes it.
 
-ProcessCommand()
-Output()
 Version()
 AppVersion()
 Capabilities()

@@ -28,9 +28,10 @@ namespace SACS.Implementation
         protected const int ExecutionInterval = 1000;
 
         /// <summary>
-        /// The interval between when failed execution contexts (and other info) are cleaned up
+        /// The interval between when failed execution contexts (and other info) are cleaned up.
         /// </summary>
         private const int CleanUpInterval = 60;
+
         private readonly CommandLineProcessor _commandProcessor;
         private readonly Timer _executionTimer;
         private readonly IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
@@ -48,7 +49,7 @@ namespace SACS.Implementation
         /// </summary>
         public ServiceAppBase()
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
 
             // TODO: move this into it's own composition method.
             this._commandProcessor = new JsonCommandProcessor();
@@ -59,7 +60,7 @@ namespace SACS.Implementation
             this._commandProcessor.HoistWith<ArgsProcessor>()
                 .For("exit", () => this.Stop());
 
-            this._executionTimer = new Timer(ExecutionTimer_Tick, null, 0, ExecutionInterval);
+            this._executionTimer = new Timer(this.ExecutionTimer_Tick, null, 0, ExecutionInterval);
             cleanUpTimer = CleanUpInterval;
         }
 
@@ -163,9 +164,11 @@ namespace SACS.Implementation
                 case Execution.ExecutionMode.Concurrent:
                     currentContext = this._executionContexts.FirstOrDefault(c => c.CanExecute);
                     break;
+
                 case Execution.ExecutionMode.Inline:
                     currentContext = this._executionContexts.FirstOrDefault(c => c.CanExecute && !this.IsExecuting);
                     break;
+
                 default:
                     throw new NotImplementedException("Execution mode not yet implemented");
             }
@@ -217,7 +220,7 @@ namespace SACS.Implementation
         /// information about the current execution.</param>
         /// <remarks>
         /// <para>
-        /// The context is passed in by ref to prevent direct invocation of this outside of the SACS.Implemetation and 
+        /// The context is passed in by ref to prevent direct invocation of this outside of the SACS.Implemetation and
         /// passing in a null.
         /// </para>
         /// <para>
@@ -474,6 +477,6 @@ namespace SACS.Implementation
         [DllImport("kernel32.dll")]
         private static extern bool CloseHandle(IntPtr hdl);
 
-        #endregion
+        #endregion P/Invoke
     }
 }

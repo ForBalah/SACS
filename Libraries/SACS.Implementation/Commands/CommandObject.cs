@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SACS.Implementation.Commands
 {
     /// <summary>
-    /// Represents a collection of commands
+    /// Represents a collection of commands.
     /// </summary>
     public class CommandObject : Dictionary<string, object>
     {

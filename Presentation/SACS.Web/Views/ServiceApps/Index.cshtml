@@ -2,107 +2,104 @@
 
 @model IList<SACS.DataAccessLayer.Models.ServiceApp>
 @{
-    ViewBag.Title = "Service Apps";
+	ViewBag.Title = "Service Apps";
 }
 
 @section Breadcrumbs {
-    <li>@Html.ActionLink("Home", "Index", "Server")</li>
-    <li>@Html.ActionLink("Applications", "Index", "ServiceApps")</li>
-    <li class="active"><span class="glyphicon glyphicon-list-alt"></span> Service Apps</li>
+	<li>@Html.ActionLink("Home", "Index", "Server")</li>
+	<li>@Html.ActionLink("Applications", "Index", "ServiceApps")</li>
+	<li class="active"><span class="glyphicon glyphicon-list-alt"></span> Service Apps</li>
 }
 
 @section scripts {
-    <script type="text/javascript">
-        $(function ()
-        {
-            switch (location.hash)
-            {
-                case '#successStart':
-                    alert('Service app start in progress...');
-                    break;
-                case '#successStop':
-                    alert('Service app stop in progress...');
-                    break;
-                case '#successRun':
-                    alert('Service app immediate run in progress...');
-                    break;
-                case '#error':
-                    alert('There was a problem performing the action.\r\n\r\nSee logs for details.');
-                    break;
-            }
-        });
-    </script>
+	<script type="text/javascript">
+		$(function () {
+			switch (location.hash) {
+				case '#successStart':
+					alert('Service app start in progress...');
+					break;
+				case '#successStop':
+					alert('Service app stop in progress...');
+					break;
+				case '#successRun':
+					alert('Service app immediate run in progress...');
+					break;
+				case '#error':
+					alert('There was a problem performing the action.\r\n\r\nSee logs for details.');
+					break;
+			}
+		});
+	</script>
 }
 
 <!-- Logs box -->
 <div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">List</h3>
-        <div class="box-tools pull-right">
-            <a href="@Url.Action("Index")" class="btn"><span class="glyphicon glyphicon-refresh"></span> Refresh</a>
-        </div>
-    </div>
-    <div class="box-body">
-        <div class="row">
-            <div class="col-md-1 hidden-xs hidden-sm">
-                <strong>Status</strong>
-            </div>
-            <div class="col-md-3">
-                <strong>Name / Environment</strong>
-            </div>
-            <div class="col-md-3 hidden-xs hidden-sm">
-                <strong>Description</strong>
-            </div>
-            <div class="col-md-1 hidden-xs hidden-sm">
-                <strong>Startup</strong>
-            </div>
-            <div class="col-md-2 hidden-xs hidden-sm">
-                <strong>Assembly</strong>
-            </div>
-            <div class="col-md-2 hidden-xs hidden-sm text-right">
-                <strong>Actions</strong>
-            </div>
-        </div>
-        @foreach (var serviceApp in Model.OrderBy(m => m.Name).ThenBy(m => m.Environment))
-        {
-            using (Html.BeginForm("Update", "ServiceApps", FormMethod.Post))
-            {
-                @Html.AntiForgeryToken()
-                @Html.Hidden("id", serviceApp.Name)
-                <div class="row">
-                    <div class="row-border"></div>
-                    <div class="col-md-1">
-                        <img src="@Url.Content(serviceApp.ImagePath)" alt="@serviceApp.StateEnum" />
-                    </div>
-                    <div class="col-md-3">
-                        @serviceApp.Name / @serviceApp.Environment
-                    </div>
-                    <div class="col-md-3">
-                        <div>
-                            @serviceApp.Description
-                        </div>
-                        <div>
-                            <strong>Schedule:</strong>
-                            @ScheduleUtility.GetFullDescription(serviceApp.Schedule)
-                        </div>
-                    </div>
-                    <div class="col-md-1">
-                        @serviceApp.StartupTypeEnum
-                    </div>
-                    <div class="col-md-2">
-                        @serviceApp.Assembly
-                    </div>
-                    <div class="col-md-2 text-right pull-right service-app-buttons">
-                        <input type="submit" name="process" value="Start" class="btn btn-xs btn-success" @(serviceApp.CanStart ? "" : "disabled") />
-                        <input type="submit" name="process" value="Stop" class="btn btn-xs btn-warning" @(serviceApp.CanStop ? "" : "disabled") />
-                        <input type="submit" name="process" value="Run" class="btn btn-xs btn-primary" @(serviceApp.IsRunning ? "" : "disabled") />
-                    </div>
-                </div>
-            }
-        }
-
-    </div><!-- /.box-body -->
-    <div class="box-footer">
-        <small><strong>Note:</strong> Service Apps can be modified through the Windows console.</small>
-    </div><!-- /.box-footer-->
+	<div class="box-header with-border">
+		<h3 class="box-title">List</h3>
+		<div class="box-tools pull-right">
+			<a href="@Url.Action("Index")" class="btn"><span class="glyphicon glyphicon-refresh"></span> Refresh</a>
+		</div>
+	</div>
+	<div class="box-body">
+		<div class="row">
+			<div class="col-md-1 hidden-xs hidden-sm">
+				<strong>Status</strong>
+			</div>
+			<div class="col-md-3">
+				<strong>Name / Environment</strong>
+			</div>
+			<div class="col-md-3 hidden-xs hidden-sm">
+				<strong>Description</strong>
+			</div>
+			<div class="col-md-1 hidden-xs hidden-sm">
+				<strong>Startup</strong>
+			</div>
+			<div class="col-md-2 hidden-xs hidden-sm">
+				<strong>Assembly</strong>
+			</div>
+			<div class="col-md-2 hidden-xs hidden-sm text-right">
+				<strong>Actions</strong>
+			</div>
+		</div>
+		@foreach (var serviceApp in Model.OrderBy(m => m.Name).ThenBy(m => m.Environment))
+		{
+			using (Html.BeginForm("Update", "ServiceApps", FormMethod.Post))
+			{
+				@Html.AntiForgeryToken()
+				@Html.Hidden("id", serviceApp.Name)
+				<div class="row">
+					<div class="row-border"></div>
+					<div class="col-md-1">
+						<img src="@Url.Content(serviceApp.ImagePath)" alt="@serviceApp.CurrentState" />
+					</div>
+					<div class="col-md-3">
+						@serviceApp.Name / @serviceApp.Environment
+					</div>
+					<div class="col-md-3">
+						<div>
+							@serviceApp.Description
+						</div>
+						<div>
+							<strong>Schedule:</strong>
+							@ScheduleUtility.GetFullDescription(serviceApp.Schedule)
+						</div>
+					</div>
+					<div class="col-md-1">
+						@serviceApp.StartupTypeEnum
+					</div>
+					<div class="col-md-2">
+						@serviceApp.Assembly
+					</div>
+					<div class="col-md-2 text-right pull-right service-app-buttons">
+						<input type="submit" name="process" value="Start" class="btn btn-xs btn-success" @(serviceApp.CanStart ? "" : "disabled") />
+						<input type="submit" name="process" value="Stop" class="btn btn-xs btn-warning" @(serviceApp.CanStop ? "" : "disabled") />
+						<input type="submit" name="process" value="Run" class="btn btn-xs btn-primary" @(serviceApp.IsRunning ? "" : "disabled") />
+					</div>
+				</div>
+			}
+		}
+	</div><!-- /.box-body -->
+	<div class="box-footer">
+		<small><strong>Note:</strong> Service Apps can be modified through the Windows console.</small>
+	</div><!-- /.box-footer-->
 </div><!-- /.box -->

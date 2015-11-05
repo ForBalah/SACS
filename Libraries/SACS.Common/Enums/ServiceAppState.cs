@@ -14,39 +14,27 @@ namespace SACS.Common.Enums
     public enum ServiceAppState
     {
         /// <summary>
-        /// The state is unknown.
+        /// The service app is not loaded.
         /// </summary>
         [EnumMember]
-        Unknown = 0,
+        NotLoaded = 0,
 
         /// <summary>
-        /// The service app is not loaded
+        /// The service app is successfully initialized and ready to execute.
         /// </summary>
         [EnumMember]
-        NotLoaded = 1,
+        Ready = 1,
 
         /// <summary>
-        /// The service app is successfully initialized
+        /// The service app is currently executing.
         /// </summary>
         [EnumMember]
-        Initialized = 2,
+        Executing = 2,
 
         /// <summary>
-        /// The service app is currently executing
+        /// The service app errored while running.
         /// </summary>
         [EnumMember]
-        Executing = 3,
-
-        /// <summary>
-        /// The service app errored when starting
-        /// </summary>
-        [EnumMember]
-        Error = 4,
-
-        /// <summary>
-        /// The service app is unloading
-        /// </summary>
-        [EnumMember]
-        Unloading = 5
+        Error = 3
     }
 }

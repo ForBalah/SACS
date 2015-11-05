@@ -20,24 +20,26 @@ namespace SACS.Windows.Providers
         /// <returns></returns>
         public override string GetStateImagePath(DataAccessLayer.Models.ServiceApp serviceApp)
         {
-            switch (serviceApp.StateEnum)
+            switch (serviceApp.CurrentState)
             {
                 case ServiceAppState.NotLoaded:
-                    return "/SACS.Windows;component/Images/Stop.png";
-                case ServiceAppState.Initialized:
+                    return serviceApp.StartupTypeEnum == StartupType.Disabled ?
+                        "/SACS.Windows;component/Images/Disabled.png" :
+                        "/SACS.Windows;component/Images/Stop.png";
+
+                case ServiceAppState.Ready:
                     return serviceApp.StartupTypeEnum == StartupType.Automatic ?
                         "/SACS.Windows;component/Images/OK.png" :
                         "/SACS.Windows;component/Images/OKManual.png";
+
                 case ServiceAppState.Executing:
                     return "/SACS.Windows;component/Images/Play.png";
+
                 case ServiceAppState.Error:
                     return "/SACS.Windows;component/Images/Error.png";
-                case ServiceAppState.Unloading:
-                    return "/SACS.Windows;component/Images/Info.png";
+
                 default:
-                    return serviceApp.StartupTypeEnum == StartupType.Disabled ?
-                        "/SACS.Windows;component/Images/Disabled.png" :
-                        "/SACS.Windows;component/Images/Unknown.png";
+                    return "/SACS.Windows;component/Images/Unknown.png";
             }
         }
     }

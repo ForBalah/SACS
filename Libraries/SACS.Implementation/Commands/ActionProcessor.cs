@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SACS.Implementation.Commands
 {
@@ -29,11 +26,8 @@ namespace SACS.Implementation.Commands
         }
 
         /// <summary>
-        /// Gets the type.
+        /// Gets the command processor type.
         /// </summary>
-        /// <value>
-        /// The type.
-        /// </value>
         public CommandProcessorType Type
         {
             get { return CommandProcessorType.Command; }

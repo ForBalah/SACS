@@ -31,9 +31,6 @@ namespace SACS.Implementation.Commands
         /// <summary>
         /// Gets the command processor type.
         /// </summary>
-        /// <value>
-        /// The type.
-        /// </value>
         public CommandProcessorType Type
         {
             get { return CommandProcessorType.Args; }
@@ -55,7 +52,6 @@ namespace SACS.Implementation.Commands
         /// Processes the specified command object.
         /// </summary>
         /// <param name="commandObject">The command object.</param>
-        /// <exception cref="System.NotImplementedException"></exception>
         public void Process(IDictionary<string, object> commandObject)
         {
             throw new NotImplementedException();

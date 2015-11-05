@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SACS.Implementation.Commands
 {
     /// <summary>
-    /// Class responsible for processing data received from the command line
+    /// Class responsible for processing data received from the command line.
     /// </summary>
     internal abstract class CommandLineProcessor
     {
@@ -66,10 +65,10 @@ namespace SACS.Implementation.Commands
         protected static void ParseArgs(string leftCommand, Dictionary<string, object> commandTree)
         {
             var splitCommand = leftCommand.Split('"')
-                .Select((element, index) => index % 2 == 0 ?// If even index
-                    // Split the item
+                .Select((element, index) => index % 2 == 0 ?//// If even index
+                    //// Split the item
                     element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) :
-                    // Keep the entire item
+                    //// Keep the entire item
                     new string[] { element })
                 .SelectMany(element => element).ToList();
 

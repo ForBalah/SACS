@@ -11,7 +11,7 @@ namespace SACS.Implementation.Execution
     public enum ExecutionMode
     {
         /// <summary>
-        /// Default execution mode, which is equivalent of Idempotent
+        /// Default execution mode, which is equivalent of Idempotent.
         /// </summary>
         Default = 0,
 

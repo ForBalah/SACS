@@ -157,7 +157,6 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The last message.
         /// </value>
-        [Obsolete]
         public string LastMessage { get; set; }
 
         /// <summary>
@@ -178,7 +177,7 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The state enum.
         /// </value>
-        public Enums.ServiceAppState StateEnum
+        public Enums.ServiceAppState CurrentState
         {
             get
             {
@@ -226,10 +225,8 @@ namespace SACS.DataAccessLayer.Models
         {
             get
             {
-                bool appState = this.StateEnum == Enums.ServiceAppState.Unknown ||
-                    this.StateEnum == Enums.ServiceAppState.NotLoaded ||
-                    this.StateEnum == Enums.ServiceAppState.Error;
-                return appState && this.StartupTypeEnum != Enums.StartupType.Disabled;
+                return this.CurrentState == Enums.ServiceAppState.NotLoaded &&
+                    this.StartupTypeEnum != Enums.StartupType.Disabled;
             }
         }
 
@@ -243,23 +240,26 @@ namespace SACS.DataAccessLayer.Models
         {
             get
             {
-                return this.StateEnum == Enums.ServiceAppState.Initialized ||
-                    this.StateEnum == Enums.ServiceAppState.Executing;
+                return this.CurrentState != Enums.ServiceAppState.NotLoaded;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether the service app is running
+        /// Gets a value indicating whether the service app can run.
         /// </summary>
         /// <value>
         ///   <c>true</c> if the service app is running; otherwise, <c>false</c>.
         /// </value>
-        public bool IsRunning
+        /// <remarks>
+        /// Even during a in progress execution, it should be possible to run the service.
+        /// Whether this is fulfilled will depend on the the actual service itselfand the
+        /// execution mode which it has built into it.
+        /// </remarks>
+        public bool CanRun
         {
             get
             {
-                return this.StateEnum == Enums.ServiceAppState.Initialized ||
-                    this.StateEnum == Enums.ServiceAppState.Executing;
+                return this.CurrentState != Enums.ServiceAppState.NotLoaded;
             }
         }
 
@@ -316,7 +316,7 @@ namespace SACS.DataAccessLayer.Models
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
         /// </returns>
         public override int GetHashCode()
         {

@@ -22,13 +22,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         #region Fields
 
         private Process _process;
-        private ServiceApp _ServiceApp;
         private ILog _log;
         private Task _runTask;
         private bool _executeFlag = false;
         private bool _stopFlag = false;
+        private List<Tuple<string, ServiceAppState>> _Messages;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors and Destructors
 
@@ -51,9 +51,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 throw new ArgumentException("Cannot create ServiceAppProcess with null or empty ServiceApp name");
             }
 
-            this._ServiceApp = app;
+            this.ServiceApp = app;
             this._log = log;
-            this.Messages = new List<Tuple<string, ServiceAppState>>();
+            this._Messages = new List<Tuple<string, ServiceAppState>>();
 
             ProcessStartInfo startInfo = new ProcessStartInfo(app.FullEntryFilePath);
             startInfo.Arguments = JsonConvert.SerializeObject(new { name = app.Name });
@@ -69,7 +69,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._process.StartInfo = startInfo;
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Events
 
@@ -98,40 +98,31 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public event EventHandler Failed;
 
-        #endregion
+        #endregion Events
 
         #region Properties
 
         /// <summary>
-        /// Gets the state.
+        /// Gets a value indicating whether the process is running, but has an error.
         /// </summary>
-        /// <value>
-        /// The state.
-        /// </value>
-        public ServiceAppState CurrentState
+        public bool HasError
         {
             get
             {
-                if (this.Messages.Any())
-                {
-                    return this.Messages.LastOrDefault().Item2;
-                }
-
-                return ServiceAppState.Unknown;
+                return this.ServiceApp.CurrentState == ServiceAppState.Error;
             }
         }
 
         /// <summary>
-        /// Gets the last message.
+        /// Gets a value indicating whether the process is currently running.
         /// </summary>
-        /// <value>
-        /// The last message.
-        /// </value>
-        public string LastMessage
+        public bool IsRunning
         {
             get
             {
-                return this.Messages.Select(m => m.Item1).LastOrDefault();
+                return this.ServiceApp.CurrentState == ServiceAppState.Ready ||
+                    this.ServiceApp.CurrentState == ServiceAppState.Executing ||
+                    this.ServiceApp.CurrentState == ServiceAppState.Error;
             }
         }
 
@@ -141,10 +132,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <value>
         /// The messages.
         /// </value>
-        public IList<Tuple<string, ServiceAppState>> Messages
+        public IReadOnlyList<Tuple<string, ServiceAppState>> Messages
         {
-            get;
-            private set;
+            get
+            {
+                return this._Messages;
+            }
         }
 
         /// <summary>
@@ -155,19 +148,25 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </value>
         public ServiceApp ServiceApp
         {
-            get
-            {
-                return this._ServiceApp;
-            }
+            get;
+            private set;
         }
 
-        #endregion
-
-        #region Event Handlers
-
-        #endregion
+        #endregion Properties
 
         #region Methods
+
+        /// <summary>
+        /// Adds a message to this process and sets the state on this (and the underlying ServiceApp) accordingly.
+        /// </summary>
+        /// <param name="message">The message to add.</param>
+        /// <param name="state">The state associated with the message.</param>
+        public void AddMessage(string message, ServiceAppState state)
+        {
+            this._Messages.Add(new Tuple<string, ServiceAppState>(message, state));
+            this.ServiceApp.CurrentState = state;
+            this.ServiceApp.LastMessage = message;
+        }
 
         /// <summary>
         /// Executes the service app.
@@ -268,7 +267,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             switch (stateName)
             {
                 case "Started":
-                    this.Messages.Add(new Tuple<string, ServiceAppState>(string.Format("{0} has started", this.ServiceApp.Name), ServiceAppState.Initialized));
+                    this.AddMessage(string.Format("{0} has started", this.ServiceApp.Name), ServiceAppState.Ready);
 
                     if (this.Started != null)
                     {
@@ -278,7 +277,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     break;
 
                 case "Executing":
-                    this.Messages.Add(new Tuple<string, ServiceAppState>(string.Format("{0} is executing", this.ServiceApp.Name), ServiceAppState.Executing));
+                    this.AddMessage(string.Format("{0} is executing", this.ServiceApp.Name), ServiceAppState.Executing);
 
                     if (this.Executing != null)
                     {
@@ -288,7 +287,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     break;
 
                 case "Idle":
-                    this.Messages.Add(new Tuple<string, ServiceAppState>(string.Format("{0} has finished execution", this.ServiceApp.Name), ServiceAppState.Initialized));
+                    this.AddMessage(string.Format("{0} has finished execution", this.ServiceApp.Name), ServiceAppState.Ready);
 
                     if (this.Executed != null)
                     {
@@ -298,7 +297,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     break;
 
                 case "Stopped":
-                    this.Messages.Add(new Tuple<string, ServiceAppState>(string.Format("{0} has stopped", this.ServiceApp.Name), ServiceAppState.NotLoaded));
+                    this.AddMessage(string.Format("{0} has stopped", this.ServiceApp.Name), ServiceAppState.NotLoaded);
 
                     if (this.Stopped != null)
                     {
@@ -308,8 +307,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     break;
 
                 case "Failed":
-                    this.Messages.Add(new Tuple<string, ServiceAppState>(string.Format("{0} has failed during execution", this.ServiceApp.Name), ServiceAppState.Error));
- 
+                    this.AddMessage(string.Format("{0} has failed during execution", this.ServiceApp.Name), ServiceAppState.Error);
+
                     if (this.Failed != null)
                     {
                         this.Failed(this, new EventArgs());
@@ -320,14 +319,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (stateName == "Failed")
             {
-                this._log.Warn(this.LastMessage);
+                this._log.Warn(this.ServiceApp.LastMessage);
             }
             else
             {
-                this._log.Info(this.LastMessage);
+                this._log.Info(this.ServiceApp.LastMessage);
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }
