@@ -312,11 +312,13 @@ namespace SACS.Implementation
         /// </summary>
         internal void Stop()
         {
-            Messages.WriteDebug("Stopping {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
-            this._executionTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            // TODO: I would have prefered this in a lock but somehow that fails to run the code when executed in a Task.
             if (this.IsLoaded)
             {
                 this.IsLoaded = false;
+                Messages.WriteDebug("Stopping {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
+                this._executionTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
                 this.CleanUp();
                 ThreadPool.QueueUserWorkItem((o) =>
                 {
@@ -445,8 +447,7 @@ namespace SACS.Implementation
         /// <param name="clearContexts">if set to <c>true</c> [clear contexts].</param>
         private void HandleException(Exception e, bool clearContexts)
         {
-            string message = "Unhandled exception in {0}";
-            Messages.WriteError(e, message, this.DisplayName);
+            Messages.WriteError(e);
 
             if (clearContexts)
             {

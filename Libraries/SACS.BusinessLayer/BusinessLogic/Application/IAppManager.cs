@@ -12,7 +12,8 @@ using SACS.DataAccessLayer.Models;
 namespace SACS.BusinessLayer.BusinessLogic.Application
 {
     /// <summary>
-    /// Interface for the AppManager methods
+    /// Manages the service apps (as ServiceAppProcesses) from start to stop including
+    /// coordinating the database saving/loading of them.
     /// </summary>
     public interface IAppManager
     {

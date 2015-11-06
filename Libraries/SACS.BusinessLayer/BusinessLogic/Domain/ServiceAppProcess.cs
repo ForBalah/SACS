@@ -89,6 +89,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         public event EventHandler Executed;
 
         /// <summary>
+        /// Occurs when the service app generated an uncaught error.
+        /// </summary>
+        public event EventHandler<ServiceAppErrorEventArgs> Error;
+
+        /// <summary>
         /// Occurs when the service app has successfully stopped.
         /// </summary>
         public event EventHandler Stopped;
@@ -206,7 +211,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Processes the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        /// <returns></returns>
+        /// <returns><c>true</c> if the process should exit after processing the message.</returns>
         /// <exception cref="System.NotImplementedException">The provided message has not handler.</exception>
         internal bool ProcessMessage(string message)
         {
@@ -226,6 +231,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     }
                     else if (messageObject.error != null)
                     {
+                        this.ProcessError(
+                            messageObject.error.exception.type as string,
+                            messageObject.error.exception.message as string,
+                            messageObject.error.exception.source as string,
+                            messageObject.error.exception.stackTrace as string);
+
                         return false;
                     }
                     else if (messageObject.performance != null)
@@ -247,6 +258,29 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
 
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Processes the error.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <param name="message">The message.</param>
+        /// <remarks>
+        /// This may seem like a weird way of dealing with the exception, however
+        /// at the time there was no known way of deserializing the exception correctly
+        /// without going down the route of marshalling the exception and encoding it in
+        /// base64 etc... That is still a viable option since this current method feels
+        /// quite dirty.
+        /// </remarks>
+        private void ProcessError(string type, string message, string source, string stackTrace)
+        {
+            Exception tempEx = new Exception(string.Format("Message:{0} Source:{1}", message, source));
+            this._log.Warn(string.Format("Uncaught error in {0}. Type: {1}", this.ServiceApp.Name, type), tempEx);
+
+            if (this.Error != null)
+            {
+                this.Error(this, new ServiceAppErrorEventArgs(tempEx, this.ServiceApp.Name));
+            }
         }
 
         /// <summary>

@@ -21,8 +21,19 @@ namespace SACS.Implementation.Utils
         /// popular JSON.NET libary because the intention is to make sure that only 
         /// one dll (this one) is needed as a dependency.
         /// </remarks>
-        private JavaScriptSerializer serializer = new JavaScriptSerializer();
+        private readonly JavaScriptSerializer serializer;
 
+        #region Constructors and Destructors
+
+        public JsonMessageProvider()
+        {
+            serializer = new JavaScriptSerializer();
+        }
+
+        #endregion
+
+        #region Methods
+        
         /// <summary>
         /// Serializes the message as an info message.
         /// </summary>
@@ -41,9 +52,9 @@ namespace SACS.Implementation.Utils
         /// <returns></returns>
         internal override string SerializeAsPerformance(ServiceAppContext context, string message)
         {
-            return serializer.Serialize(new 
+            return serializer.Serialize(new
             {
-                performance = new 
+                performance = new
                 {
                     name = context.Name,
                     guid = context.Guid,
@@ -68,20 +79,21 @@ namespace SACS.Implementation.Utils
         /// <summary>
         /// Serializes the message as an error message.
         /// </summary>
-        /// <param name="exception">The exception to serialize</param>
-        /// <param name="message">The message to serialize.</param>
+        /// <param name="ex">The exception to serialize</param>
         /// <returns></returns>
-        internal override string SerializeAsError(Exception exception, string message)
+        internal override string SerializeAsError(Exception ex)
         {
             return serializer.Serialize(new
             {
                 error = new
                 {
-                    exception = exception.Message,
-                    stackTrace = exception.StackTrace,
-                    innerException = exception.InnerException != null ? exception.InnerException.Message : null,
-                    innerStackTrace = exception.InnerException != null ? exception.InnerException.StackTrace : null,
-                    message = message
+                    exception = new 
+                    {
+                        type = ex.GetType().ToString(),
+                        message = ex.Message,
+                        source = ex.Source,
+                        stackTrace = ex.StackTrace
+                    }
                 }
             });
         }
@@ -93,6 +105,8 @@ namespace SACS.Implementation.Utils
         internal override string SerializeAsState(Enums.State state)
         {
             return serializer.Serialize(new { state = Enum.GetName(typeof(Enums.State), state) });
-        }
+        } 
+
+        #endregion
     }
 }

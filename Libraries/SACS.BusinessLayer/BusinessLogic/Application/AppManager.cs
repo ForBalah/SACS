@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Domain;
+using SACS.BusinessLayer.BusinessLogic.Email;
 using SACS.BusinessLayer.BusinessLogic.Loader.Interfaces;
 using SACS.BusinessLayer.BusinessLogic.Validation;
+using SACS.Common.Configuration;
 using SACS.Common.Enums;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
@@ -14,7 +16,7 @@ using SACS.DataAccessLayer.Models;
 namespace SACS.BusinessLayer.BusinessLogic.Application
 {
     /// <summary>
-    /// The AppManager implemenation
+    /// The default AppManager implemenation
     /// </summary>
     public class AppManager : IAppManager
     {
@@ -22,8 +24,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
         private readonly ILog _log = LogManager.GetLogger(typeof(AppManager));
 
-        // TODO: THIS IS BAD! CHANGE TO IoC ASAP
-        public static IServiceAppDao Dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
+        // TODO: THESE ARE BAD! CHANGE TO IoC ASAP
+        private static IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
+        private static EmailProvider _emailer = new EmailProvider();
 
         private static object _syncRoot = new object();
         private static IAppManager _Current;
@@ -129,6 +132,17 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
         #region Event Handlers
 
+
+        /// <summary>
+        /// Handles the Error event of the ServiceAppProcess control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ServiceAppErrorEventArgs"/> instance containing the event data.</param>
+        private void ServiceAppProcess_Error(object sender, ServiceAppErrorEventArgs e)
+        {
+            EmailHelper.SendSupportEmail(_emailer, e.Exception, e.Name);
+        }
+
         /// <summary>
         /// Handles the Started event of the ServiceAppProcess object.
         /// </summary>
@@ -143,7 +157,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             {
                 if (process.IsRunning)
                 {
-                    Dao.RecordServiceAppStart(process.ServiceApp.Name);
+                    _dao.RecordServiceAppStart(process.ServiceApp.Name);
                     if (process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic)
                     {
                         errorMessage = this.SchedulingService.ScheduleServiceApp(process);
@@ -159,16 +173,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             {
                 this._log.Warn(errorMessage);
             }
-        }
-
-        /// <summary>
-        /// Handles the Failed event of the ServiceAppProcess control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ServiceAppProcess_Failed(object sender, EventArgs e)
-        {
-            // TODO: send support email.
         }
 
         #endregion Event Handlers
@@ -302,7 +306,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 }
 
                 process.Started += ServiceAppProcess_Started;
-                process.Failed += ServiceAppProcess_Failed;
+                process.Error += ServiceAppProcess_Error;
             }
             catch (ArgumentException)
             {

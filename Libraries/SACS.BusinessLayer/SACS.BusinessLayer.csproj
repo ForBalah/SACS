@@ -71,10 +71,12 @@
     </Compile>
     <Compile Include="BusinessLogic\Application\AppManager.cs" />
     <Compile Include="BusinessLogic\Application\IAppManager.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppErrorEventArgs.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppProcessComparer.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppProcessCollection.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppMessages.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppProcess.cs" />
+    <Compile Include="BusinessLogic\Email\EmailHelper.cs" />
     <Compile Include="BusinessLogic\Email\EmailMessage.cs" />
     <Compile Include="BusinessLogic\Email\EmailProvider.cs" />
     <Compile Include="BusinessLogic\Email\EmailTemplateProvider.cs" />
@@ -118,7 +120,9 @@
     <Compile Include="Views\IViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\SACS.DataAccessLayer.Models.ServiceApp.datasource" />
   </ItemGroup>

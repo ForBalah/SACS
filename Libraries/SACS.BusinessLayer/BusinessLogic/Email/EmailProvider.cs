@@ -9,7 +9,7 @@ using log4net;
 namespace SACS.BusinessLayer.BusinessLogic.Email
 {
     /// <summary>
-    /// Class providing base email sending capabilities
+    /// Class providing base email sending capabilities. TODO: make this abstract
     /// </summary>
     public class EmailProvider
     {

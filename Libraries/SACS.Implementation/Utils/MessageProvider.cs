@@ -36,9 +36,9 @@ namespace SACS.Implementation.Utils
         /// <summary>
         /// Serializes the message as an error message.
         /// </summary>
-        /// <param name="message">The message to serialize.</param>
+        /// <param name="ex">The exception to serialize..</param>
         /// <returns></returns>
-        internal abstract string SerializeAsError(Exception exception, string message);
+        internal abstract string SerializeAsError(Exception ex);
 
         /// <summary>
         /// Serializes the enum as a state message.

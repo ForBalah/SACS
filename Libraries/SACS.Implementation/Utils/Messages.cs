@@ -63,12 +63,9 @@ namespace SACS.Implementation.Utils
         /// Writes the provided string as an "error" message to the standard output stream.
         /// </summary>
         /// <param name="exception">The exception.</param>
-        /// <param name="format">The format.</param>
-        /// <param name="args">The arguments.</param>
-        public static void WriteError(Exception exception, string format, params object[] args)
+        public static void WriteError(Exception exception)
         {
-            string cleanString = format ?? string.Empty;
-            Console.WriteLine(Provider.SerializeAsError(exception, string.Format(cleanString, args)));
+            Console.WriteLine(Provider.SerializeAsError(exception));
         }
 
         /// <summary>

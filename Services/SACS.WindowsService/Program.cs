@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
 using log4net;
 using log4net.Config;
 using SACS.BusinessLayer.BusinessLogic.Email;
 using SACS.BusinessLayer.BusinessLogic.Loader;
-using SACS.Common.Configuration;
 using SACS.WindowsService.Common;
 using SACS.WindowsService.Components;
 using SACS.WindowsService.Enums;
@@ -39,22 +39,13 @@ namespace SACS.WindowsService
             {
                 Exception ex = e.ExceptionObject as Exception;
                 _log.Error("Unhandled Exception occured in SACS service", ex);
-
-                EmailTemplateProvider templater = new HtmlEmailTemplateProvider(ApplicationSettings.Current.SupportEmailTemplatePath);
-                templater.AddValue("MachineName", Environment.MachineName);
-                templater.AddValue("Message", ex.Message);
-                templater.AddValue("StackTrace", ex.StackTrace);
-
-                EmailMessage email = templater.GetEmailMessage();
-                email.FromAddress = ApplicationSettings.Current.SupportEmailAddress;
-                email.AddToAddresses(ApplicationSettings.Current.SupportEmailAddress);
-
-                _emailer.Send(email);
+                EmailHelper.SendSupportEmail(_emailer, ex, null);
             }
             catch
             {
                 // At this point there is nothing more we can do but let the app die
                 Console.WriteLine("goodbye--^v--^v-----^v------------");
+                Process.GetCurrentProcess().Kill();
             }
         }
 
