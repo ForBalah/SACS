@@ -33,7 +33,7 @@ namespace SACS.Common.Configuration
         /// <value>
         /// The encryption key.
         /// </value>
-        string EncryptionSecretKey { get; }
+        byte[] EntropyValue { get; }
 
         /// <summary>
         /// Gets the name of the service.

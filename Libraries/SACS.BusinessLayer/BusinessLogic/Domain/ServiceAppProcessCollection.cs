@@ -16,7 +16,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         private List<ServiceAppProcess> _collection;
         private IEqualityComparer<ServiceAppProcess> _comparer;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors and Destructors
 
@@ -30,7 +30,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._comparer = comparer;
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Properties
 
@@ -68,10 +68,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
-        
+
         /// <summary>
         /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </summary>
@@ -106,7 +106,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public void Clear()
         {
-            // make sure to unload because we are going to lose all references to the processs in this call.
+            // make sure to unload because we are going to lose all references to the processes in this call.
             foreach (var process in this._collection)
             {
                 process.Stop();
@@ -191,8 +191,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this._collection.GetEnumerator();
-        } 
+        }
 
-        #endregion
+        #endregion Methods
     }
 }

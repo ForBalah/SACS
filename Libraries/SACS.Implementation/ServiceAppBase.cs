@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -38,7 +39,6 @@ namespace SACS.Implementation
         private static object _syncRoot = new object();
         private static object _syncExecution = new object();
         private static int cleanUpTimer = 0;
-        private int _parentProcessId = 0;
 
         #endregion Fields
 
@@ -55,7 +55,8 @@ namespace SACS.Implementation
             this._commandProcessor = new JsonCommandProcessor();
             this._commandProcessor.HoistWith<ActionProcessor>()
                 .For("run", () => this.QueueExecution())
-                .For("stop", () => this.Stop());
+                .For("stop", () => this.Stop())
+                .For("hide", () => this.HideWindow());
 
             this._commandProcessor.HoistWith<ArgsProcessor>()
                 .For("exit", () => this.Stop());
@@ -69,12 +70,12 @@ namespace SACS.Implementation
         #region Properties
 
         /// <summary>
-        /// Gets or sets the service app's execution mode when calling run.
+        /// Gets the service app's execution mode when calling "run".
         /// </summary>
         public ExecutionMode ExecutionMode { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the Service App is executing.
+        /// Gets a value indicating whether the Service App is executing.
         /// </summary>
         /// <value>
         ///   <c>true</c> if the Service App is executing; otherwise, <c>false</c>.
@@ -83,12 +84,12 @@ namespace SACS.Implementation
         {
             get
             {
-                return _executionContexts.Any(c => c.IsExecuting && !c.Failed);
+                return this._executionContexts.Any(c => c.IsExecuting && !c.Failed);
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the Service App is loaded.
+        /// Gets a value indicating whether the Service App is loaded.
         /// </summary>
         /// <value>
         ///   <c>true</c> if the Service App is loaded; otherwise, <c>false</c>.
@@ -96,7 +97,7 @@ namespace SACS.Implementation
         public bool IsLoaded { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the Service App has been stopped.
+        /// Gets a value indicating whether the Service App has been stopped.
         /// </summary>
         /// <value>
         ///   <c>true</c> if the Service App has been stopped; otherwise, <c>false</c>.
@@ -104,7 +105,7 @@ namespace SACS.Implementation
         public bool IsStopped { get; private set; }
 
         /// <summary>
-        /// Gets the service app display name
+        /// Gets the service app display name.
         /// </summary>
         public string DisplayName
         {
@@ -117,9 +118,9 @@ namespace SACS.Implementation
 
                 string name;
 
-                if (this.StartupCommands.ContainsKey("name"))
+                if (this.StartupCommands.GetCommands().ContainsKey("name"))
                 {
-                    name = string.Format("{0} ({1})", this.StartupCommands["name"] as string, Settings.AlternateName);
+                    name = string.Format("{0} ({1})", this.StartupCommands.GetCommands()["name"] as string, Settings.AlternateName);
                 }
                 else
                 {
@@ -131,9 +132,9 @@ namespace SACS.Implementation
         }
 
         /// <summary>
-        /// Gets the startup commands
+        /// Gets the startup commands.
         /// </summary>
-        protected IDictionary<string, object> StartupCommands { get; private set; }
+        protected CommandObject StartupCommands { get; private set; }
 
         #endregion Properties
 
@@ -150,7 +151,7 @@ namespace SACS.Implementation
         }
 
         /// <summary>
-        /// Handles the 'tick' event of the executionTimer
+        /// Handles the 'tick' event of the executionTimer.
         /// </summary>
         /// <param name="state">The state.</param>
         private void ExecutionTimer_Tick(object state)
@@ -280,7 +281,7 @@ namespace SACS.Implementation
         }
 
         /// <summary>
-        /// The main method to start the program as a service app
+        /// The main method to start the program as a service app.
         /// </summary>
         /// <param name="mode">The execution mode to start this service app as.</param>
         protected internal void Start(ExecutionMode mode = Execution.ExecutionMode.Default)
@@ -302,17 +303,18 @@ namespace SACS.Implementation
                     this.Initialze();
                     this.IsLoaded = true;
                     Messages.WriteState(Enums.State.Started);
+
+                    this._commandProcessor.Process(this.StartupCommands);
                     this.AwaitCommand();
                 }
             }
         }
 
         /// <summary>
-        /// The main method to stop the program as a service app
+        /// The main method to stop the program as a service app.
         /// </summary>
         internal void Stop()
         {
-            // TODO: I would have prefered this in a lock but somehow that fails to run the code when executed in a Task.
             if (this.IsLoaded)
             {
                 this.IsLoaded = false;
@@ -320,14 +322,11 @@ namespace SACS.Implementation
                 this._executionTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                 this.CleanUp();
-                ThreadPool.QueueUserWorkItem((o) =>
-                {
-                    Thread.Sleep(1000);
-                    IntPtr stdin = GetStdHandle(StdHandle.Stdin);
-                    CloseHandle(stdin);
-                    this.IsStopped = true;
-                    Messages.WriteState(Enums.State.Stopped);
-                });
+                Messages.WriteState(Enums.State.Stopped);
+
+                IntPtr stdin = GetStdHandle(StdHandle.Stdin);
+                CloseHandle(stdin);
+                this.IsStopped = true;
             }
         }
 
@@ -358,6 +357,7 @@ namespace SACS.Implementation
                         {
                             createContext = true;
                         }
+
                         break;
 
                     case ExecutionMode.Inline:
@@ -369,6 +369,7 @@ namespace SACS.Implementation
                         {
                             createContext = true;
                         }
+
                         break;
 
                     default:
@@ -395,20 +396,17 @@ namespace SACS.Implementation
         /// </summary>
         private void CheckParentProcessAlive()
         {
-            var parent = Process.GetCurrentProcess().Parent();
             bool canStop = false;
 
-            if (parent != null)
+            try
             {
-                this._parentProcessId = parent.Id;
-                if (parent.HasExited)
-                {
-                    canStop = true;
-                }
+                ManagementObject mo = new ManagementObject("win32_process.handle='" + Process.GetCurrentProcess().Id + "'");
+                mo.Get();
+                Process.GetProcessById(Convert.ToInt32(mo["ParentProcessId"]));
             }
-            else if (this._parentProcessId != 0)
+            catch (ArgumentException ex)
             {
-                // this means that there was a parent process, but it nolonger exists. exit the app
+                // the argument exception means that the parent process is no longer running. From Process.GetProcessById.
                 canStop = true;
             }
 
@@ -441,10 +439,20 @@ namespace SACS.Implementation
         }
 
         /// <summary>
+        /// Hides the console window.
+        /// </summary>
+        /// <returns></returns>
+        private void HideWindow()
+        {
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE);
+        }
+
+        /// <summary>
         /// Handles the exception.
         /// </summary>
         /// <param name="e">The exception to handle.</param>
-        /// <param name="clearContexts">if set to <c>true</c> [clear contexts].</param>
+        /// <param name="clearContexts">If set to <c>true</c> [clear contexts].</param>
         private void HandleException(Exception e, bool clearContexts)
         {
             Messages.WriteError(e);
@@ -459,8 +467,29 @@ namespace SACS.Implementation
 
         #region P/Invoke
 
-        // P/Invoke:
-        private enum StdHandle { Stdin = -10, Stdout = -11, Stderr = -12 };
+        private const int SW_HIDE = 0;
+        private const int SW_SHOW = 5;
+
+        /// <summary>
+        /// The standard stream handles.
+        /// </summary>
+        private enum StdHandle
+        {
+            /// <summary>
+            /// Standard input stream.
+            /// </summary>
+            Stdin = -10,
+
+            /// <summary>
+            /// Standard output stream.
+            /// </summary>
+            Stdout = -11,
+
+            /// <summary>
+            /// Standard error stream.
+            /// </summary>
+            Stderr = -12
+        }
 
         /// <summary>
         /// Gets the standard handle.
@@ -477,6 +506,22 @@ namespace SACS.Implementation
         /// <returns></returns>
         [DllImport("kernel32.dll")]
         private static extern bool CloseHandle(IntPtr hdl);
+
+        /// <summary>
+        /// Gets the console window.
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetConsoleWindow();
+
+        /// <summary>
+        /// Show/hide the window
+        /// </summary>
+        /// <param name="hWnd"></param>
+        /// <param name="nCmdShow"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         #endregion P/Invoke
     }

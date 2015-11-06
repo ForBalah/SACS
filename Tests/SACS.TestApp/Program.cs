@@ -35,9 +35,9 @@ namespace SACS.TestApp
         /// </summary>
         public override void Execute(ref ServiceAppContext context)
         {
-            // only seen when debugging
+            // Will write to the console when in debug mode, and will write to the SAC that it is hosted in.
             Console.WriteLine(ConfigurationManager.AppSettings["Message"]);
-            Console.WriteLine(string.Format("Test App ran at {0:F} as user: {1}", DateTime.Now, WindowsIdentity.GetCurrent().Name));
+            Thread.Sleep(5000); // dummy wait
 
             bool throwEx;
             if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwEx) && throwEx)

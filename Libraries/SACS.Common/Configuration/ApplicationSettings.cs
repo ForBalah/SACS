@@ -17,7 +17,7 @@ namespace SACS.Common.Configuration
         private static object _syncRoot = new object();
         private static IApplicationSettings _Instance;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors and Destructors
 
@@ -28,7 +28,7 @@ namespace SACS.Common.Configuration
         {
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Properties
 
@@ -96,11 +96,11 @@ namespace SACS.Common.Configuration
         /// <value>
         /// The encryption key.
         /// </value>
-        public string EncryptionSecretKey
+        public byte[] EntropyValue
         {
             get
             {
-                return ConfigurationManager.AppSettings["Security.EncryptionSecretKey"];
+                return Encoding.Unicode.GetBytes(ConfigurationManager.AppSettings["Security.EntropyValue"] ?? string.Empty);
             }
         }
 
@@ -157,6 +157,6 @@ namespace SACS.Common.Configuration
             }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

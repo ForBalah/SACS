@@ -25,10 +25,10 @@ namespace SACS.DataAccessLayer.Entitites
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<ServiceApplication> ServiceApplications { get; set; }
-        public virtual DbSet<ServiceApplicationAudit> ServiceApplicationAudits { get; set; }
-        public virtual DbSet<SystemAudit> SystemAudits { get; set; }
-        public virtual DbSet<ServiceApplicationPerfomance> ServiceApplicationPerfomances { get; set; }
-        public virtual DbSet<ServiceApplicationHistory> ServiceApplicationHistories { get; set; }
+        public virtual DbSet<ServiceApplication> ServiceApplication { get; set; }
+        public virtual DbSet<ServiceApplicationAudit> ServiceApplicationAudit { get; set; }
+        public virtual DbSet<SystemAudit> SystemAudit { get; set; }
+        public virtual DbSet<ServiceApplicationPerfomance> ServiceApplicationPerfomance { get; set; }
+        public virtual DbSet<ServiceApplicationHistory> ServiceApplicationHistory { get; set; }
     }
 }

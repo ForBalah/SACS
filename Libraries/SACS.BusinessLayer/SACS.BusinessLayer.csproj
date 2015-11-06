@@ -56,6 +56,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
@@ -96,7 +97,6 @@
     <Compile Include="BusinessLogic\Schedule\MonthLogic.cs" />
     <Compile Include="BusinessLogic\Schedule\ScheduleBuildResult.cs" />
     <Compile Include="BusinessLogic\Schedule\ScheduleUtility.cs" />
-    <Compile Include="BusinessLogic\Security\StringCipher.cs" />
     <Compile Include="BusinessLogic\Validation\ServiceAppValidator.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\SecureStringExtensions.cs" />

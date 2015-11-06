@@ -46,15 +46,12 @@ namespace SACS.DataAccessLayer.DataAccess
 
             appEntity.Name = app.Name;
             appEntity.Active = true;
-            appEntity.AssemblyName = app.Assembly;
-            appEntity.ConfigPath = app.ConfigFilePath;
             appEntity.CronSchedule = app.Schedule;
             appEntity.Description = app.Description;
             appEntity.Environment = app.Environment;
             appEntity.ModifiedByUserId = Environment.UserName;
             appEntity.ModifiedDate = DateTime.Now;
-            appEntity.Path = app.Path;
-            appEntity.EntryFile = app.EntryFile;
+            appEntity.AppFilePath = app.AppFilePath;
 
             AuditType appAuditType = created ? AuditType.Create : AuditType.Update;
             appEntity.ServiceApplicationAudits.Add(new ServiceApplicationAudit
@@ -250,15 +247,12 @@ namespace SACS.DataAccessLayer.DataAccess
                 this.Insert(new ServiceApplicationHistory
                 {
                     Active = appEntity.Active,
-                    AssemblyName = appEntity.Name,
-                    ConfigPath = appEntity.ConfigPath,
                     CreatedByUserId = appEntity.CreatedByUserId,
                     CreatedDate = appEntity.CreatedDate,
                     CronSchedule = appEntity.CronSchedule,
                     Description = appEntity.Description,
                     Environment = appEntity.Environment,
-                    Path = appEntity.Path,
-                    EntryFile = appEntity.EntryFile
+                    AppFilePath = appEntity.AppFilePath,
                 });
             }
         }

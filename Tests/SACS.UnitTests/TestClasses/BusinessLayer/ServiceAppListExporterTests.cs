@@ -30,8 +30,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
                 {
                     Name = "Number1",
                     Description = "This \"Description\", complex",
-                    Path = "C:\\Path",
-                    EntryFile = "EntryFile"
+                    AppFilePath = "C:\\Path\\File.exe"
                 }
             };
 

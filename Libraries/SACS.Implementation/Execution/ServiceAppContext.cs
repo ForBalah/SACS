@@ -20,7 +20,7 @@ namespace SACS.Implementation.Execution
         }
 
         /// <summary>
-        /// Determines if the execution context can actually be executed on.
+        /// Gets a value indicating whether the execution context can actually be executed on.
         /// </summary>
         /// <param name="context">The service app execution context to test.</param>
         /// <returns></returns>
@@ -49,7 +49,7 @@ namespace SACS.Implementation.Execution
         public bool Failed { get; internal set; }
 
         /// <summary>
-        /// Gets the time that the context was created (and queued)
+        /// Gets the time that the context was created (and queued).
         /// </summary>
         public DateTime QueuedTime { get; internal set; }
 
@@ -64,7 +64,7 @@ namespace SACS.Implementation.Execution
         public DateTime? StartTime { get; internal set; }
 
         /// <summary>
-        /// Gets the current context's end execution time
+        /// Gets the current context's end execution time.
         /// </summary>
         public DateTime? EndTime { get; internal set; }
 
@@ -77,7 +77,7 @@ namespace SACS.Implementation.Execution
         public string Name { get; internal set; }
 
         /// <summary>
-        /// Gets or sets the current context's execution handle
+        /// Gets or sets the current context's execution handle.
         /// </summary>
         internal Task Handle { get; set; }
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SACS.Implementation.Utils
 {
     /// <summary>
-    /// Acts as an AppSettings helper class
+    /// Acts as an AppSettings helper class.
     /// </summary>
     public class Settings
     {

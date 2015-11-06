@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using SACS.Common.Configuration;
 
 namespace SACS.BusinessLayer.Extensions
 {
@@ -14,42 +16,97 @@ namespace SACS.BusinessLayer.Extensions
     public static class SecureStringExtensions
     {
         /// <summary>
-        /// Converts the existing secure string to a managed string. Try not to use this often since that
-        /// will end up negating the need for unmanaged secure string values
+        /// Encrypts the provided SecureString.
         /// </summary>
-        /// <param name="secureString">The secure string.</param>
+        /// <param name="input">The SecureString to encrypt.</param>
         /// <returns></returns>
-        public static string ToManagedString(this SecureString secureString)
+        public static string EncryptString(this SecureString input)
         {
-            IntPtr unmanagedString = IntPtr.Zero;
+            if (input == null)
+            {
+                return null;
+            }
+
+            var encryptedData = ProtectedData.Protect(
+                Encoding.Unicode.GetBytes(input.ToInsecureString()),
+                ApplicationSettings.Current.EntropyValue,
+                DataProtectionScope.CurrentUser);
+
+            return Convert.ToBase64String(encryptedData);
+        }
+
+        /// <summary>
+        /// Decrypts the provided data back into a SecureString.
+        /// </summary>
+        /// <param name="encryptedData">The data to decrypt.</param>
+        /// <returns></returns>
+        public static SecureString DecryptString(this string encryptedData)
+        {
+            if (encryptedData == null)
+            {
+                return null;
+            }
+
             try
             {
-                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(secureString);
-                return Marshal.PtrToStringUni(unmanagedString);
+                var decryptedData = ProtectedData.Unprotect(
+                    Convert.FromBase64String(encryptedData),
+                    ApplicationSettings.Current.EntropyValue,
+                    DataProtectionScope.CurrentUser);
+
+                return Encoding.Unicode.GetString(decryptedData).ToSecureString();
             }
-            finally
+            catch
             {
-                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
+                return new SecureString();
             }
         }
 
         /// <summary>
-        /// Converts the managed string to a <see cref="System.Security.SecureString" /> for login sensitive usage.
+        /// Converts a string input to a SecureString.
         /// </summary>
-        /// <param name="managedString">The managed string.</param>
+        /// <param name="input">The string to convert.</param>
         /// <returns></returns>
-        public static SecureString ToSecureString(this string managedString)
+        public static SecureString ToSecureString(this IEnumerable<char> input)
         {
-            var secureStr = new SecureString();
-            if (managedString.Length > 0)
+            if (input == null)
             {
-                foreach (var c in managedString.ToCharArray())
-                {
-                    secureStr.AppendChar(c);
-                }
+                return null;
             }
 
-            return secureStr;
+            var secure = new SecureString();
+
+            foreach (var c in input)
+            {
+                secure.AppendChar(c);
+            }
+
+            secure.MakeReadOnly();
+            return secure;
+        }
+
+        /// <summary>
+        /// Converts the SecureString to a normal string.
+        /// </summary>
+        /// <param name="input">The SecureString to convert.</param>
+        /// <returns></returns>
+        public static string ToInsecureString(this SecureString input)
+        {
+            if (input == null)
+            {
+                return null;
+            }
+
+            var ptr = Marshal.SecureStringToBSTR(input);
+
+            try
+            {
+                return Marshal.PtrToStringBSTR(ptr);
+            }
+            finally
+            {
+                Marshal.ZeroFreeBSTR(ptr);
+            }
         }
     }
 }

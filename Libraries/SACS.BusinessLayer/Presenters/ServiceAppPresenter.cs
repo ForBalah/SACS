@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Export;
@@ -76,7 +77,7 @@ namespace SACS.BusinessLayer.Presenters
                     IServiceAppClient client = this.factory.Create<IServiceAppClient>();
                     this.View.BindServiceApps(client.GetInstalledServiceApps());
                     this.View.SetStatusMessage(null);
-                }, 
+                },
                 () =>
                 {
                     this.View.BindServiceApps(new List<ServiceApp>());
@@ -120,6 +121,7 @@ namespace SACS.BusinessLayer.Presenters
                 {
                     IServiceAppClient client = this.factory.Create<IServiceAppClient>();
                     client.StopServiceApp(serviceApp.Name);
+                    Thread.Sleep(2000); // artificial wait just to allow the async tasks a little bit of time to update
                 },
                 true);
 
@@ -137,6 +139,7 @@ namespace SACS.BusinessLayer.Presenters
                 {
                     IServiceAppClient client = this.factory.Create<IServiceAppClient>();
                     client.RunServiceApp(serviceApp.Name);
+                    Thread.Sleep(2000); // artificial wait just to allow the async tasks a little bit of time to update
                 },
                 true);
 

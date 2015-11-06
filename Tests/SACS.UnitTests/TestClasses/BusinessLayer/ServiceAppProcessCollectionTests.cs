@@ -1,8 +1,7 @@
 ﻿using System;
-using NUnit.Framework;
 using NSubstitute;
+using NUnit.Framework;
 using SACS.BusinessLayer.BusinessLogic.Domain;
-using SACS.BusinessLayer.BusinessLogic.Security;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer

@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using log4net;
 using Newtonsoft.Json;
+using SACS.BusinessLayer.Extensions;
 using SACS.Common.Enums;
+using SACS.Common.Helpers;
+using SACS.Common.Lock;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.BusinessLayer.BusinessLogic.Domain
 {
     /// <summary>
-    /// The service app wrapper process wrapper
+    /// The service app wrapper for runtime use.
     /// </summary>
     [Serializable]
     public class ServiceAppProcess : MarshalByRefObject
@@ -55,18 +59,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._log = log;
             this._Messages = new List<Tuple<string, ServiceAppState>>();
 
-            ProcessStartInfo startInfo = new ProcessStartInfo(app.FullEntryFilePath);
-            startInfo.Arguments = JsonConvert.SerializeObject(new { name = app.Name });
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.RedirectStandardInput = true;
-            startInfo.RedirectStandardOutput = true;
-            //startInfo.UserName = app.Username;
-            //startInfo.Password = app.Password.
-
-            this._process = new Process();
-            this._process.StartInfo = startInfo;
+            this.CreateProcess();
         }
 
         #endregion Constructors and Destructors
@@ -189,8 +182,18 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._runTask = Task.Run(() =>
             {
                 bool exitCheck = false;
-                // TODO: surround with try/catch
-                this._process.Start();
+
+                try
+                {
+                    this._process.Start();
+                }
+                catch (Exception e)
+                {
+                    this._log.Error(string.Format("Error starting service app {0}", this.ServiceApp.Name), e);
+                    this.AddMessage(e.Message, ServiceAppState.NotLoaded);
+                    exitCheck = true;
+                }
+
                 while (!exitCheck)
                 {
                     string message = this._process.StandardOutput.ReadLine();
@@ -205,6 +208,39 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         public virtual void Stop()
         {
             this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
+
+            // we will need to be doubly sure that the process has ended
+            if (this.IsRunning || !this._process.HasExited)
+            {
+                int attempts = 5;
+                while (attempts > 0)
+                {
+                    if (this.IsRunning || !this._process.HasExited)
+                    {
+                        Thread.Sleep(2000);
+                        attempts--;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (attempts <= 0)
+                {
+                    this._process.Kill();
+                    this.AddMessage("Service app forced stopped.", ServiceAppState.NotLoaded);
+                }
+            }
+
+            if (!this.IsRunning)
+            {
+                this.CreateProcess();
+            }
+            else
+            {
+                throw new ApplicationException("Cannot re-create the service app's process");
+            }
         }
 
         /// <summary>
@@ -232,10 +268,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     else if (messageObject.error != null)
                     {
                         this.ProcessError(
-                            messageObject.error.exception.type as string,
-                            messageObject.error.exception.message as string,
-                            messageObject.error.exception.source as string,
-                            messageObject.error.exception.stackTrace as string);
+                            ExceptionHelper.DeserializeException(messageObject.error.exception.Value as string),
+                            messageObject.error.details.type.Value as string,
+                            messageObject.error.details.message.Value as string,
+                            messageObject.error.details.source.Value as string,
+                            messageObject.error.details.stackTrace.Value as string);
 
                         return false;
                     }
@@ -245,8 +282,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     }
                     else if (messageObject.state != null)
                     {
-                        this.ProcessState(messageObject.state.Value as string);
-                        return false;
+                        return this.ProcessState(messageObject.state.Value as string);
                     }
                 }
             }
@@ -264,7 +300,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Processes the error.
         /// </summary>
         /// <param name="exception">The exception.</param>
+        /// <param name="type">The type.</param>
         /// <param name="message">The message.</param>
+        /// <param name="source">The source.</param>
+        /// <param name="stackTrace">The stacktrace.</param>
         /// <remarks>
         /// This may seem like a weird way of dealing with the exception, however
         /// at the time there was no known way of deserializing the exception correctly
@@ -272,14 +311,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// base64 etc... That is still a viable option since this current method feels
         /// quite dirty.
         /// </remarks>
-        private void ProcessError(string type, string message, string source, string stackTrace)
+        private void ProcessError(Exception exception, string type, string message, string source, string stackTrace)
         {
-            Exception tempEx = new Exception(string.Format("Message:{0} Source:{1}", message, source));
-            this._log.Warn(string.Format("Uncaught error in {0}. Type: {1}", this.ServiceApp.Name, type), tempEx);
+            Exception finalException = exception ?? new Exception(string.Format("Message:{0} Source:{1}", message, source));
+            this._log.Warn(string.Format("Uncaught error in {0}. Type: {1}", this.ServiceApp.Name, type), finalException);
 
             if (this.Error != null)
             {
-                this.Error(this, new ServiceAppErrorEventArgs(tempEx, this.ServiceApp.Name));
+                this.Error(this, new ServiceAppErrorEventArgs(finalException, this.ServiceApp.Name));
             }
         }
 
@@ -296,8 +335,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Processes the state.
         /// </summary>
         /// <param name="stateName">Name of the state.</param>
-        private void ProcessState(string stateName)
+        private bool ProcessState(string stateName)
         {
+            bool forceExit = false;
             switch (stateName)
             {
                 case "Started":
@@ -338,6 +378,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                         this.Stopped(this, new EventArgs());
                     }
 
+                    forceExit = true;
                     break;
 
                 case "Failed":
@@ -359,6 +400,33 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             {
                 this._log.Info(this.ServiceApp.LastMessage);
             }
+
+            return forceExit;
+        }
+
+        /// <summary>
+        /// Creates the Process which will run the service app.
+        /// </summary>
+        private void CreateProcess()
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo(this.ServiceApp.AppFilePath);
+            startInfo.Arguments = JsonConvert.SerializeObject(new { name = this.ServiceApp.Name, action = "hide" });
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardInput = true;
+            startInfo.RedirectStandardOutput = true;
+
+            if (!string.IsNullOrWhiteSpace(this.ServiceApp.Username))
+            {
+                startInfo.Domain = UserUtilities.GetDomain(this.ServiceApp.Username);
+                startInfo.UserName = UserUtilities.GetUserName(this.ServiceApp.Username);
+                startInfo.Password = this.ServiceApp.Password.DecryptString();
+            }
+
+            this._process = new Process();
+            this._process.StartInfo = startInfo;
         }
 
         #endregion Methods

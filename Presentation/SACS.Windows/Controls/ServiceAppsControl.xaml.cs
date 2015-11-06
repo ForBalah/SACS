@@ -64,23 +64,6 @@ namespace SACS.Windows.Controls
         #region Event Handlers
 
         /// <summary>
-        /// Handles the Click event of the AppPathSelectButton control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void AppPathSelectButton_Click(object sender, RoutedEventArgs e)
-        {
-            var v = new OpenDialogView();
-            var vm = (Gat.Controls.OpenDialogViewModel)v.DataContext;
-            vm.IsDirectoryChooser = true;
-            vm.Show();
-            if (vm.Result ?? false)
-            {
-                this.AppPathTextBox.Text = vm.SelectedFilePath;
-            }
-        }
-
-        /// <summary>
         /// Handles the Click event of the CancelServiceAppButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -101,17 +84,17 @@ namespace SACS.Windows.Controls
         }
 
         /// <summary>
-        /// Handles the Click event of the ConfigPathSelectButton control.
+        /// Handles the Click event of the AppFilePathSelectButton control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void ConfigPathSelectButton_Click(object sender, RoutedEventArgs e)
+        private void AppFilePathSelectButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Configuration Files (*.config)|*.config|All files (*.*)|*.*";
+            openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All files (*.*)|*.*"; // "Assemblies (*.exe;*.dll)|*.exe;*.dll|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                this.ConfigPathTextBox.Text = openFileDialog.FileName;
+                this.AppFilePathTextBox.Text = openFileDialog.FileName;
             }
         }
 
@@ -123,23 +106,6 @@ namespace SACS.Windows.Controls
         private void EditServiceAppButton_Click(object sender, RoutedEventArgs e)
         {
             this.SelectServiceApp(this._selectedServiceApp, false);
-        }
-
-        /// <summary>
-        /// Handles the Click event of the EntryFileSelectButton control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
-        private void EntryFileSelectButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Assemblies (*.exe;*.dll)|*.exe;*.dll|All files (*.*)|*.*";
-
-            openFileDialog.InitialDirectory = Path.GetFullPath(this.AppPathTextBox.Text);
-            if (openFileDialog.ShowDialog() == true)
-            {
-                this.EntryFileTextBox.Text = openFileDialog.SafeFileName;
-            }
         }
 
         /// <summary>
@@ -337,7 +303,7 @@ namespace SACS.Windows.Controls
             if (this._selectedServiceApp != null)
             {
                 this._presenter.RunServiceApp(this._selectedServiceApp);
-                MessageBox.Show(string.Format("{0} is running.", this._selectedServiceApp.Name), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(string.Format("{0} is queued to run.", this._selectedServiceApp.Name), "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -422,10 +388,7 @@ namespace SACS.Windows.Controls
                     StartupTypeEnum = (Enums.StartupType)this.StartupTypeComboBox.SelectedValue,
                     Environment = this.ServiceAppEnvironmentTextBox.Text,
                     Description = this.DescriptionTextBox.Text,
-                    Path = this.AppPathTextBox.Text,
-                    ConfigFilePath = this.ConfigPathTextBox.Text,
-                    EntryFile = this.EntryFileTextBox.Text,
-                    Assembly = this.AssemblyNameTextBox.Text,
+                    AppFilePath = this.AppFilePathTextBox.Text,
                     Username = this.IdentityLabel.Text,
                     Password = this.PasswordHiddenLabel.Text,
                     Schedule = this.ScheduleHiddenLabel.Text
@@ -491,6 +454,7 @@ namespace SACS.Windows.Controls
             }
 
             this.ServiceAppNameLabel.Content = this.ServiceAppNameTextBox.Text = serviceApp.Name;
+            this.MessageLabel.Text = serviceApp.LastMessage;
 
             this.StartServiceAppButton.IsEnabled = serviceApp.CanStart && isReadOnly;
             this.StopServiceAppButton.IsEnabled = serviceApp.CanStop && isReadOnly;
@@ -499,11 +463,8 @@ namespace SACS.Windows.Controls
             this.StartupTypeLabel.Text = serviceApp.StartupTypeEnum.GetName();
             this.StartupTypeComboBox.SelectedValue = serviceApp.StartupTypeEnum;
             this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = serviceApp.Description;
-            this.ServiceAppPathLabel.Text = this.AppPathTextBox.Text = serviceApp.Path;
             this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = serviceApp.Environment;
-            this.ConfigPathLabel.Text = this.ConfigPathTextBox.Text = serviceApp.ConfigFilePath;
-            this.EntryFileLabel.Text = this.EntryFileTextBox.Text = serviceApp.EntryFile;
-            this.AssemblyLabel.Text = this.AssemblyNameTextBox.Text = serviceApp.Assembly;
+            this.AppFilePathLabel.Text = this.AppFilePathTextBox.Text = serviceApp.AppFilePath;
             this.IdentityLabel.Text = this.IdentityLabel.Text = serviceApp.Username;
             this.PasswordHiddenLabel.Text = serviceApp.Password;
             this.ScheduleLabel.Text = ScheduleUtility.GetFullDescription(serviceApp.Schedule);
@@ -523,6 +484,7 @@ namespace SACS.Windows.Controls
             this.StartServiceAppButton.IsEnabled = false;
             this.StopServiceAppButton.IsEnabled = false;
             this.RunButton.IsEnabled = false;
+            this.ServiceAppNameTitleLabel.Visibility = MapVisibility(isEdit);
             this.ServiceAppNameLabel.Visibility = MapVisibility(!isEdit || this._selectedServiceApp != null);
             this.ServiceAppNameTextBox.Visibility = MapVisibility(isEdit && this._selectedServiceApp == null);
             this.StartupTypeLabel.Visibility = MapVisibility(!isEdit);
@@ -531,14 +493,8 @@ namespace SACS.Windows.Controls
             this.ServiceAppEnvironmentTextBox.Visibility = MapVisibility(isEdit);
             this.ServiceAppDescriptionLabel.Visibility = MapVisibility(!isEdit);
             this.DescriptionTextBox.Visibility = MapVisibility(isEdit);
-            this.ServiceAppPathLabel.Visibility = MapVisibility(!isEdit);
-            this.ServiceAppPathDockPanel.Visibility = MapVisibility(isEdit);
-            this.ConfigPathLabel.Visibility = MapVisibility(!isEdit);
-            this.ConfigPathDockPanel.Visibility = MapVisibility(isEdit);
-            this.EntryFileLabel.Visibility = MapVisibility(!isEdit);
-            this.EntryFileDockPanel.Visibility = MapVisibility(isEdit);
-            this.AssemblyLabel.Visibility = MapVisibility(!isEdit);
-            this.AssemblyNameTextBox.Visibility = MapVisibility(isEdit);
+            this.AppFilePathLabel.Visibility = MapVisibility(!isEdit);
+            this.AppFilePathDockPanel.Visibility = MapVisibility(isEdit);
             this.IdentitySelectButton.Visibility = MapVisibility(isEdit);
             this.ScheduleSelectButton.Visibility = MapVisibility(isEdit);
             this.EditServiceAppButton.Visibility = MapVisibility(!isEdit);
@@ -564,10 +520,7 @@ namespace SACS.Windows.Controls
             validator.ValidateStartupType((Enums.StartupType)this.StartupTypeComboBox.SelectedValue);
             validator.ValidateEnvironmentName(this.ServiceAppEnvironmentTextBox.Text);
             validator.ValidateDescription(this.DescriptionTextBox.Text);
-            validator.ValidateAppPath(this.AppPathTextBox.Text);
-            validator.ValidateConfigFilePath(this.ConfigPathTextBox.Text);
-            validator.ValidateEntryFileName(this.EntryFileTextBox.Text);
-            validator.ValidateAssemblyName(this.AssemblyNameTextBox.Text);
+            validator.ValidateAppFilePath(this.AppFilePathTextBox.Text);
             validator.ValidateSchedule(this.ScheduleHiddenLabel.Text);
 
             if (validator.ErrorMessages.Any())

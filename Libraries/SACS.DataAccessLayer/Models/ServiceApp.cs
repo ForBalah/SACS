@@ -14,6 +14,8 @@ namespace SACS.DataAccessLayer.Models
     {
         private CrontabSchedule _cronTabSchedule;
 
+        #region Properties
+
         /// <summary>
         /// Gets the ServiceAppViewModel comparer
         /// </summary>
@@ -53,40 +55,15 @@ namespace SACS.DataAccessLayer.Models
         public string Environment { get; set; }
 
         /// <summary>
-        /// Gets or sets the base path of the service app
-        /// </summary>
-        /// <value>
-        /// The path.
-        /// </value>
-        public string Path { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of assembly.
-        /// </summary>
-        /// <value>
-        /// The assembly.
-        /// </value>
-        [Obsolete]
-        public string Assembly { get; set; }
-
-        /// <summary>
         /// Gets the assembly file location.
         /// </summary>
         /// <value>
         /// The assembly path.
         /// </value>
-        [Obsolete("Replace with Path (and rename to FilePath)")]
-        public string FullEntryFilePath
+        public string AppFilePath
         {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(this.Path) || string.IsNullOrWhiteSpace(this.EntryFile))
-                {
-                    return string.Empty;
-                }
-
-                return System.IO.Path.Combine(this.Path, this.EntryFile);
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -143,15 +120,6 @@ namespace SACS.DataAccessLayer.Models
         }
 
         /// <summary>
-        /// Gets or sets the configuration file path.
-        /// </summary>
-        /// <value>
-        /// The configuration file path.
-        /// </value>
-        [Obsolete]
-        public string ConfigFilePath { get; set; }
-
-        /// <summary>
         /// Gets or sets the last message.
         /// </summary>
         /// <value>
@@ -189,15 +157,6 @@ namespace SACS.DataAccessLayer.Models
                 this.State = (int)value;
             }
         }
-
-        /// <summary>
-        /// Gets or sets the entry file.
-        /// </summary>
-        /// <value>
-        /// The entry file.
-        /// </value>
-        [Obsolete("Replace with Path (and rename to FilePath)")]
-        public string EntryFile { get; set; }
 
         /// <summary>
         /// Gets or sets the username.
@@ -264,6 +223,16 @@ namespace SACS.DataAccessLayer.Models
         }
 
         /// <summary>
+        /// Gets or sets the App version that this service app represents
+        /// </summary>
+        public Version AppVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SACS implementation version
+        /// </summary>
+        public Version SacsVersion { get; set; }
+
+        /// <summary>
         /// Gets the image path.
         /// </summary>
         /// <value>
@@ -284,6 +253,10 @@ namespace SACS.DataAccessLayer.Models
             }
         }
 
+        #endregion Properties
+
+        #region Methods
+
         /// <summary>
         /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
         /// </summary>
@@ -302,12 +275,9 @@ namespace SACS.DataAccessLayer.Models
             return (this.Name ?? string.Empty).Equals(comp.Name, StringComparison.OrdinalIgnoreCase) &&
                 (this.Description ?? string.Empty).Equals(comp.Description, StringComparison.OrdinalIgnoreCase) &&
                 (this.Environment ?? string.Empty).Equals(comp.Environment, StringComparison.OrdinalIgnoreCase) &&
-                (this.Path ?? string.Empty).Equals(comp.Path, StringComparison.OrdinalIgnoreCase) &&
-                (this.Assembly ?? string.Empty).Equals(comp.Assembly, StringComparison.OrdinalIgnoreCase) &&
+                (this.AppFilePath ?? string.Empty).Equals(comp.AppFilePath, StringComparison.OrdinalIgnoreCase) &&
                 this.StartupType == comp.StartupType &&
                 (this.Schedule ?? string.Empty).Equals(comp.Schedule) &&
-                (this.ConfigFilePath ?? string.Empty).Equals(comp.ConfigFilePath, StringComparison.OrdinalIgnoreCase) &&
-                (this.EntryFile ?? string.Empty).Equals(comp.EntryFile, StringComparison.OrdinalIgnoreCase) &&
                 (this.Username ?? string.Empty).Equals(comp.Username, StringComparison.OrdinalIgnoreCase) &&
                 (this.Password ?? string.Empty).Equals(comp.Password, StringComparison.OrdinalIgnoreCase);
         }
@@ -323,14 +293,13 @@ namespace SACS.DataAccessLayer.Models
             return (this.Name ?? string.Empty).GetHashCode() ^
                 (this.Description ?? string.Empty).GetHashCode() ^
                 (this.Environment ?? string.Empty).GetHashCode() ^
-                (this.Path ?? string.Empty).GetHashCode() ^
-                (this.Assembly ?? string.Empty).GetHashCode() ^
+                (this.AppFilePath ?? string.Empty).GetHashCode() ^
                 this.StartupType.GetHashCode() ^
                 (this.Schedule ?? string.Empty).GetHashCode() ^
-                (this.ConfigFilePath ?? string.Empty).GetHashCode() ^
-                (this.EntryFile ?? string.Empty).GetHashCode() ^
                 (this.Username ?? string.Empty).GetHashCode() ^
                 (this.Password ?? string.Empty).GetHashCode();
         }
+
+        #endregion Methods
     }
 }

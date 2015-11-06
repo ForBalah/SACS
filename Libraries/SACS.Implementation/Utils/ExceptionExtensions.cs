@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 namespace SACS.Implementation.Utils
 {
     /// <summary>
-    /// Adds extra methods to the Exception class
+    /// Adds extra methods to the Exception class.
     /// </summary>
     internal static class ExceptionExtensions
     {
         /// <summary>
-        /// Converts the exception to it's base64 representation
+        /// Converts the exception to it's base64 representation.
         /// </summary>
         /// <param name="exception">The exception.</param>
         /// <returns></returns>
@@ -23,10 +23,19 @@ namespace SACS.Implementation.Utils
             using (var ms = new MemoryStream())
             {
                 var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, exception);
-                ms.Position = 0;
 
-                return Convert.ToBase64String(ms.ToArray());
+                try
+                {
+                    formatter.Serialize(ms, exception);
+                    ms.Position = 0;
+
+                    return Convert.ToBase64String(ms.ToArray());
+                }
+                catch
+                {
+                    // Not a good idea, but the container will handle the rest.
+                    return string.Empty;
+                }
             }
         }
     }

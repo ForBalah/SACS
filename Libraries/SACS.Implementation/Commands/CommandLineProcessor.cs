@@ -17,8 +17,15 @@ namespace SACS.Implementation.Commands
         /// <param name="command">The command.</param>
         internal virtual void Process(string command)
         {
-            var commandObject = this.Parse(command);
+            this.Process(this.Parse(command));
+        }
 
+        /// <summary>
+        /// Processes the specified command object.
+        /// </summary>
+        /// <param name="commandObject">The command object.</param>
+        internal virtual void Process(CommandObject commandObject)
+        {
             var commands = commandObject.GetCommands();
             foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Command))
             {
@@ -65,7 +72,7 @@ namespace SACS.Implementation.Commands
         protected static void ParseArgs(string leftCommand, Dictionary<string, object> commandTree)
         {
             var splitCommand = leftCommand.Split('"')
-                .Select((element, index) => index % 2 == 0 ?//// If even index
+                .Select((element, index) => index % 2 == 0 ? //// If even index
                     //// Split the item
                     element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) :
                     //// Keep the entire item

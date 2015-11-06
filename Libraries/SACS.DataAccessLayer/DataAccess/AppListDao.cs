@@ -23,7 +23,7 @@ namespace SACS.DataAccessLayer.DataAccess
         private XDocument _AppListDoc;
         private bool _isLoadFromFile = false;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors and Destructors
 
@@ -43,7 +43,7 @@ namespace SACS.DataAccessLayer.DataAccess
             this._AppListDoc = XDocument.Parse(xml);
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Properties
 
@@ -69,7 +69,7 @@ namespace SACS.DataAccessLayer.DataAccess
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
 
@@ -118,11 +118,8 @@ namespace SACS.DataAccessLayer.DataAccess
                 new XAttribute("name", app.Name),
                 new XAttribute("description", app.Description),
                 new XAttribute("environment", app.Environment),
-                new XAttribute("path", app.Path),
-                new XAttribute("entryFile", app.EntryFile),
-                new XAttribute("assembly", app.Assembly),
+                new XAttribute("appFilePath", app.AppFilePath),
                 new XAttribute("startupType", app.StartupType),
-                new XAttribute("configFilePath", app.ConfigFilePath),
                 new XAttribute("schedule", app.Schedule),
                 new XAttribute("username", app.Username),
                 new XAttribute("password", app.Password));
@@ -144,13 +141,13 @@ namespace SACS.DataAccessLayer.DataAccess
 
             if (appElement != null)
             {
-               appElement.Remove();
-               this.TryBackupXmlFile(null, null);
+                appElement.Remove();
+                this.TryBackupXmlFile(null, null);
 
-               if (this._isLoadFromFile)
-               {
-                   this.AppListDoc.Save(Path.GetFullPath(ApplicationSettings.Current.AppListLocation));
-               }
+                if (this._isLoadFromFile)
+                {
+                    this.AppListDoc.Save(Path.GetFullPath(ApplicationSettings.Current.AppListLocation));
+                }
             }
         }
 
@@ -199,11 +196,8 @@ namespace SACS.DataAccessLayer.DataAccess
                 Name = element.Attribute("name").Value,
                 Description = element.Attribute("description").Value,
                 Environment = element.Attribute("environment").Value,
-                Path = element.Attribute("path").Value,
-                EntryFile = element.Attribute("entryFile").Value,
-                Assembly = element.Attribute("assembly").Value,
+                AppFilePath = element.Attribute("appFilePath").Value,
                 StartupTypeEnum = EnumHelper.Parse<StartupType>(element.Attribute("startupType").Value),
-                ConfigFilePath = element.Attribute("configFilePath").Value,
                 Schedule = element.Attribute("schedule").Value,
                 Username = element.Attribute("username").EmptyIfNull("username").Value,
                 Password = element.Attribute("password").EmptyIfNull("password").Value
@@ -241,6 +235,6 @@ namespace SACS.DataAccessLayer.DataAccess
             return false;
         }
 
-        #endregion
+        #endregion Methods
     }
 }

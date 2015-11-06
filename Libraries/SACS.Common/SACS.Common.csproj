@@ -68,6 +68,9 @@
     <Compile Include="Enums\StartupType.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\ExceptionHelper.cs" />
+    <Compile Include="Helpers\UserUtilities.cs" />
+    <Compile Include="Lock\AsyncLock.cs" />
+    <Compile Include="Lock\AsyncSemaphore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

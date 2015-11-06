@@ -9,16 +9,16 @@ using SACS.Implementation.Execution;
 namespace SACS.Implementation.Utils
 {
     /// <summary>
-    /// Adds JSON message processing capabilities
+    /// Adds JSON message processing capabilities.
     /// </summary>
     internal class JsonMessageProvider : MessageProvider
     {
         /// <summary>
-        /// The serializer
+        /// The serializer.
         /// </summary>
         /// <remarks>
-        /// The in-built JavaScript serializer in .NET is used instead of the more 
-        /// popular JSON.NET libary because the intention is to make sure that only 
+        /// The in-built JavaScript serializer in .NET is used instead of the more
+        /// popular JSON.NET libary because the intention is to make sure that only
         /// one dll (this one) is needed as a dependency.
         /// </remarks>
         private readonly JavaScriptSerializer serializer;
@@ -27,13 +27,13 @@ namespace SACS.Implementation.Utils
 
         public JsonMessageProvider()
         {
-            serializer = new JavaScriptSerializer();
+            this.serializer = new JavaScriptSerializer();
         }
 
-        #endregion
+        #endregion Constructors and Destructors
 
         #region Methods
-        
+
         /// <summary>
         /// Serializes the message as an info message.
         /// </summary>
@@ -41,7 +41,7 @@ namespace SACS.Implementation.Utils
         /// <returns></returns>
         internal override string SerializeAsInfo(string message)
         {
-            return serializer.Serialize(new { info = message });
+            return this.serializer.Serialize(new { info = message });
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace SACS.Implementation.Utils
         /// <returns></returns>
         internal override string SerializeAsPerformance(ServiceAppContext context, string message)
         {
-            return serializer.Serialize(new
+            return this.serializer.Serialize(new
             {
                 performance = new
                 {
@@ -73,27 +73,28 @@ namespace SACS.Implementation.Utils
         /// <returns></returns>
         internal override string SerializeAsDebug(string message)
         {
-            return serializer.Serialize(new { debug = message });
+            return this.serializer.Serialize(new { debug = message });
         }
 
         /// <summary>
         /// Serializes the message as an error message.
         /// </summary>
-        /// <param name="ex">The exception to serialize</param>
+        /// <param name="ex">The exception to serialize.</param>
         /// <returns></returns>
         internal override string SerializeAsError(Exception ex)
         {
-            return serializer.Serialize(new
+            return this.serializer.Serialize(new
             {
                 error = new
                 {
-                    exception = new 
+                    details = new
                     {
                         type = ex.GetType().ToString(),
                         message = ex.Message,
                         source = ex.Source,
                         stackTrace = ex.StackTrace
-                    }
+                    },
+                    exception = ex.ToBase64()
                 }
             });
         }
@@ -104,9 +105,9 @@ namespace SACS.Implementation.Utils
         /// <param name="state">The state.</param>
         internal override string SerializeAsState(Enums.State state)
         {
-            return serializer.Serialize(new { state = Enum.GetName(typeof(Enums.State), state) });
-        } 
+            return this.serializer.Serialize(new { state = Enum.GetName(typeof(Enums.State), state) });
+        }
 
-        #endregion
+        #endregion Methods
     }
 }

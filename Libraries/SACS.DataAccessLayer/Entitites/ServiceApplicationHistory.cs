@@ -17,15 +17,12 @@ namespace SACS.DataAccessLayer.Entitites
         public int Id { get; set; }
         public string Description { get; set; }
         public string Environment { get; set; }
-        public string Path { get; set; }
-        public string AssemblyName { get; set; }
+        public string AppFilePath { get; set; }
         public string CronSchedule { get; set; }
-        public string ConfigPath { get; set; }
         public bool Active { get; set; }
         public string CreatedByUserId { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public Nullable<int> ServiceApplicationId { get; set; }
-        public string EntryFile { get; set; }
     
         public virtual ServiceApplication ServiceApplication { get; set; }
     }

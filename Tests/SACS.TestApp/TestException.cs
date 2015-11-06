@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SACS.TestApp
 {
+    [Serializable]
     public class TestException : Exception
     {
         /// <summary>

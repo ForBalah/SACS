@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using SACS.BusinessLayer.BusinessLogic.Security;
 using SACS.BusinessLayer.Extensions;
 using SACS.Common.Configuration;
 
@@ -74,25 +73,6 @@ namespace SACS.Windows.Windows
         }
 
         /// <summary>
-        /// Gets or sets the encrypted password.
-        /// </summary>
-        /// <value>
-        /// The encrypted password.
-        /// </value>
-        public SecureString Password
-        {
-            get
-            {
-                return this.PasswordTextBox.SecurePassword;
-            }
-
-            set
-            {
-                this.PasswordTextBox.Password = value.ToManagedString();
-            }
-        }
-
-        /// <summary>
         /// Gets the encrypted password.
         /// </summary>
         /// <value>
@@ -102,19 +82,14 @@ namespace SACS.Windows.Windows
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(this.PasswordTextBox.Password))
-                {
-                    return StringCipher.Encrypt(this.PasswordTextBox.Password, ApplicationSettings.Current.EncryptionSecretKey);
-                }
-
-                return null;
+                return this.PasswordTextBox.SecurePassword.EncryptString();
             }
         }
 
-        #endregion
+        #endregion Properties
 
         #region Event Handlers
-        
+
         /// <summary>
         /// Handles the Click event of the SaveButton control.
         /// </summary>
@@ -180,7 +155,7 @@ namespace SACS.Windows.Windows
             this.UpdateDisplay();
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -194,6 +169,6 @@ namespace SACS.Windows.Windows
             this.ConfirmPasswordTextBox.IsEnabled = this.IsCustomAccount;
         }
 
-        #endregion
+        #endregion Methods
     }
 }

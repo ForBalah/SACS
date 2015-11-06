@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +11,7 @@ namespace SACS.Common.Helpers
     /// <summary>
     /// Helper class for exception relation items
     /// </summary>
-    public class ExceptionHelper
+    public static class ExceptionHelper
     {
         /// <summary>
         /// Gets the formatted exception details.
@@ -20,7 +22,7 @@ namespace SACS.Common.Helpers
         {
             StringBuilder detailsBuilder = new StringBuilder();
             detailsBuilder.AppendLine(GetMessageAndStackTrace(e));
-            
+
             if (e.InnerException != null)
             {
                 detailsBuilder.AppendLine();
@@ -28,6 +30,28 @@ namespace SACS.Common.Helpers
             }
 
             return detailsBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Attempts to deserializes the exception string.
+        /// </summary>
+        /// <param name="serializedExeption">The base64 exception to deserialize.</param>
+        /// <returns></returns>
+        public static Exception DeserializeException(string serializedExeption)
+        {
+            try
+            {
+                byte[] array = Convert.FromBase64String(serializedExeption);
+                using (var ms = new MemoryStream(array))
+                {
+                    var formatter = new BinaryFormatter();
+                    return (Exception)formatter.Deserialize(ms);
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>

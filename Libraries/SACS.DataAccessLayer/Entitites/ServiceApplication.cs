@@ -25,17 +25,14 @@ namespace SACS.DataAccessLayer.Entitites
         public string Name { get; set; }
         public string Description { get; set; }
         public string Environment { get; set; }
-        public string Path { get; set; }
-        public string AssemblyName { get; set; }
+        public string AppFilePath { get; set; }
         public string CronSchedule { get; set; }
-        public string ConfigPath { get; set; }
         public bool Active { get; set; }
         public string CreatedByUserId { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string ModifiedByUserId { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public StartupType StartupType { get; set; }
-        public string EntryFile { get; set; }
     
         public virtual ICollection<ServiceApplicationAudit> ServiceApplicationAudits { get; set; }
         public virtual ICollection<ServiceApplicationPerfomance> ServiceApplicationPerfomances { get; set; }

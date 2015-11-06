@@ -16,7 +16,7 @@ namespace SACS.Implementation.Utils
         private static MessageProvider _Provider;
 
         /// <summary>
-        /// Gets or sets the message provider
+        /// Gets the message provider.
         /// </summary>
         public static MessageProvider Provider
         {
@@ -71,6 +71,7 @@ namespace SACS.Implementation.Utils
         /// <summary>
         /// Writes the provided string as a "performance" message to the standard output stream.
         /// </summary>
+        /// <param name="context">The service app context to get the prformance information from.</param>
         /// <param name="format">The format.</param>
         /// <param name="args">The arguments.</param>
         internal static void WritePerformance(ServiceAppContext context, string format, params object[] args)
@@ -82,8 +83,7 @@ namespace SACS.Implementation.Utils
         /// <summary>
         /// Writes the provided string as a "performance" message to the standard output stream.
         /// </summary>
-        /// <param name="format">The format.</param>
-        /// <param name="args">The arguments.</param>
+        /// <param name="state">The state to write.</param>
         internal static void WriteState(State state)
         {
             Console.WriteLine(Provider.SerializeAsState(state));

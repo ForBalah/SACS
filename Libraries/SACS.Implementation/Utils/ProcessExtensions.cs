@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SACS.Implementation.Utils
 {
     /// <summary>
-    /// Extension methods for the Process class
+    /// Extension methods for the Process class.
     /// </summary>
     internal static class ProcessExtensions
     {

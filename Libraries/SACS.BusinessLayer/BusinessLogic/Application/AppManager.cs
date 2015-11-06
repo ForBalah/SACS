@@ -26,6 +26,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
         // TODO: THESE ARE BAD! CHANGE TO IoC ASAP
         private static IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
+
         private static EmailProvider _emailer = new EmailProvider();
 
         private static object _syncRoot = new object();
@@ -131,7 +132,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         #endregion Properties
 
         #region Event Handlers
-
 
         /// <summary>
         /// Handles the Error event of the ServiceAppProcess control.
@@ -348,6 +348,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 }
 
                 this.ServiceAppProcesses.Remove(process);
+
+                // This will prevent leaks
+                process.Started -= ServiceAppProcess_Started;
+                process.Error -= ServiceAppProcess_Error;
             }
 
             if (appListDao != null)

@@ -18,20 +18,14 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
     <serviceApp name=""TestApp1""
          description=""Shows how SACS works""
          environment=""Development""
-         path=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug""
-         entryFile=""SACS.TestApp.exe""
-         assembly=""SACS.TestApp""
+         appFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe""
          startupType=""Automatic""
-         configFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe.config""
          schedule=""* * * * *""></serviceApp>
     <serviceApp name=""TestApp2""
          description=""Shows how SACS works with multiple of the same app""
          environment=""Development""
-         path=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug""
-         entryFile=""SACS.TestApp.exe""
-         assembly=""SACS.TestApp""
+         appFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe""
          startupType=""Disabled""
-         configFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe.config""
          schedule=""* * * * *""
          username=""username""
          password=""password""></serviceApp>
@@ -41,21 +35,15 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
         private string serviceAppWithoutIdentityXml = @"<serviceApp name=""TestApp1""
          description=""Shows how SACS works""
          environment=""Development""
-         path=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug""
-         entryFile=""SACS.TestApp.exe""
-         assembly=""SACS.TestApp""
+         appFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe""
          startupType=""Automatic""
-         configFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe.config""
          schedule=""* * * * *""></serviceApp>";
 
         private string serviceAppWithIdentityXml = @"<serviceApp name=""TestApp1""
          description=""Shows how SACS works""
          environment=""Development""
-         path=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug""
-         entryFile=""SACS.TestApp.exe""
-         assembly=""SACS.TestApp""
+         appFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe""
          startupType=""Automatic""
-         configFilePath=""E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe.config""
          schedule=""* * * * *""
          username=""username""
          password=""password""></serviceApp>";
@@ -78,11 +66,8 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             Assert.AreEqual("TestApp1", app.Name);
             Assert.AreEqual("Shows how SACS works", app.Description);
             Assert.AreEqual("Development", app.Environment);
-            Assert.AreEqual(@"E:\Development\SACS\Tests\SACS.TestApp\bin\Debug", app.Path);
-            Assert.AreEqual("SACS.TestApp", app.Assembly);
-            Assert.AreEqual("SACS.TestApp.exe", app.EntryFile);
+            Assert.AreEqual(@"E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe", app.AppFilePath);
             Assert.AreEqual(StartupType.Automatic, app.StartupTypeEnum);
-            Assert.AreEqual(@"E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe.config", app.ConfigFilePath);
             Assert.AreEqual("* * * * *", app.Schedule);
             Assert.AreEqual("", app.Username);
             Assert.AreEqual("", app.Password);
@@ -126,17 +111,14 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             IAppListDao dao = DaoFactory.Create<IAppListDao, AppListDao>(xml);
             ServiceApp app = new ServiceApp
             {
-                 Name = "TestApp1",
-                 Description = "Shows how SACS works",
-                 Environment = "Development",
-                 Path = @"E:\Development\SACS\Tests\SACS.TestApp\bin\Debug",
-                 EntryFile = "SACS.TestApp.exe",
-                 Assembly = "SACS.TestApp",
-                 StartupTypeEnum = StartupType.Automatic,
-                 ConfigFilePath = @"E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe.config",
-                 Schedule= "* * * * *",
-                 Username = "NewUsername",
-                 Password = "NewPassword"
+                Name = "TestApp1",
+                Description = "Shows how SACS works",
+                Environment = "Development",
+                AppFilePath = @"E:\Development\SACS\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe",
+                StartupTypeEnum = StartupType.Automatic,
+                Schedule = "* * * * *",
+                Username = "NewUsername",
+                Password = "NewPassword"
             };
 
             dao.PersistServiceApp(app);

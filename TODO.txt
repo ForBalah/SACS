@@ -21,12 +21,14 @@ When stopping a service make sure that it retries stopping when either the servi
 Service layer:
 --------------
 Send alert if CPU usage remains high for too long. allow threshold to be configurable
+See if there is a way to detect that the app can be loaded into the container without having to load the assembly first (what a pain)
 Add username to exception being logged from service.
 
 Data Access Layer:
 ------------------
 Move DAO creation to IoC
 Log the Container start and stop to system audit
+Update the AppList so that the same encrypted passwords can be used on other dev machines.
 
 Server:
 -------

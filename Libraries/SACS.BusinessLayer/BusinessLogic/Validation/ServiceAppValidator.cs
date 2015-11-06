@@ -73,27 +73,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Validation
         }
 
         /// <summary>
-        /// Validates the name of the assembly.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public bool ValidateAssemblyName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                this.ErrorMessages.Add("Assembly name cannot be empty");
-                return false;
-            }
-            else if (!new Regex(@"^[a-zA-Z_]+[\w\d_]*(\.?[\w\d_]+)*$").IsMatch(name))
-            {
-                this.ErrorMessages.Add("Assembly name is not valid. Must be in the form \"name[.name] (etc)\"");
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Validates the name of the environment.
         /// </summary>
         /// <param name="name">The name.</param>
@@ -126,44 +105,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Validation
         }
 
         /// <summary>
-        /// Validates the application path.
+        /// Validates the app file path.
         /// </summary>
-        /// <param name="path">The path.</param>
+        /// <param name="name">The name of the app file to run.</param>
         /// <returns></returns>
-        public bool ValidateAppPath(string path)
+        public bool ValidateAppFilePath(string name)
         {
-            return this.ValidatePath(path, "App path");
-        }
-
-        /// <summary>
-        /// Validates the config file path path.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns></returns>
-        public bool ValidateConfigFilePath(string path)
-        {
-            return this.ValidatePath(path, "Config file path");
-        }
-
-        /// <summary>
-        /// Validates the entry file name.
-        /// </summary>
-        /// <param name="name">The name of the entry file.</param>
-        /// <returns></returns>
-        public bool ValidateEntryFileName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                this.ErrorMessages.Add("Entry file path cannot be empty");
-                return false;
-            }
-            else if (!new Regex(@"^[\w,\s-~\(\)]+(\.[\w,\s-~\(\)]+)*\.[A-Za-z]{3}$").IsMatch(name))
-            {
-                this.ErrorMessages.Add("Entry file name is not valid");
-                return false;
-            }
-
-            return true;
+            return this.ValidatePath(name, "App file path");
         }
 
         /// <summary>
@@ -198,12 +146,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Validation
             bool isValid = true;
             isValid &= this.ValidateAppName(serviceApp.Name);
             isValid &= this.ValidateStartupType(serviceApp.StartupTypeEnum);
-            isValid &= this.ValidateAssemblyName(serviceApp.Assembly);
             isValid &= this.ValidateEnvironmentName(serviceApp.Environment);
             isValid &= this.ValidateDescription(serviceApp.Description);
-            isValid &= this.ValidateAppPath(serviceApp.Path);
-            isValid &= this.ValidateConfigFilePath(serviceApp.ConfigFilePath);
-            isValid &= this.ValidateEntryFileName(serviceApp.EntryFile);
+            isValid &= this.ValidateAppFilePath(serviceApp.AppFilePath);
             isValid &= this.ValidateSchedule(serviceApp.Schedule);
 
             return isValid;

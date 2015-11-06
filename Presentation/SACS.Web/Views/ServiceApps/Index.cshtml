@@ -22,7 +22,7 @@
 					alert('Service app stop in progress...');
 					break;
 				case '#successRun':
-					alert('Service app immediate run in progress...');
+					alert('Service app is queued to run...');
 					break;
 				case '#error':
 					alert('There was a problem performing the action.\r\n\r\nSee logs for details.');
@@ -70,10 +70,16 @@
 				<div class="row">
 					<div class="row-border"></div>
 					<div class="col-md-1">
-						<img src="@Url.Content(serviceApp.ImagePath)" alt="@serviceApp.CurrentState" />
+						<img src="@Url.Content(serviceApp.ImagePath)" alt="@serviceApp.CurrentState" title="@serviceApp.LastMessage" />
 					</div>
 					<div class="col-md-3">
-						@serviceApp.Name / @serviceApp.Environment
+						<div>
+							@serviceApp.Name / @serviceApp.Environment
+						</div>
+						<div>
+							<strong>Last Message:</strong>
+							@serviceApp.LastMessage
+						</div>
 					</div>
 					<div class="col-md-3">
 						<div>
@@ -88,12 +94,19 @@
 						@serviceApp.StartupTypeEnum
 					</div>
 					<div class="col-md-2">
-						@serviceApp.Assembly
+						<div>
+							<strong>App version</strong>
+							@serviceApp.AppVersion
+						</div>
+						<div>
+							<strong>SACS version</strong>
+							@serviceApp.SacsVersion
+						</div>
 					</div>
 					<div class="col-md-2 text-right pull-right service-app-buttons">
 						<input type="submit" name="process" value="Start" class="btn btn-xs btn-success" @(serviceApp.CanStart ? "" : "disabled") />
 						<input type="submit" name="process" value="Stop" class="btn btn-xs btn-warning" @(serviceApp.CanStop ? "" : "disabled") />
-						<input type="submit" name="process" value="Run" class="btn btn-xs btn-primary" @(serviceApp.IsRunning ? "" : "disabled") />
+						<input type="submit" name="process" value="Run" class="btn btn-xs btn-primary" @(serviceApp.CanRun ? "" : "disabled") />
 					</div>
 				</div>
 			}
