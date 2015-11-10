@@ -8,7 +8,7 @@ namespace SACS.Implementation.Commands
     /// <summary>
     /// The command processors.
     /// </summary>
-    internal interface ICommandProcessor
+    internal interface ICommandHandler
     {
         /// <summary>
         /// Gets the command that the processor handles.
@@ -19,28 +19,28 @@ namespace SACS.Implementation.Commands
         string Command { get; }
 
         /// <summary>
-        /// Gets the command processor type.
+        /// Gets the command handler type.
         /// </summary>
-        CommandProcessorType Type { get; }
+        CommandHandlerType Type { get; }
 
         /// <summary>
-        /// Instructs the command processor to perform the action given the specified argument.
+        /// Instructs the command handler to perform the action given the specified argument.
         /// </summary>
         /// <param name="argument">The argument.</param>
         /// <param name="action">The action.</param>
         /// <returns></returns>
-        ICommandProcessor For(string argument, Action action);
+        ICommandHandler For(string argument, Action action);
 
         /// <summary>
         /// Processes the specified command object.
         /// </summary>
         /// <param name="commandObject">The command object.</param>
-        void Process(IDictionary<string, object> commandObject);
+        void Handle(IDictionary<string, object> commandObject);
 
         /// <summary>
         /// Processes the specified arguments list.
         /// </summary>
         /// <param name="argsList">The arguments list.</param>
-        void Process(IList<string> argsList);
+        void Handle(IList<string> argsList);
     }
 }

@@ -97,6 +97,7 @@
     <Compile Include="TestClasses\DataAccessLayer\AppListDaoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestClasses\DataAccessLayer\SystemPerformanceTests.cs" />
+    <Compile Include="TestClasses\Implementation\DirectiveHandlerTests.cs" />
     <Compile Include="TestClasses\Implementation\JsonCommandProcessorTests.cs" />
     <Compile Include="TestClasses\Implementation\ServiceAppBaseTests.cs" />
   </ItemGroup>

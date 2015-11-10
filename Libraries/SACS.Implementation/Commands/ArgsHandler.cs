@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace SACS.Implementation.Commands
 {
-    internal class ArgsProcessor : ICommandProcessor
+    internal class ArgsHandler : ICommandHandler
     {
         private Dictionary<string, Action> _actions = new Dictionary<string, Action>();
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="ArgsProcessor"/> class from being created.
+        /// Prevents a default instance of the <see cref="ArgsHandler"/> class from being created.
         /// </summary>
-        private ArgsProcessor()
+        private ArgsHandler()
         {
         }
 
@@ -29,20 +29,20 @@ namespace SACS.Implementation.Commands
         }
 
         /// <summary>
-        /// Gets the command processor type.
+        /// Gets the command handler type.
         /// </summary>
-        public CommandProcessorType Type
+        public CommandHandlerType Type
         {
-            get { return CommandProcessorType.Args; }
+            get { return CommandHandlerType.Args; }
         }
 
         /// <summary>
-        /// Instructs the command processor to perform the action given the specified argument.
+        /// Instructs the command handler to perform the action given the specified argument.
         /// </summary>
         /// <param name="argument">The argument.</param>
         /// <param name="action">The action.</param>
         /// <returns></returns>
-        public ICommandProcessor For(string argument, Action action)
+        public ICommandHandler For(string argument, Action action)
         {
             this._actions.Add(argument, action);
             return this;
@@ -52,7 +52,7 @@ namespace SACS.Implementation.Commands
         /// Processes the specified command object.
         /// </summary>
         /// <param name="commandObject">The command object.</param>
-        public void Process(IDictionary<string, object> commandObject)
+        public void Handle(IDictionary<string, object> commandObject)
         {
             throw new NotImplementedException();
         }
@@ -61,7 +61,7 @@ namespace SACS.Implementation.Commands
         /// Processes the specified arguments list.
         /// </summary>
         /// <param name="argsList">The arguments list.</param>
-        public void Process(IList<string> argsList)
+        public void Handle(IList<string> argsList)
         {
             foreach (var arg in argsList)
             {

@@ -23,14 +23,14 @@ namespace SACS.Web.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var serviceApps = new ServiceAppWrapper(this._restFactory).LoadServiceApps();
-            if (serviceApps.IsValid)
+            var appWrapper = new ServiceAppWrapper(this._restFactory).LoadServiceApps();
+            if (appWrapper.IsValid)
             {
-                return View(serviceApps.ServiceAppList);
+                return View(appWrapper.ServiceAppList);
             }
             else
             {
-                this.AddError(serviceApps.ExceptionItem.Item2);
+                this.AddError(appWrapper.ExceptionItem.Item2);
                 return View("Error");
             }
         }

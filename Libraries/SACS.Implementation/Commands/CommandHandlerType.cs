@@ -9,7 +9,7 @@ namespace SACS.Implementation.Commands
     /// <summary>
     /// The command processor type.
     /// </summary>
-    internal enum CommandProcessorType
+    internal enum CommandHandlerType
     {
         /// <summary>
         /// No processor type specified.

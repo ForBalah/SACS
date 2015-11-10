@@ -91,10 +91,10 @@ namespace SACS.Common.Configuration
         }
 
         /// <summary>
-        /// Gets the encryption key.
+        /// Gets the entropy which makes it harder to decrypt secured values.
         /// </summary>
         /// <value>
-        /// The encryption key.
+        /// The entropy value.
         /// </value>
         public byte[] EntropyValue
         {

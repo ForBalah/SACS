@@ -53,12 +53,12 @@ namespace SACS.Implementation
 
             // TODO: move this into it's own composition method.
             this._commandProcessor = new JsonCommandProcessor();
-            this._commandProcessor.HoistWith<ActionProcessor>()
+            this._commandProcessor.HoistWith<DirectiveHandler>("action")
                 .For("run", () => this.QueueExecution())
                 .For("stop", () => this.Stop())
                 .For("hide", () => this.HideWindow());
 
-            this._commandProcessor.HoistWith<ArgsProcessor>()
+            this._commandProcessor.HoistWith<ArgsHandler>()
                 .For("exit", () => this.Stop());
 
             this._executionTimer = new Timer(this.ExecutionTimer_Tick, null, 0, ExecutionInterval);
@@ -218,7 +218,7 @@ namespace SACS.Implementation
         /// Executes this instance using the specified execution context.
         /// </summary>
         /// <param name="context">The current execution context. In derived classes that implement this method, this object
-        /// information about the current execution.</param>
+        /// contains information about the current execution.</param>
         /// <remarks>
         /// <para>
         /// The context is passed in by ref to prevent direct invocation of this outside of the SACS.Implemetation and
@@ -404,9 +404,9 @@ namespace SACS.Implementation
                 mo.Get();
                 Process.GetProcessById(Convert.ToInt32(mo["ParentProcessId"]));
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                // the argument exception means that the parent process is no longer running. From Process.GetProcessById.
+                // the argument exception (from Process.GetProcessById) means that the parent process is no longer running.
                 canStop = true;
             }
 

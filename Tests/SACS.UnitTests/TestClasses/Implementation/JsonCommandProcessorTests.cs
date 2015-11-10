@@ -45,8 +45,36 @@ namespace SACS.UnitTests.TestClasses.Implementation
             var processor = new JsonCommandProcessor();
             var result = processor.Parse(input);
 
-            var value = (result["commands"] as Dictionary<string, object>)["action"];
+            var value = (result.GetCommands())["action"];
             Assert.AreEqual("run", value);
+        }
+
+        [Category("SACS.Implementation.Commands")]
+        [TestCase("action: 'run'", 0)]
+        [TestCase("action: []", 0)]
+        [TestCase("action: [ 'run' ]", 1)]
+        [TestCase("action: [ 'run', 'stop' ]", 2)]
+        [TestCase("action: [ 'run', 'stop' ], display: [ 'version' ]", 2)]
+        public void Parse_CanReturnListOfJsonParam(string input, int count)
+        {
+            var processor = new JsonCommandProcessor();
+            var result = processor.Parse(input);
+
+            var value = (result.GetCommands())["action"];
+            Assert.AreEqual(count, ((value as object[]) ?? new object[] { }).Length);
+        }
+
+        [Category("SACS.Implementation.Commands")]
+        [TestCase("{action: 'run'}", 0)]
+        [TestCase("c:\\temp\\test.exe action:'run'", 1)]
+        [TestCase("c:\\temp\\test.exe exit {action: 'run'}", 2)]
+        public void Parse_CanReturnArgsThatAreNotInterpretedAsJson(string input, int expectedArgsCount)
+        {
+            var processor = new JsonCommandProcessor();
+            var result = processor.Parse(input);
+
+            var list = result.GetArgs();
+            Assert.AreEqual(expectedArgsCount, list.Count);
         } 
     }
 }

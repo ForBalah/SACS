@@ -5,18 +5,24 @@ Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
-Remove metrics section - will use a separate metrics solution
+Redirect metrics to different analytics app
+Fix version columns
+Implmement IoC
 
 Presentation Layer - Web:
 -------------------------
 Add Help
-Complete Metrics section
+Redirect metrics to different analytics app
 Setup profiler - either MiniProfiler or Glimpse.
+Fix version columns 
+Implmement IoC
 
 Business Layer:
 ---------------
-Fix encryption to use different initialization vectors?
-When stopping a service make sure that it retries stopping when either the service is running or when it has errored out during stoppage.
+fix logging of performance information.
+Update CPU and Memory metrics to get information from the services directly
+Fix email provider
+Check if the exe loaded is a service app and show a warning if it isn't
 
 Service layer:
 --------------
@@ -34,15 +40,16 @@ Server:
 -------
 Fix formatting of email message - add subject
 send email when a service has an exception
+Implmement IoC
 
 Configuration:
 --------------
 Set the username in log4net if an exception occurs within a service
 
-ServiceAppBase
+Implementation
 --------------
 specify that command is invalid if nothing processes it.
-
-Version()
-AppVersion()
-Capabilities()
+finish command processing
+do Version()
+do AppVersion()
+do Capabilities()

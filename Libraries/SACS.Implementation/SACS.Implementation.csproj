@@ -56,14 +56,13 @@
     <Compile Include="..\..\SolutionItems\AssemblyVersion.cs">
       <Link>AssemblyVersion.cs</Link>
     </Compile>
-    <Compile Include="Commands\ActionProcessor.cs" />
+    <Compile Include="Commands\DirectiveHandler.cs" />
     <Compile Include="Commands\CommandLineProcessor.cs" />
     <Compile Include="Commands\CommandObject.cs" />
-    <Compile Include="Commands\CommandProcessorType.cs" />
-    <Compile Include="Commands\DirectiveProcessor.cs" />
-    <Compile Include="Commands\ICommandProcessor.cs" />
+    <Compile Include="Commands\CommandHandlerType.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\JsonCommandProcessor.cs" />
-    <Compile Include="Commands\ArgsProcessor.cs" />
+    <Compile Include="Commands\ArgsHandler.cs" />
     <Compile Include="Enums\State.cs" />
     <Compile Include="Execution\ExecutionMode.cs" />
     <Compile Include="ServiceAppBase.cs" />

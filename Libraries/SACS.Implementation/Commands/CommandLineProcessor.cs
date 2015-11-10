@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace SACS.Implementation.Commands
 {
@@ -9,7 +11,7 @@ namespace SACS.Implementation.Commands
     /// </summary>
     internal abstract class CommandLineProcessor
     {
-        private readonly IList<ICommandProcessor> _commandProcessors = new List<ICommandProcessor>();
+        private readonly IList<ICommandHandler> _commandHandlers = new List<ICommandHandler>();
 
         /// <summary>
         /// Processes the specified command.
@@ -27,15 +29,15 @@ namespace SACS.Implementation.Commands
         internal virtual void Process(CommandObject commandObject)
         {
             var commands = commandObject.GetCommands();
-            foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Command))
+            foreach (var processor in this._commandHandlers.Where(c => c.Type == CommandHandlerType.Command))
             {
-                processor.Process(commands);
+                processor.Handle(commands);
             }
 
             var args = commandObject.GetArgs();
-            foreach (var processor in this._commandProcessors.Where(c => c.Type == CommandProcessorType.Args))
+            foreach (var processor in this._commandHandlers.Where(c => c.Type == CommandHandlerType.Args))
             {
-                processor.Process(args);
+                processor.Handle(args);
             }
         }
 
@@ -51,17 +53,23 @@ namespace SACS.Implementation.Commands
         /// </summary>
         /// <typeparam name="ICommandProcessor">The command processor to create.</typeparam>
         /// <param name="args">The constructor args.</param>
-        /// <returns>A new instance of a <see cref="ICommandProcessor"/>.</returns>
+        /// <returns>A new instance of a <see cref="ICommandHandler"/>.</returns>
         /// <remarks>This should really go into a builder pattern. However, this works given
         /// the intentions. If a need arises to refactor this into a dedicated builder pattern
         /// then that will be done accordingly.</remarks>
-        internal ICommandProcessor HoistWith<T>(params object[] args) where T : ICommandProcessor
+        internal ICommandHandler HoistWith<T>(params object[] args) where T : ICommandHandler
         {
             Type newType = typeof(T);
+            
+            ICommandHandler handler = (ICommandHandler)Activator.CreateInstance(
+                newType,
+                BindingFlags.NonPublic | BindingFlags.Instance,
+                null,
+                args,
+                CultureInfo.InvariantCulture);
 
-            ICommandProcessor processor = (ICommandProcessor)Activator.CreateInstance(newType, true);
-            this._commandProcessors.Add(processor);
-            return processor;
+            this._commandHandlers.Add(handler);
+            return handler;
         }
 
         /// <summary>
