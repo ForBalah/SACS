@@ -19,27 +19,25 @@ Implmement IoC
 
 Business Layer:
 ---------------
-fix logging of performance information.
-Update CPU and Memory metrics to get information from the services directly
+fix logging of performance information - Update CPU and Memory metrics to get information from the services directly
 Fix email provider
-Check if the exe loaded is a service app and show a warning if it isn't
+Check if the exe loaded is a service app and show a warning if it isn't.
 
 Service layer:
 --------------
-Send alert if CPU usage remains high for too long. allow threshold to be configurable
-See if there is a way to detect that the app can be loaded into the container without having to load the assembly first (what a pain)
+Send alert if CPU usage remains high for too long?
+See if there is a way to detect that the app can be loaded into the container without having to load the assembly first? (will be a pain and might not be possible)
 Add username to exception being logged from service.
 
 Data Access Layer:
 ------------------
 Move DAO creation to IoC
-Log the Container start and stop to system audit
-Update the AppList so that the same encrypted passwords can be used on other dev machines.
+Log the Container start and stop to system audit and to event viewer.
 
 Server:
 -------
 Fix formatting of email message - add subject
-send email when a service has an exception
+Fix sending of emails when a service has an exception - create a proper email provider
 Implmement IoC
 
 Configuration:

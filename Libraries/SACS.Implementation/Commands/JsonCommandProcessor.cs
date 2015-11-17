@@ -64,12 +64,11 @@ namespace SACS.Implementation.Commands
                 var result = serializer.DeserializeObject(cleanedCommand);
                 commandTree.Add("commands", result);
 
-                // TODO: process the left-hand side
                 ParseArgs(leftCommand, commandTree);
             }
             catch (ArgumentException)
             {
-                // TODO: add check to see if duplicate keys are inserted. If so, through a different error (with the original wrapped inside)
+                // TODO: add check to see if duplicate keys are inserted. If so, throw a different error (with the original wrapped inside)
                 // split the right-hand side, add it to the left-hand side and try again
                 var splitCommand = rightCommand.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 if (splitCommand.Length > 0)

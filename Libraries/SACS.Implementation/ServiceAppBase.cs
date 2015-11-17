@@ -344,7 +344,7 @@ namespace SACS.Implementation
             {
                 if (!this.IsLoaded || this.IsStopped)
                 {
-                    throw new InvalidOperationException("Cannot execute ServiceApp is not loaded or has stopped.");
+                    throw new InvalidOperationException("Cannot execute. Service app is not loaded or has stopped.");
                 }
 
                 bool createContext = false;
