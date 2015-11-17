@@ -82,7 +82,7 @@ namespace SACS.Windows.Controls
                 this._ToDate = value;
                 this.ToDatePicker.SelectedDate = value;
             }
-        } 
+        }
 
         #region Methods
 
@@ -101,7 +101,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Updates the TreeView.
         /// </summary>
-        [Obsolete]
+        [Obsolete("Dropped in favour of using an external anaylytics framework. This will not be continued.")]
         private void UpdateTreeView()
         {
             this.DataTreeView.Items.Clear();
@@ -131,7 +131,7 @@ namespace SACS.Windows.Controls
                     treeItem.Items.Add(childItem);
                 }
             }
-            
+
             this.DataTreeView.UpdateLayout();
         }
 
@@ -142,7 +142,7 @@ namespace SACS.Windows.Controls
         /// <param name="content">The content.</param>
         /// <param name="width">The width.</param>
         /// <returns></returns>
-        [Obsolete]
+        [Obsolete("Dropped in favour of using an external anaylytics framework. This will not be continued.")]
         private UIElement CreateLabel(Panel panel, string content, double? width)
         {
             var label = new Label
@@ -167,7 +167,7 @@ namespace SACS.Windows.Controls
         /// <summary>
         /// Sets the chart data.
         /// </summary>
-        [Obsolete]
+        [Obsolete("Dropped in favour of using an external anaylytics framework. This will not be continued.")]
         private void UpdateChartData()
         {
             foreach (var dataItem in this._appPerformances.Where(d => d.IsSelected))
@@ -230,7 +230,7 @@ namespace SACS.Windows.Controls
             }
         }
 
-        #endregion
+        #endregion Methods
 
         /// <summary>
         /// Handles the Loaded event of the UserControl control.

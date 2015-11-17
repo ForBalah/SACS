@@ -55,7 +55,7 @@ namespace SACS.DataAccessLayer.Models
         public string Environment { get; set; }
 
         /// <summary>
-        /// Gets the assembly file location.
+        /// Gets or sets the assembly file location.
         /// </summary>
         /// <value>
         /// The assembly path.

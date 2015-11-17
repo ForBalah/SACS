@@ -14,16 +14,16 @@ namespace SACS.Common.Lock
     /// </summary>
     public class AsyncLock
     {
-        private readonly AsyncSemaphore m_semaphore;
-        private readonly Task<Releaser> m_releaser;
+        private readonly AsyncSemaphore _semaphore;
+        private readonly Task<Releaser> _releaser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AsyncLock"/> class.
         /// </summary>
         public AsyncLock()
         {
-            this.m_semaphore = new AsyncSemaphore(1);
-            this.m_releaser = Task.FromResult(new Releaser(this));
+            this._semaphore = new AsyncSemaphore(1);
+            this._releaser = Task.FromResult(new Releaser(this));
         }
 
         /// <summary>
@@ -32,12 +32,15 @@ namespace SACS.Common.Lock
         /// <returns></returns>
         public Task<Releaser> LockAsync()
         {
-            var wait = this.m_semaphore.WaitAsync();
+            var wait = this._semaphore.WaitAsync();
             return wait.IsCompleted ?
-                this.m_releaser :
-                wait.ContinueWith((_, state) => new Releaser((AsyncLock)state),
-                    this, CancellationToken.None,
-                    TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                this._releaser :
+                wait.ContinueWith(
+                    (_, state) => new Releaser((AsyncLock)state),
+                    this,
+                    CancellationToken.None,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
         }
 
         /// <summary>
@@ -45,15 +48,15 @@ namespace SACS.Common.Lock
         /// </summary>
         public struct Releaser : IDisposable
         {
-            private readonly AsyncLock m_toRelease;
+            private readonly AsyncLock _toRelease;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Releaser"/> struct.
             /// </summary>
-            /// <param name="toRelease"></param>
+            /// <param name="toRelease">The async lock to release.</param>
             internal Releaser(AsyncLock toRelease)
             {
-                this.m_toRelease = toRelease;
+                this._toRelease = toRelease;
             }
 
             /// <summary>
@@ -61,8 +64,10 @@ namespace SACS.Common.Lock
             /// </summary>
             public void Dispose()
             {
-                if (this.m_toRelease != null)
-                    this.m_toRelease.m_semaphore.Release();
+                if (this._toRelease != null)
+                {
+                    this._toRelease._semaphore.Release();
+                }
             }
         }
     }

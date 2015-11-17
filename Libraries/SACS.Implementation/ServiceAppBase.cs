@@ -441,7 +441,6 @@ namespace SACS.Implementation
         /// <summary>
         /// Hides the console window.
         /// </summary>
-        /// <returns></returns>
         private void HideWindow()
         {
             var handle = GetConsoleWindow();
@@ -494,18 +493,18 @@ namespace SACS.Implementation
         /// <summary>
         /// Gets the standard handle.
         /// </summary>
-        /// <param name="std">The standard.</param>
+        /// <param name="stdHandle">The standard.</param>
         /// <returns></returns>
         [DllImport("kernel32.dll")]
-        private static extern IntPtr GetStdHandle(StdHandle std);
+        private static extern IntPtr GetStdHandle(StdHandle stdHandle);
 
         /// <summary>
         /// Closes the handle.
         /// </summary>
-        /// <param name="hdl">The HDL.</param>
+        /// <param name="handle">The HDL.</param>
         /// <returns></returns>
         [DllImport("kernel32.dll")]
-        private static extern bool CloseHandle(IntPtr hdl);
+        private static extern bool CloseHandle(IntPtr handle);
 
         /// <summary>
         /// Gets the console window.
@@ -515,13 +514,13 @@ namespace SACS.Implementation
         private static extern IntPtr GetConsoleWindow();
 
         /// <summary>
-        /// Show/hide the window
+        /// Show/hide the window.
         /// </summary>
-        /// <param name="hWnd"></param>
-        /// <param name="nCmdShow"></param>
+        /// <param name="windowHandle">The window handle.</param>
+        /// <param name="showCommand">Value represending the show command.</param>
         /// <returns></returns>
         [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private static extern bool ShowWindow(IntPtr windowHandle, int showCommand);
 
         #endregion P/Invoke
     }

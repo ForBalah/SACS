@@ -305,8 +305,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                     }
                 }
 
-                process.Started += ServiceAppProcess_Started;
-                process.Error += ServiceAppProcess_Error;
+                process.Started += this.ServiceAppProcess_Started;
+                process.Error += this.ServiceAppProcess_Error;
             }
             catch (ArgumentException)
             {
@@ -350,8 +350,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 this.ServiceAppProcesses.Remove(process);
 
                 // This will prevent leaks
-                process.Started -= ServiceAppProcess_Started;
-                process.Error -= ServiceAppProcess_Error;
+                process.Started -= this.ServiceAppProcess_Started;
+                process.Error -= this.ServiceAppProcess_Error;
             }
 
             if (appListDao != null)

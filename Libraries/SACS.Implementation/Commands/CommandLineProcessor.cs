@@ -60,7 +60,7 @@ namespace SACS.Implementation.Commands
         internal ICommandHandler HoistWith<T>(params object[] args) where T : ICommandHandler
         {
             Type newType = typeof(T);
-            
+
             ICommandHandler handler = (ICommandHandler)Activator.CreateInstance(
                 newType,
                 BindingFlags.NonPublic | BindingFlags.Instance,
@@ -79,10 +79,11 @@ namespace SACS.Implementation.Commands
         /// <param name="commandTree">The command tree.</param>
         protected static void ParseArgs(string leftCommand, Dictionary<string, object> commandTree)
         {
+            var separator = new[] { ' ' };
             var splitCommand = leftCommand.Split('"')
                 .Select((element, index) => index % 2 == 0 ? //// If even index
                     //// Split the item
-                    element.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) :
+                    element.Split(separator, StringSplitOptions.RemoveEmptyEntries) :
                     //// Keep the entire item
                     new string[] { element })
                 .SelectMany(element => element).ToList();

@@ -67,7 +67,7 @@ namespace SACS.Implementation.Commands
                 // TODO: process the left-hand side
                 ParseArgs(leftCommand, commandTree);
             }
-            catch (ArgumentException ae)
+            catch (ArgumentException)
             {
                 // TODO: add check to see if duplicate keys are inserted. If so, through a different error (with the original wrapped inside)
                 // split the right-hand side, add it to the left-hand side and try again

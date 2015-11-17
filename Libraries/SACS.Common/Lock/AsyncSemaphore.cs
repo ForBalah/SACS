@@ -12,9 +12,9 @@ namespace SACS.Common.Lock
     /// </summary>
     public class AsyncSemaphore
     {
-        private readonly static Task s_completed = Task.FromResult(true);
-        private readonly Queue<TaskCompletionSource<bool>> m_waiters = new Queue<TaskCompletionSource<bool>>();
-        private int m_currentCount;
+        private static readonly Task completed = Task.FromResult(true);
+        private readonly Queue<TaskCompletionSource<bool>> _waiters = new Queue<TaskCompletionSource<bool>>();
+        private int _currentCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AsyncSemaphore"/> class.
@@ -22,8 +22,12 @@ namespace SACS.Common.Lock
         /// <param name="initialCount">The initial allowed lock count.</param>
         public AsyncSemaphore(int initialCount)
         {
-            if (initialCount < 0) throw new ArgumentOutOfRangeException("initialCount");
-            m_currentCount = initialCount;
+            if (initialCount < 0)
+            {
+                throw new ArgumentOutOfRangeException("initialCount");
+            }
+
+            this._currentCount = initialCount;
         }
 
         /// <summary>
@@ -32,17 +36,17 @@ namespace SACS.Common.Lock
         /// <returns></returns>
         public Task WaitAsync()
         {
-            lock (m_waiters)
+            lock (this._waiters)
             {
-                if (m_currentCount > 0)
+                if (this._currentCount > 0)
                 {
-                    --m_currentCount;
-                    return s_completed;
+                    this._currentCount--;
+                    return completed;
                 }
                 else
                 {
                     var waiter = new TaskCompletionSource<bool>();
-                    m_waiters.Enqueue(waiter);
+                    this._waiters.Enqueue(waiter);
                     return waiter.Task;
                 }
             }
@@ -54,15 +58,22 @@ namespace SACS.Common.Lock
         public void Release()
         {
             TaskCompletionSource<bool> toRelease = null;
-            lock (m_waiters)
+            lock (this._waiters)
             {
-                if (m_waiters.Count > 0)
-                    toRelease = m_waiters.Dequeue();
+                if (this._waiters.Count > 0)
+                {
+                    toRelease = this._waiters.Dequeue();
+                }
                 else
-                    ++m_currentCount;
+                {
+                    this._currentCount++;
+                }
             }
+
             if (toRelease != null)
+            {
                 toRelease.SetResult(true);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ namespace SACS.Implementation.Commands
         /// <summary>
         /// Prevents a default instance of the <see cref="DirectiveHandler"/> class from being created.
         /// </summary>
+        /// <param name="directive">The name of the directive</param>
         private DirectiveHandler(string directive)
         {
             this.Command = directive;
