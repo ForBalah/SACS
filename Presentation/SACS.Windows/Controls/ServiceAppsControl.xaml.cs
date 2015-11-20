@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Gat.Controls;
 using Microsoft.Win32;
 using SACS.BusinessLayer.BusinessLogic.Schedule;
 using SACS.BusinessLayer.BusinessLogic.Validation;
@@ -17,8 +15,6 @@ using SACS.BusinessLayer.Views;
 using SACS.Common.Helpers;
 using SACS.DataAccessLayer.Factories;
 using SACS.DataAccessLayer.Models;
-using SACS.DataAccessLayer.WebAPI.Interfaces;
-using SACS.Windows.ViewModels;
 using SACS.Windows.Windows;
 using Enums = SACS.Common.Enums;
 
@@ -389,6 +385,7 @@ namespace SACS.Windows.Controls
                     Environment = this.ServiceAppEnvironmentTextBox.Text,
                     Description = this.DescriptionTextBox.Text,
                     AppFilePath = this.AppFilePathTextBox.Text,
+                    SendSuccessNotification = this.SendSuccessCheckBox.IsChecked ?? false,
                     Username = this.IdentityLabel.Text,
                     Password = this.PasswordHiddenLabel.Text,
                     Schedule = this.ScheduleHiddenLabel.Text
@@ -465,6 +462,7 @@ namespace SACS.Windows.Controls
             this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = serviceApp.Description;
             this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = serviceApp.Environment;
             this.AppFilePathLabel.Text = this.AppFilePathTextBox.Text = serviceApp.AppFilePath;
+            this.SendSuccessCheckBox.IsChecked = serviceApp.SendSuccessNotification;
             this.IdentityLabel.Text = this.IdentityLabel.Text = serviceApp.Username;
             this.PasswordHiddenLabel.Text = serviceApp.Password;
             this.ScheduleLabel.Text = ScheduleUtility.GetFullDescription(serviceApp.Schedule);
@@ -495,6 +493,7 @@ namespace SACS.Windows.Controls
             this.DescriptionTextBox.Visibility = MapVisibility(isEdit);
             this.AppFilePathLabel.Visibility = MapVisibility(!isEdit);
             this.AppFilePathDockPanel.Visibility = MapVisibility(isEdit);
+            this.SendSuccessCheckBox.IsEnabled = isEdit;
             this.IdentitySelectButton.Visibility = MapVisibility(isEdit);
             this.ScheduleSelectButton.Visibility = MapVisibility(isEdit);
             this.EditServiceAppButton.Visibility = MapVisibility(!isEdit);

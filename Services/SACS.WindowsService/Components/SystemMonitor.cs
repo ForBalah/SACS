@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using SACS.BusinessLayer.BusinessLogic.Application;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
@@ -22,6 +23,7 @@ namespace SACS.WindowsService.Components
         private static SystemMonitor monitor = new SystemMonitor();
         private static ILog _log = LogManager.GetLogger(typeof(SystemMonitor));
         private static DateTime? _startServiceTime;
+
         private static PerformanceCounter ramCounter = new PerformanceCounter
             {
                 CategoryName = "Process",
@@ -63,6 +65,12 @@ namespace SACS.WindowsService.Components
 
             decimal? cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
             decimal ramValue = (decimal)ramCounter.NextValue() / 1024 / 1024;
+
+            foreach (var process in AppManager.Current.ServiceAppProcesses)
+            {
+                ramValue += process.GetCurrentRamValue();
+            }
+
             string message = "Monitor reports as running";
 
             _log.Debug(

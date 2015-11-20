@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 11/06/2015 13:33:31
+-- Date Created: 11/20/2015 14:00:32
 -- Generated from EDMX file: C:\Development\Projects\Open Box\SACS\Libraries\SACS.DataAccessLayer\Entitites\SACSEntities.edmx
 -- --------------------------------------------------
 
@@ -62,7 +62,8 @@ CREATE TABLE [dbo].[ServiceApplication] (
     [CreatedDate] datetime  NOT NULL,
     [ModifiedByUserId] nvarchar(max)  NULL,
     [ModifiedDate] datetime  NULL,
-    [StartupType] int  NOT NULL
+    [StartupType] int  NOT NULL,
+    [SendSuccessNotification] bit  NOT NULL
 );
 GO
 

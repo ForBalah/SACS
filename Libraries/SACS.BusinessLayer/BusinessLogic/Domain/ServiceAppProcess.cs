@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,7 +80,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <summary>
         /// Occurs when the service app has successfully executed.
         /// </summary>
-        public event EventHandler Executed;
+        public event EventHandler<ServiceAppSuccessEventArgs> Executed;
 
         /// <summary>
         /// Occurs when the service app generated an uncaught error.
@@ -185,6 +186,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
                 try
                 {
+                    // we get the version info here so that any issues with the app start are grouped together
+                    var assemblyName = AssemblyName.GetAssemblyName(this.ServiceApp.AppFilePath);
+                    this.ServiceApp.AppVersion = assemblyName.Version;
+
                     this._process.Start();
                 }
                 catch (Exception e)
@@ -244,6 +249,32 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         }
 
         /// <summary>
+        /// Gets the current Memory performance
+        /// </summary>
+        /// <returns></returns>
+        internal decimal GetCurrentRamValue()
+        {
+            try
+            {
+                return this._process.VirtualMemorySize64;
+            }
+            catch (InvalidOperationException)
+            {
+                // the process is not running.
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current CPU performance
+        /// </summary>
+        /// <returns></returns>
+        internal decimal GetCurrentCpuValue()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Processes the message.
         /// </summary>
         /// <param name="message">The message.</param>
@@ -283,6 +314,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     else if (messageObject.state != null)
                     {
                         return this.ProcessState(messageObject.state.Value as string);
+                    }
+                    else if (messageObject.result != null)
+                    {
+                        this.ProcessResult(messageObject.result.Value as string);
+                        return false;
                     }
                 }
             }
@@ -332,6 +368,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         }
 
         /// <summary>
+        /// Processes the result value from the service app, based on the
+        /// </summary>
+        /// <param name="result">The result message to process.</param>
+        private void ProcessResult(string result)
+        {
+        }
+
+        /// <summary>
         /// Processes the state.
         /// </summary>
         /// <param name="stateName">Name of the state.</param>
@@ -365,7 +409,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
                     if (this.Executed != null)
                     {
-                        this.Executed(this, new EventArgs());
+                        this.Executed(this, new ServiceAppSuccessEventArgs(this.ServiceApp, DateTime.Now));
                     }
 
                     break;

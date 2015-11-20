@@ -78,7 +78,7 @@ namespace SACS.Implementation.Commands
         /// <param name="actionCommand">The action command.</param>
         private void HandleDirectiveList(object actionCommand)
         {
-            List<object> instructions = actionCommand as List<object>;
+            IEnumerable<object> instructions = actionCommand as IEnumerable<object>;
 
             if (instructions != null)
             {

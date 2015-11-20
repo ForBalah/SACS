@@ -52,6 +52,7 @@ namespace SACS.DataAccessLayer.DataAccess
             appEntity.ModifiedByUserId = Environment.UserName;
             appEntity.ModifiedDate = DateTime.Now;
             appEntity.AppFilePath = app.AppFilePath;
+            appEntity.SendSuccessNotification = app.SendSuccessNotification;
 
             AuditType appAuditType = created ? AuditType.Create : AuditType.Update;
             appEntity.ServiceApplicationAudits.Add(new ServiceApplicationAudit

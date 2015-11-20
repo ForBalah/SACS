@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -58,6 +59,10 @@ namespace SACS.Implementation
                 .For("stop", () => this.Stop())
                 .For("hide", () => this.HideWindow());
 
+            this._commandProcessor.HoistWith<DirectiveHandler>("info")
+                .For("appVersion", () => this.EmitAppVersion())
+                .For("sacsVersion", () => this.EmitSacsVersion());
+
             this._commandProcessor.HoistWith<ArgsHandler>()
                 .For("exit", () => this.Stop());
 
@@ -68,6 +73,28 @@ namespace SACS.Implementation
         #endregion Constructors and Destructors
 
         #region Properties
+
+        /// <summary>
+        /// Gets the version of this app.
+        /// </summary>
+        public string AppVersion
+        {
+            get
+            {
+                return Assembly.GetAssembly(this.GetType()).GetName().Version.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Gets the version of SACS.Implementation this is using.
+        /// </summary>
+        public string SacsVersion
+        {
+            get
+            {
+                return Assembly.GetAssembly(typeof(ServiceAppBase)).GetName().Version.ToString();
+            }
+        }
 
         /// <summary>
         /// Gets the service app's execution mode when calling "run".
@@ -436,6 +463,22 @@ namespace SACS.Implementation
 
                 cleanUpTimer = CleanUpInterval;
             }
+        }
+
+        /// <summary>
+        /// The sends the app version to the output stream
+        /// </summary>
+        private void EmitAppVersion()
+        {
+            Messages.WriteResult(this.AppVersion);
+        }
+
+        /// <summary>
+        /// The sends the SACS.Implementation version to the output stream
+        /// </summary>
+        private void EmitSacsVersion()
+        {
+            Messages.WriteResult(this.SacsVersion);
         }
 
         /// <summary>

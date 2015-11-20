@@ -77,6 +77,7 @@
     <Compile Include="BusinessLogic\Domain\ServiceAppProcessCollection.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppMessages.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppProcess.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppSuccessEventArgs.cs" />
     <Compile Include="BusinessLogic\Email\EmailHelper.cs" />
     <Compile Include="BusinessLogic\Email\EmailMessage.cs" />
     <Compile Include="BusinessLogic\Email\EmailProvider.cs" />

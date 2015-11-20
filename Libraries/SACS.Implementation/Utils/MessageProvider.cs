@@ -45,5 +45,13 @@ namespace SACS.Implementation.Utils
         /// </summary>
         /// <param name="state">The state.</param>
         internal abstract string SerializeAsState(Enums.State state);
+
+        /// <summary>
+        /// Serializes the message as a result message - this is context specific and is not processed by
+        /// the log.
+        /// </summary>
+        /// <param name="message">The message to serialize.</param>
+        /// <returns></returns>
+        internal abstract string SerializeAsResult(string message);
     }
 }

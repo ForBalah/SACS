@@ -19,7 +19,7 @@ namespace SACS.UnitTests.TestClasses.Implementation
         public void Start_WillBeAbleToStartAVanillaServiceApp()
         {
             var fakeMessageProvider = Substitute.For<MessageProvider>();
-            fakeMessageProvider.SerializeAsInfo(string.Empty).ReturnsForAnyArgs("started");
+            fakeMessageProvider.SerializeAsState(SACS.Implementation.Enums.State.Started).ReturnsForAnyArgs("Started");
             Messages.Provider = fakeMessageProvider;
 
             bool initializedSuccessfully = false;
@@ -29,17 +29,16 @@ namespace SACS.UnitTests.TestClasses.Implementation
 
             app.Start();
 
-            fakeMessageProvider.ReceivedWithAnyArgs().SerializeAsInfo(string.Empty);
+            fakeMessageProvider.Received(1).SerializeAsState(SACS.Implementation.Enums.State.Started);
             Assert.IsTrue(initializedSuccessfully);
         }
 
         [Test]
         public void QueueExecution_CanQueueIdempotentExecutionCorrectly()
         {
-
         }
 
-        class FakeServiceApp : ServiceAppBase
+        private class FakeServiceApp : ServiceAppBase
         {
             public Action<ServiceAppContext> ExecuteResolver { get; set; }
             public Action InitializeResolver { get; set; }

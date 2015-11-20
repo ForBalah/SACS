@@ -23,6 +23,7 @@ After fixing up the edmx, perform the following:
 - check out SACS.mdf
 - right-click on the surface and click Generate Database From Model. The path should point to Entities\SACSEntities.edmx.sql
 - copy the script to a new query window pointing to the attached SACS.mdf file.
+- remove the USE at the top so that it runs
 
 Troubleshooting Builds:
 -----------------------

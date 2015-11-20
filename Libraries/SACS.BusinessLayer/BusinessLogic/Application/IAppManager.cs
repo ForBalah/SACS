@@ -33,7 +33,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <returns></returns>
         IList<ServiceApp> ServiceApps { get; }
 
-        #endregion
+        /// <summary>
+        /// Gets the service application domains.
+        /// </summary>
+        /// <value>
+        /// The service application domains.
+        /// </value>
+        ServiceAppProcessCollection ServiceAppProcesses { get; }
+
+        #endregion Properties
 
         #region Methods
 
@@ -115,6 +123,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// </returns>
         string UpdateServiceApp(ServiceApp serviceApp, IServiceAppDao dao, IAppListDao appListDao);
 
-        #endregion
+        #endregion Methods
     }
 }

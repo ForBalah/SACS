@@ -52,6 +52,14 @@ namespace SACS.Common.Configuration
         string SupportEmailTemplatePath { get; }
 
         /// <summary>
+        /// Gets the successful execution email template path.
+        /// </summary>
+        /// <value>
+        /// The successful exeuction email template path.
+        /// </value>
+        string SuccessEmailTemplatePath { get; }
+
+        /// <summary>
         /// Gets the support email address.
         /// </summary>
         /// <value>

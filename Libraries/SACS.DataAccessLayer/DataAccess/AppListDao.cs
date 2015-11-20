@@ -120,6 +120,7 @@ namespace SACS.DataAccessLayer.DataAccess
                 new XAttribute("environment", app.Environment),
                 new XAttribute("appFilePath", app.AppFilePath),
                 new XAttribute("startupType", app.StartupType),
+                new XAttribute("sendSuccess", app.SendSuccessNotification),
                 new XAttribute("schedule", app.Schedule),
                 new XAttribute("username", app.Username),
                 new XAttribute("password", app.Password));
@@ -191,12 +192,16 @@ namespace SACS.DataAccessLayer.DataAccess
                 return null;
             }
 
+            bool sendSuccess = false;
+            bool.TryParse(element.Attribute("sendSuccess").EmptyIfNull("sendSuccess").Value, out sendSuccess);
+
             ServiceApp app = new ServiceApp
             {
                 Name = element.Attribute("name").Value,
                 Description = element.Attribute("description").Value,
                 Environment = element.Attribute("environment").Value,
                 AppFilePath = element.Attribute("appFilePath").Value,
+                SendSuccessNotification = sendSuccess,
                 StartupTypeEnum = EnumHelper.Parse<StartupType>(element.Attribute("startupType").Value),
                 Schedule = element.Attribute("schedule").Value,
                 Username = element.Attribute("username").EmptyIfNull("username").Value,

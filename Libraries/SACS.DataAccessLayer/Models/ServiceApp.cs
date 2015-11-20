@@ -175,6 +175,12 @@ namespace SACS.DataAccessLayer.Models
         public string Password { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether notifications should be sent when
+        /// the service app successfully completes execution.
+        /// </summary>
+        public bool SendSuccessNotification { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether the service app can be started.
         /// </summary>
         /// <value>
@@ -276,6 +282,7 @@ namespace SACS.DataAccessLayer.Models
                 (this.Description ?? string.Empty).Equals(comp.Description, StringComparison.OrdinalIgnoreCase) &&
                 (this.Environment ?? string.Empty).Equals(comp.Environment, StringComparison.OrdinalIgnoreCase) &&
                 (this.AppFilePath ?? string.Empty).Equals(comp.AppFilePath, StringComparison.OrdinalIgnoreCase) &&
+                this.SendSuccessNotification == comp.SendSuccessNotification &&
                 this.StartupType == comp.StartupType &&
                 (this.Schedule ?? string.Empty).Equals(comp.Schedule) &&
                 (this.Username ?? string.Empty).Equals(comp.Username, StringComparison.OrdinalIgnoreCase) &&

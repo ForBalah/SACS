@@ -116,7 +116,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <value>
         /// The service application domains.
         /// </value>
-        protected ServiceAppProcessCollection ServiceAppProcesses
+        public ServiceAppProcessCollection ServiceAppProcesses
         {
             get
             {
@@ -141,6 +141,19 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         private void ServiceAppProcess_Error(object sender, ServiceAppErrorEventArgs e)
         {
             EmailHelper.SendSupportEmail(_emailer, e.Exception, e.Name);
+        }
+
+        /// <summary>
+        /// Handles the Executed event of the ServiceAppProcess control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ServiceAppSuccessEventArgs"/> instance containing the event data.</param>
+        private void ServiceAppProcess_Executed(object sender, ServiceAppSuccessEventArgs e)
+        {
+            if (e.SendSuccessNotification)
+            {
+                EmailHelper.SendSuccessEmail(_emailer, e.Name, e.Environment, e.FinishTime);
+            }
         }
 
         /// <summary>
@@ -307,6 +320,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
                 process.Started += this.ServiceAppProcess_Started;
                 process.Error += this.ServiceAppProcess_Error;
+                process.Executed += this.ServiceAppProcess_Executed;
             }
             catch (ArgumentException)
             {
@@ -352,6 +366,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 // This will prevent leaks
                 process.Started -= this.ServiceAppProcess_Started;
                 process.Error -= this.ServiceAppProcess_Error;
+                process.Executed -= this.ServiceAppProcess_Executed;
             }
 
             if (appListDao != null)

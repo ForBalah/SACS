@@ -88,5 +88,16 @@ namespace SACS.Implementation.Utils
         {
             Console.WriteLine(Provider.SerializeAsState(state));
         }
+
+        /// <summary>
+        /// Writes the provided string as a "result" message to the standard output stream.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="args">The arguments.</param>
+        public static void WriteResult(string format, params object[] args)
+        {
+            string cleanString = format ?? string.Empty;
+            Console.WriteLine(Provider.SerializeAsResult(string.Format(cleanString, args)));
+        }
     }
 }

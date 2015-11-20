@@ -133,6 +133,20 @@ namespace SACS.Common.Configuration
         }
 
         /// <summary>
+        /// Gets the successful execution email template path.
+        /// </summary>
+        /// <value>
+        /// The successful exeuction email template path.
+        /// </value>
+        public string SuccessEmailTemplatePath
+        {
+            get
+            {
+                return "Templates/Email/SuccessEmailTemplate.html";
+            }
+        }
+
+        /// <summary>
         /// Gets the support email address.
         /// </summary>
         /// <value>

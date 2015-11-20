@@ -97,11 +97,11 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
-        public void ValidateEntryFileName_ValidName()
+        public void ValidateEntryFileName_InvalidName()
         {
             bool isValid = _validator.ValidateAppFilePath("~SACS.Test App (3_3).exe");
-            Assert.IsTrue(isValid);
-            Assert.IsFalse(_validator.ErrorMessages.Any());
+            Assert.IsFalse(isValid);
+            Assert.IsTrue(_validator.ErrorMessages.Any());
         }
     }
 }
