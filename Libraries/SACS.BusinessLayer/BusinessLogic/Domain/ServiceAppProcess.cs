@@ -271,7 +271,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <returns></returns>
         internal decimal GetCurrentCpuValue()
         {
-            throw new NotImplementedException();
+            try
+            {
+                PerformanceCounter cpuCounter = new PerformanceCounter("Process", "% Processor Time", this._process.ProcessName);
+                return (decimal)cpuCounter.NextValue();
+            }
+            catch (InvalidOperationException)
+            {
+                // the process is not running.
+                return 0;
+            }
         }
 
         /// <summary>
@@ -309,6 +318,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     }
                     else if (messageObject.performance != null)
                     {
+                        this.ProcessPerformance(messageObject.performance);
                         return false;
                     }
                     else if (messageObject.state != null)
@@ -330,6 +340,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
 
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Processes the performance object
+        /// </summary>
+        /// <param name="performanceObject">The performace object to process.</param>
+        private void ProcessPerformance(dynamic performanceObject)
+        {
+            // TODO: create IOC and get the DAO from that.
         }
 
         /// <summary>

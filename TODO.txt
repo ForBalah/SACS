@@ -36,8 +36,6 @@ Log the Container start and stop to system audit and to event viewer.
 
 Server:
 -------
-Fix formatting of email message - add subject
-Fix sending of emails when a service has an exception - create a proper email provider
 Implmement IoC
 
 Configuration:
@@ -47,7 +45,4 @@ Set the username in log4net if an exception occurs within a service
 Implementation
 --------------
 specify that command is invalid if nothing processes it.
-finish command processing
-do Version()
-do AppVersion()
 do Capabilities()

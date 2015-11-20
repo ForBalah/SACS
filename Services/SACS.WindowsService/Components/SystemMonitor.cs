@@ -66,9 +66,11 @@ namespace SACS.WindowsService.Components
             decimal? cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
             decimal ramValue = (decimal)ramCounter.NextValue() / 1024 / 1024;
 
+            // Add on each service app
             foreach (var process in AppManager.Current.ServiceAppProcesses)
             {
-                ramValue += process.GetCurrentRamValue();
+                cpuValue += process.GetCurrentCpuValue() / (decimal)Environment.ProcessorCount;
+                ramValue += process.GetCurrentRamValue() / 1024 / 1024;
             }
 
             string message = "Monitor reports as running";
