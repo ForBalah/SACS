@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Entitites;
+using SACS.DataAccessLayer.Models;
 
 namespace SACS.DataAccessLayer.DataAccess
 {
@@ -67,69 +68,35 @@ namespace SACS.DataAccessLayer.DataAccess
         }
 
         /// <summary>
-        /// Records the execution start of the service app.
+        /// Records the perfromance for the service app.
         /// </summary>
         /// <param name="appName">Name of the application.</param>
-        /// <returns>
-        /// An integer reference to the performance record.
-        /// </returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">ServiceApplication to log against could not be found</exception>
-        public int RecordServiceAppExecutionStart(string appName)
+        /// <param name="performance">The performance.</param>
+        public void RecordPerfromance(string appName, AppPerformance performance)
         {
             ServiceApplication appEntity = this.GetServiceApplication(appName);
             if (appEntity == null)
             {
-                throw new KeyNotFoundException("ServiceApplication to log against could not be found");
+                throw new KeyNotFoundException("ServiceApplication to log performance against could not be found");
             }
 
-            var performance = new ServiceApplicationPerfomance
+            var perfEntity = this.FindAll<ServiceApplicationPerfomance>(p => p.Guid == performance.Guid).FirstOrDefault();
+
+            if (perfEntity == null)
             {
-                ServiceApplication = appEntity,
-                Source = this.GetType().Name,
-                StartTime = DateTime.Now
-            };
-
-            this.Insert(performance);
-
-            this.SubmitChanges();
-
-            return performance.Id;
-        }
-
-        /// <summary>
-        /// Records the service app execution end.
-        /// </summary>
-        /// <param name="appName">Name of the application.</param>
-        /// <param name="performanceId">The performance identifier.</param>
-        /// <param name="message">The message.</param>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">ServiceApplication to log against could not be found</exception>
-        public void RecordServiceAppExecutionEnd(string appName, int performanceId, string message)
-        {
-            ServiceApplication appEntity = this.GetServiceApplication(appName);
-            if (appEntity == null)
-            {
-                throw new KeyNotFoundException("ServiceApplication to log against could not be found");
-            }
-
-            var performance = this.FindAll<ServiceApplicationPerfomance>(p => p.Id == performanceId).FirstOrDefault();
-
-            if (performance == null)
-            {
-                performance = new ServiceApplicationPerfomance
+                perfEntity = new ServiceApplicationPerfomance
                 {
                     ServiceApplication = appEntity,
                     Source = this.GetType().Name,
-                    StartTime = DateTime.Now,
-                    Message = string.Format("Original performance record {0} not found. Created new one. Message: {1}", performanceId, message)
+                    Guid = performance.Guid
                 };
                 this.Insert(performance);
             }
-            else
-            {
-                performance.Message = message;
-            }
 
-            performance.EndTime = DateTime.Now;
+            perfEntity.StartTime = performance.StartTime;
+            perfEntity.EndTime = performance.EndTime;
+            perfEntity.Failed = performance.Failed;
+            perfEntity.Message = performance.Message;
 
             this.SubmitChanges();
         }

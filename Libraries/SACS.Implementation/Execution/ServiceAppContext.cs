@@ -69,6 +69,15 @@ namespace SACS.Implementation.Execution
         public DateTime? EndTime { get; internal set; }
 
         /// <summary>
+        /// Gets or sets the custom message which can be sent back for further
+        /// processing in a container.
+        /// </summary>
+        /// <value>
+        /// The message.
+        /// </value>
+        public string CustomMessage { get; set; }
+
+        /// <summary>
         /// Gets the name of the service app that this context is associated with.
         /// </summary>
         /// <value>

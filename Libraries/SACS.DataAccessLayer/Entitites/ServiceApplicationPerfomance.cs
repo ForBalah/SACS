@@ -20,6 +20,8 @@ namespace SACS.DataAccessLayer.Entitites
         public string Message { get; set; }
         public string Source { get; set; }
         public int ServiceApplicationId { get; set; }
+        public string Guid { get; set; }
+        public bool Failed { get; set; }
     
         public virtual ServiceApplication ServiceApplication { get; set; }
     }

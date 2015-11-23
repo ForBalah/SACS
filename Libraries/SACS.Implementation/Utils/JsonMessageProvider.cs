@@ -48,9 +48,8 @@ namespace SACS.Implementation.Utils
         /// Serializes the message as a performance message.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="message">The message to serialize.</param>
         /// <returns></returns>
-        internal override string SerializeAsPerformance(ServiceAppContext context, string message)
+        internal override string SerializeAsPerformance(ServiceAppContext context)
         {
             return this.serializer.Serialize(new
             {
@@ -61,7 +60,7 @@ namespace SACS.Implementation.Utils
                     startTime = context.StartTime,
                     endTime = context.EndTime,
                     failed = context.Failed,
-                    message = message
+                    message = context.CustomMessage
                 }
             });
         }

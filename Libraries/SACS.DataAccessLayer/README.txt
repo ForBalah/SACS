@@ -14,7 +14,7 @@ Connecting to the database file:
 
 See https://msdn.microsoft.com/en-us/library/ms239722.aspx for more information.
 
-Be sure to disconnect after using it. to prevent build issues.
+Be sure to disconnect after using it to prevent build issues.
 
 Updating the database:
 ----------------------

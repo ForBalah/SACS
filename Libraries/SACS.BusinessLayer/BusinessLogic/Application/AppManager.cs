@@ -188,6 +188,23 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             }
         }
 
+        /// <summary>
+        /// Handles the Performance event of the ServiceAppProcess control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ServiceAppPerformanceEventArgs"/> instance containing the event data.</param>
+        private void ServiceAppProcess_Performance(object sender, ServiceAppPerformanceEventArgs e)
+        {
+            try
+            {
+                _dao.RecordPerfromance(e.Name, e.AppPerformance);
+            }
+            catch
+            {
+                // TODO: dos something about performance logging failing.
+            }
+        }
+
         #endregion Event Handlers
 
         #region Methods
@@ -321,6 +338,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 process.Started += this.ServiceAppProcess_Started;
                 process.Error += this.ServiceAppProcess_Error;
                 process.Executed += this.ServiceAppProcess_Executed;
+                process.Performance += this.ServiceAppProcess_Performance;
             }
             catch (ArgumentException)
             {
@@ -367,6 +385,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 process.Started -= this.ServiceAppProcess_Started;
                 process.Error -= this.ServiceAppProcess_Error;
                 process.Executed -= this.ServiceAppProcess_Executed;
+                process.Performance -= this.ServiceAppProcess_Performance;
             }
 
             if (appListDao != null)

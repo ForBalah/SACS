@@ -208,7 +208,7 @@ namespace SACS.Implementation
                     Messages.WriteState(Enums.State.Executing);
                     Messages.WriteDebug("Starting exection for {0}. Time: {1}", this.DisplayName, currentContext.StartTime);
                     currentContext.StartTime = DateTimeResolver.Resolve();
-                    Messages.WritePerformance(currentContext, null);
+                    Messages.WritePerformance(currentContext);
                     try
                     {
                         this.Execute(ref currentContext);
@@ -224,7 +224,7 @@ namespace SACS.Implementation
                     {
                         currentContext.EndTime = DateTimeResolver.Resolve();
                         Messages.WriteDebug("Ended exection for {0}. Duration: {1}", this.DisplayName, currentContext.Duration);
-                        Messages.WritePerformance(currentContext, null);
+                        Messages.WritePerformance(currentContext);
                     }
 
                     this._executionContexts.Remove(currentContext);

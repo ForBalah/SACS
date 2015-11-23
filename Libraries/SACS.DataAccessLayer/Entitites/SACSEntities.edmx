@@ -75,6 +75,8 @@
     <Property Name="Message" Type="nvarchar(max)" Nullable="true" />
     <Property Name="Source" Type="nvarchar(max)" Nullable="false" />
     <Property Name="ServiceApplicationId" Type="int" Nullable="false" />
+    <Property Name="Guid" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Failed" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="ServiceApplicationHistory">
     <Key>
@@ -217,6 +219,8 @@
           <Property Name="Source" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="ServiceApplication" Relationship="SACSEntities.ServiceApplicationServiceApplicationPerfomance" FromRole="ServiceApplicationPerfomance" ToRole="ServiceApplication" />
           <Property Name="ServiceApplicationId" Type="Int32" Nullable="false" />
+          <Property Name="Guid" Type="String" Nullable="false" />
+          <Property Name="Failed" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="ServiceApplicationServiceApplicationPerfomance">
           <End Type="SACSEntities.ServiceApplication" Role="ServiceApplication" Multiplicity="1" />
@@ -330,6 +334,8 @@
           <ScalarProperty Name="Message" ColumnName="Message" />
           <ScalarProperty Name="Source" ColumnName="Source" />
           <ScalarProperty Name="ServiceApplicationId" ColumnName="ServiceApplicationId" />
+          <ScalarProperty Name="Guid" ColumnName="Guid" />
+          <ScalarProperty Name="Failed" ColumnName="Failed" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

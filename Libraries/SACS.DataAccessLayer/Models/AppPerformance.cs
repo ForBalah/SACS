@@ -19,7 +19,16 @@ namespace SACS.DataAccessLayer.Models
         /// <value>
         /// The identifier.
         /// </value>
+        [Obsolete("Dropped in favour of Guid")]
         public int Identifier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the unique identifier.
+        /// </summary>
+        /// <value>
+        /// The unique identifier.
+        /// </value>
+        public string Guid { get; set; }
 
         /// <summary>
         /// Gets or sets the start time.
@@ -92,5 +101,13 @@ namespace SACS.DataAccessLayer.Models
         /// The message.
         /// </value>
         public string Message { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the performance execution was a failure.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the performance execution was a failure; otherwise, <c>false</c>.
+        /// </value>
+        public bool Failed { get; set; }
     }
 }

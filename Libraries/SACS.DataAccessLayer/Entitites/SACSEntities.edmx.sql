@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 11/20/2015 14:00:32
--- Generated from EDMX file: C:\Development\Projects\Open Box\SACS\Libraries\SACS.DataAccessLayer\Entitites\SACSEntities.edmx
+-- Date Created: 11/21/2015 12:39:35
+-- Generated from EDMX file: E:\Development\SACS\Head\Libraries\SACS.DataAccessLayer\Entitites\SACSEntities.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -97,7 +97,9 @@ CREATE TABLE [dbo].[ServiceApplicationPerfomance] (
     [EndTime] datetime  NULL,
     [Message] nvarchar(max)  NULL,
     [Source] nvarchar(max)  NOT NULL,
-    [ServiceApplicationId] int  NOT NULL
+    [ServiceApplicationId] int  NOT NULL,
+    [Guid] nvarchar(max)  NOT NULL,
+    [Failed] bit  NOT NULL
 );
 GO
 
@@ -160,7 +162,6 @@ ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationAudit]
     REFERENCES [dbo].[ServiceApplication]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationServiceApplicationAudit'
 CREATE INDEX [IX_FK_ServiceApplicationServiceApplicationAudit]
@@ -175,7 +176,6 @@ ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationPerfomance]
     REFERENCES [dbo].[ServiceApplication]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationServiceApplicationPerfomance'
 CREATE INDEX [IX_FK_ServiceApplicationServiceApplicationPerfomance]
@@ -190,7 +190,6 @@ ADD CONSTRAINT [FK_ServiceApplicationHistoryServiceApplication]
     REFERENCES [dbo].[ServiceApplication]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationHistoryServiceApplication'
 CREATE INDEX [IX_FK_ServiceApplicationHistoryServiceApplication]

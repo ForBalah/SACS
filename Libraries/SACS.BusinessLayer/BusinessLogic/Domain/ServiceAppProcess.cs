@@ -97,6 +97,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public event EventHandler Failed;
 
+        /// <summary>
+        /// Occurs when the service app reports performance information.
+        /// </summary>
+        public event EventHandler<ServiceAppPerformanceEventArgs> Performance;
+
         #endregion Events
 
         #region Properties
@@ -240,6 +245,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (!this.IsRunning)
             {
+                // This is done in here to ensure that the object is never left in a dirty state.
                 this.CreateProcess();
             }
             else
@@ -256,7 +262,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             try
             {
-                return this._process.VirtualMemorySize64;
+                return this._process.PrivateMemorySize64;
             }
             catch (InvalidOperationException)
             {
@@ -348,7 +354,18 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <param name="performanceObject">The performace object to process.</param>
         private void ProcessPerformance(dynamic performanceObject)
         {
-            // TODO: create IOC and get the DAO from that.
+            if (this.Performance != null)
+            {
+                ServiceAppPerformanceEventArgs args = new ServiceAppPerformanceEventArgs(
+                    name: performanceObject.name.Value as string,
+                    guid: performanceObject.guid.Value as string,
+                    failed: (bool)performanceObject.failed.Value,
+                    startTime: performanceObject.startTime.Value as DateTime?,
+                    endTime: performanceObject.startTime.Value as DateTime?,
+                    message: performanceObject.message.Value as string);
+
+                this.Performance(this, args);
+            }
         }
 
         /// <summary>

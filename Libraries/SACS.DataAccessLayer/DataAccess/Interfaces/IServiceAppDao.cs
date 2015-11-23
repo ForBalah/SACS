@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SACS.DataAccessLayer.Models;
 
 namespace SACS.DataAccessLayer.DataAccess.Interfaces
 {
@@ -18,25 +19,6 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         void SaveServiceApp(Models.ServiceApp app);
 
         /// <summary>
-        /// Records the service app start.
-        /// </summary>
-        /// <param name="appName">Name of the application.</param>
-        /// <returns>
-        /// An integer reference to the performance record.
-        /// </returns>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">ServiceApplication to log against could not be found</exception>
-        int RecordServiceAppExecutionStart(string appName);
-
-        /// <summary>
-        /// Records the service app execution end.
-        /// </summary>
-        /// <param name="appName">Name of the application.</param>
-        /// <param name="performanceId">The performance identifier.</param>
-        /// <param name="message">The message.</param>
-        /// <exception cref="System.Collections.Generic.KeyNotFoundException">ServiceApplication to log against could not be found</exception>
-        void RecordServiceAppExecutionEnd(string appName, int performanceId, string message);
-
-        /// <summary>
         /// Records the service application start.
         /// </summary>
         /// <param name="appName">Name of the application.</param>
@@ -47,6 +29,13 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         void RecordServiceAppStop(string appName);
+
+        /// <summary>
+        /// Records the perfromance for the service app.
+        /// </summary>
+        /// <param name="appName">Name of the application.</param>
+        /// <param name="performance">The performance.</param>
+        void RecordPerfromance(string appName, AppPerformance performance);
 
         /// <summary>
         /// Gets the service applications active history.

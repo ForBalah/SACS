@@ -29,9 +29,8 @@ namespace SACS.Implementation.Utils
         /// Serializes the message as a performance message.
         /// </summary>
         /// <param name="context">The context.</param>
-        /// <param name="message">The message to serialize.</param>
         /// <returns></returns>
-        internal abstract string SerializeAsPerformance(ServiceAppContext context, string message);
+        internal abstract string SerializeAsPerformance(ServiceAppContext context);
 
         /// <summary>
         /// Serializes the message as an error message.

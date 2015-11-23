@@ -72,12 +72,9 @@ namespace SACS.Implementation.Utils
         /// Writes the provided string as a "performance" message to the standard output stream.
         /// </summary>
         /// <param name="context">The service app context to get the prformance information from.</param>
-        /// <param name="format">The format.</param>
-        /// <param name="args">The arguments.</param>
-        internal static void WritePerformance(ServiceAppContext context, string format, params object[] args)
+        internal static void WritePerformance(ServiceAppContext context)
         {
-            string cleanString = format ?? string.Empty;
-            Console.WriteLine(Provider.SerializeAsPerformance(context, string.Format(cleanString, args)));
+            Console.WriteLine(Provider.SerializeAsPerformance(context));
         }
 
         /// <summary>

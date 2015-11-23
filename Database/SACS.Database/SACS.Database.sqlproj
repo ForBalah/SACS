@@ -67,12 +67,14 @@
     <Folder Include="CreateScripts\Database" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
+    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\ServiceApplications.sql" />
-    <Build Include="dbo\Tables\ServiceApplicationAudits.sql" />
-    <Build Include="dbo\Tables\AuditTypes.sql" />
-    <Build Include="dbo\Tables\SystemAudits.sql" />
-    <Build Include="dbo\Tables\ServiceApplicationPerfomances.sql" />
+    <Build Include="dbo\Tables\ServiceApplication.sql" />
+    <Build Include="dbo\Tables\ServiceApplicationAudit.sql" />
+    <Build Include="dbo\Tables\SystemAudit.sql" />
+    <Build Include="dbo\Tables\ServiceApplicationPerfomance.sql" />
+    <Build Include="dbo\Tables\ServiceApplicationHistory.sql" />
+    <None Include="Scripts\ScriptsIgnoredOnImport.sql" />
   </ItemGroup>
 </Project>
