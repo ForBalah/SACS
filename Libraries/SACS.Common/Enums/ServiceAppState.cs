@@ -35,6 +35,12 @@ namespace SACS.Common.Enums
         /// The service app errored while running.
         /// </summary>
         [EnumMember]
-        Error = 3
+        Error = 3,
+
+        /// <summary>
+        /// The state of the service app (or non-service app) is unknown
+        /// </summary>
+        [EnumMember]
+        Unknown = 4,
     }
 }

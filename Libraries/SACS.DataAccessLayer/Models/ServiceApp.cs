@@ -216,15 +216,16 @@ namespace SACS.DataAccessLayer.Models
         ///   <c>true</c> if the service app is running; otherwise, <c>false</c>.
         /// </value>
         /// <remarks>
-        /// Even during a in progress execution, it should be possible to run the service.
-        /// Whether this is fulfilled will depend on the the actual service itselfand the
+        /// Even during an in-progress execution, it should be possible to run the service.
+        /// Whether this is fulfilled will depend on the the actual service itself and the
         /// execution mode which it has built into it.
         /// </remarks>
         public bool CanRun
         {
             get
             {
-                return this.CurrentState != Enums.ServiceAppState.NotLoaded;
+                return this.CurrentState != Enums.ServiceAppState.NotLoaded &&
+                    this.CurrentState != Enums.ServiceAppState.Unknown;
             }
         }
 

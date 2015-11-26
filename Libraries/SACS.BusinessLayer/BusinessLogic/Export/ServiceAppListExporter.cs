@@ -19,25 +19,27 @@ namespace SACS.BusinessLayer.BusinessLogic.Export
             "CanStart",
             "CanStop",
             "IsRunning",
-            "ImagePath"
+            "ImagePath",
+            "Comparer",
+            "CanRun"
         };
 
         /// <summary>
-        /// Exports the tab delimited.
+        /// Exports the tab delimited version of service apps.
         /// </summary>
         /// <param name="serviceAppList">The service application list.</param>
         /// <returns></returns>
-        internal string ExportTabDelimited(IList<ServiceApp> serviceAppList)
+        public string ExportTabDelimited(IList<ServiceApp> serviceAppList)
         {
             return this.ExportList(serviceAppList, "\t");
         }
 
         /// <summary>
-        /// Exports the CSV.
+        /// Exports the CSV version of service apps.
         /// </summary>
         /// <param name="serviceAppList">The service application list.</param>
         /// <returns></returns>
-        internal string ExportCsv(IList<ServiceApp> serviceAppList)
+        public string ExportCsv(IList<ServiceApp> serviceAppList)
         {
             return this.ExportList(serviceAppList, ",");
         }

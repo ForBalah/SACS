@@ -6,7 +6,7 @@ Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
 Redirect metrics to different analytics app
-Fix version columns
+Fix SACS version column
 Implmement IoC
 
 Presentation Layer - Web:
@@ -14,25 +14,23 @@ Presentation Layer - Web:
 Add Help
 Redirect metrics to different analytics app
 Setup profiler - either MiniProfiler or Glimpse.
-Fix version columns 
+Fix SACS version column
 Implmement IoC
 
 Business Layer:
 ---------------
-fix logging of performance information - Update CPU and Memory metrics to get information from the services directly
 Fix email provider
-Check if the exe loaded is a service app and show a warning if it isn't.
 
 Service layer:
 --------------
 Send alert if CPU usage remains high for too long?
-See if there is a way to detect that the app can be loaded into the container without having to load the assembly first? (will be a pain and might not be possible)
 Add username to exception being logged from service.
+Log the Container start and stop to event viewer.
+Make the email template locations configurable
 
 Data Access Layer:
 ------------------
 Move DAO creation to IoC
-Log the Container start and stop to system audit and to event viewer.
 
 Server:
 -------
@@ -45,4 +43,3 @@ Set the username in log4net if an exception occurs within a service
 Implementation
 --------------
 specify that command is invalid if nothing processes it.
-do Capabilities()

@@ -38,6 +38,7 @@ namespace SACS.Windows.Providers
                 case ServiceAppState.Error:
                     return "/SACS.Windows;component/Images/Error.png";
 
+                case ServiceAppState.Unknown:
                 default:
                     return "/SACS.Windows;component/Images/Unknown.png";
             }

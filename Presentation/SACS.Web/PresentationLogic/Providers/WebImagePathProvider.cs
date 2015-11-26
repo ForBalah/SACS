@@ -37,6 +37,7 @@ namespace SACS.Web.PresentationLogic.Providers
                 case ServiceAppState.Error:
                     return "~/Content/Images/Error.png";
 
+                case ServiceAppState.Unknown:
                 default:
                     return "~/Content/Images/Unknown.png";
             }

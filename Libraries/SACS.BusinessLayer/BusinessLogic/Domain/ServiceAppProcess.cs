@@ -126,7 +126,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             {
                 return this.ServiceApp.CurrentState == ServiceAppState.Ready ||
                     this.ServiceApp.CurrentState == ServiceAppState.Executing ||
-                    this.ServiceApp.CurrentState == ServiceAppState.Error;
+                    this.ServiceApp.CurrentState == ServiceAppState.Error ||
+                    this.IsProcessRunning();
             }
         }
 
@@ -195,6 +196,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     var assemblyName = AssemblyName.GetAssemblyName(this.ServiceApp.AppFilePath);
                     this.ServiceApp.AppVersion = assemblyName.Version;
 
+                    this.AddMessage("Starting service app", ServiceAppState.Unknown);
                     this._process.Start();
                 }
                 catch (Exception e)
@@ -220,12 +222,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
 
             // we will need to be doubly sure that the process has ended
-            if (this.IsRunning || !this._process.HasExited)
+            if (this.IsRunning)
             {
                 int attempts = 5;
                 while (attempts > 0)
                 {
-                    if (this.IsRunning || !this._process.HasExited)
+                    if (this.IsRunning)
                     {
                         Thread.Sleep(2000);
                         attempts--;
@@ -245,6 +247,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (!this.IsRunning)
             {
+                if (this.ServiceApp.CurrentState != ServiceAppState.NotLoaded)
+                {
+                    // getting to this point usually means that the app was stopped before the "stop"
+                    // state was emitted.
+                    this.AddMessage("Process exited unexpectedly.", ServiceAppState.NotLoaded);
+                }
+
                 // This is done in here to ensure that the object is never left in a dirty state.
                 this.CreateProcess();
             }
@@ -507,6 +516,27 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             this._process = new Process();
             this._process.StartInfo = startInfo;
+        }
+
+        /// <summary>
+        /// Determines whether the associated process is running.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsProcessRunning()
+        {
+            if (this._process == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                return this._process.StartTime > default(DateTime) && !this._process.HasExited;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         #endregion Methods
