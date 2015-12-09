@@ -83,6 +83,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 if (raw != true)
                 {
                     SystemPerformance.CompactData(data, SecondsInterval);
+                    SystemPerformance.LowerResolution(data, 100, 0.2m);
                 }
 
                 return data;
@@ -118,6 +119,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 if (raw != true)
                 {
                     SystemPerformance.CompactData(data, SecondsInterval);
+                    SystemPerformance.LowerResolution(data, 100, 0.2m);
                 }
 
                 return data;

@@ -30,7 +30,7 @@ namespace SACS.BusinessLayer.Extensions
             var encryptedData = ProtectedData.Protect(
                 Encoding.Unicode.GetBytes(input.ToInsecureString()),
                 ApplicationSettings.Current.EntropyValue,
-                DataProtectionScope.CurrentUser);
+                DataProtectionScope.LocalMachine);
 
             return Convert.ToBase64String(encryptedData);
         }
@@ -52,7 +52,7 @@ namespace SACS.BusinessLayer.Extensions
                 var decryptedData = ProtectedData.Unprotect(
                     Convert.FromBase64String(encryptedData),
                     ApplicationSettings.Current.EntropyValue,
-                    DataProtectionScope.CurrentUser);
+                    DataProtectionScope.LocalMachine);
 
                 return Encoding.Unicode.GetString(decryptedData).ToSecureString();
             }
