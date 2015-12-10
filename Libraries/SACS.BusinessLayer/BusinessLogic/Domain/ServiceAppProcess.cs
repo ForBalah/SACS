@@ -271,7 +271,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             try
             {
-                return this._process.PrivateMemorySize64;
+                return this._process.WorkingSet64;
             }
             catch (InvalidOperationException)
             {

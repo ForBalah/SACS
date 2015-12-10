@@ -64,13 +64,13 @@ namespace SACS.WindowsService.Components
             monitorDifference = DateTime.Now - (_startServiceTime ?? DateTime.Now);
 
             decimal? cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
-            decimal ramValue = (decimal)ramCounter.NextValue() / 1024 / 1024;
+            decimal ramValue = ((decimal)ramCounter.NextValue() / 1024m) / 1024m;
 
             // Add on each service app
             foreach (var process in AppManager.Current.ServiceAppProcesses)
             {
                 cpuValue += process.GetCurrentCpuValue() / (decimal)Environment.ProcessorCount;
-                ramValue += process.GetCurrentRamValue() / 1024 / 1024;
+                ramValue += (process.GetCurrentRamValue() / 1024m) / 1024m;
             }
 
             string message = "Monitor reports as running";
