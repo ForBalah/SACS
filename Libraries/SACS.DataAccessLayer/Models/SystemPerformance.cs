@@ -93,28 +93,26 @@ namespace SACS.DataAccessLayer.Models
             Debug.Assert(maxPoints >= 0, "maxPoints cannot be less than zero");
 
             int interval = data.Count < maxPoints ? 1 : data.Count / maxPoints;
-            decimal lastDelta = 0; // used for aggregating changes so that upward/downward trends aren't missed.
+            decimal lastValue = 0; // used for aggregating changes so that upward/downward trends aren't missed.
 
             for (var i = 0; i < data.Count; i++)
             {
                 bool removePoint = false;
-                decimal delta = 0;
-                SystemPerformance prevDataPoint = i > 0 ? data[i - 1] : null;
-                SystemPerformance dataPoint = data[i];
-                SystemPerformance nextDataPoint = i < data.Count - 1 ? data[i + 1] : null;
+                decimal prevValue = i > 0 ? data[i - 1].Value : 0;
+                decimal currentValue = data[i].Value;
+                decimal nextValue = i < data.Count - 1 ? data[i + 1].Value : 0;
 
                 // keeping points that are either on the interval or outside of the threshold
                 // will ensure that we keep seeing accurate data.
-                bool isResolutionPoint = i % interval == 0;
+                bool isResolutionPoint = i % interval == 0 || i == data.Count - 1;
 
                 if (!isResolutionPoint)
                 {
-                    if (prevDataPoint != null)
-                    {
-                        delta = SafeDivide(Math.Abs(dataPoint.Value - prevDataPoint.Value), dataPoint.Value);
-                    }
+                    decimal delta = SafeDivide(Math.Abs(currentValue - lastValue), currentValue);
+                    decimal prevDelta = SafeDivide(Math.Abs(currentValue - prevValue), currentValue);
+                    decimal nextDelta = SafeDivide(Math.Abs(currentValue - nextValue), currentValue);
 
-                    if (delta + lastDelta < threshold)
+                    if (delta < threshold && prevDelta < threshold && nextDelta < threshold)
                     {
                         removePoint = true;
                     }
@@ -125,8 +123,10 @@ namespace SACS.DataAccessLayer.Models
                     data.RemoveAt(i);
                     i--; // adjust i
                 }
-
-                lastDelta = delta;
+                else
+                {
+                    lastValue = currentValue;
+                }
             }
         }
 

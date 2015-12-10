@@ -1,7 +1,6 @@
 Presentation Layer - Windows:
 -----------------------------
 Add Help
-Create the Management Console installer?
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
@@ -24,9 +23,8 @@ Fix email provider
 Service layer:
 --------------
 Send alert if CPU usage remains high for too long?
-Add username to exception being logged from service.
 Log the Container start and stop to event viewer.
-Make the email template locations configurable
+Create more useful error messages when the agent fails to start
 
 Data Access Layer:
 ------------------
@@ -35,6 +33,13 @@ Move DAO creation to IoC
 Server:
 -------
 Implmement IoC
+Create Wizard:
+- Install service as user
+- Have a means to update the config files
+- Specify database to use, install database, give access
+- Specify email service location
+- Install Windows management console installer
+- (optional) Install web (or use a different installer)
 
 Configuration:
 --------------
