@@ -15,7 +15,7 @@ namespace SACS.TestApp
     /// This test app shows an example of how to setup an app for loading into a Service Application
     /// Container This example is a typical console app which can also be executed in any separate
     /// process such as debugging or as an independent Scheduled Task. For simplicity the ServiceAppBase
-    /// is implemented directly on the executable, but in a real app, it could be implemented in a
+    /// is implemented directly on the executable class, but in a real app, it could be implemented in a
     /// separate class.
     /// </summary>
     public class Program : ServiceAppBase
@@ -37,13 +37,28 @@ namespace SACS.TestApp
         {
             // Will write to the console when in debug mode, and will write to the SAC that it is hosted in.
             Console.WriteLine(ConfigurationManager.AppSettings["Message"]);
-            Thread.Sleep(5000); // dummy wait
 
             bool throwEx;
             if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwEx) && throwEx)
             {
                 throw new TestException("Testing exception throwing");
             }
+
+            bool testMemory;
+            if (bool.TryParse(ConfigurationManager.AppSettings["TestMemory"], out testMemory) && testMemory)
+            {
+                Random rand = new Random();
+                StringBuilder builder = new StringBuilder();
+                //string s = "";
+
+                for (long i = 0; i < 250 * 1000L * 1000L; i++)
+                {
+                    //s += (char)rand.Next(32, 127);
+                    builder.Append((char)rand.Next(32, 127));
+                }
+            }
+
+            Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["SleepSeconds"]) * 1000);
         }
 
         protected override void Initialze()

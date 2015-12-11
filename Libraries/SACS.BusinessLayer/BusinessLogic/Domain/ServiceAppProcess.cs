@@ -118,16 +118,26 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         }
 
         /// <summary>
-        /// Gets a value indicating whether the process is currently running.
+        /// Gets a value indicating whether the underlying process is running.
         /// </summary>
-        public bool IsRunning
+        /// <returns></returns>
+        public bool IsProcessRunning
         {
             get
             {
-                return this.ServiceApp.CurrentState == ServiceAppState.Ready ||
-                    this.ServiceApp.CurrentState == ServiceAppState.Executing ||
-                    this.ServiceApp.CurrentState == ServiceAppState.Error ||
-                    this.IsProcessRunning();
+                if (this._process == null)
+                {
+                    return false;
+                }
+
+                try
+                {
+                    return this._process.StartTime > default(DateTime) && !this._process.HasExited;
+                }
+                catch (InvalidOperationException)
+                {
+                    return false;
+                }
             }
         }
 
@@ -221,31 +231,38 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
 
-            // we will need to be doubly sure that the process has ended
-            if (this.IsRunning)
+            try
             {
-                int attempts = 5;
-                while (attempts > 0)
+                // we will need to be doubly sure that the process has ended
+                if (this.IsProcessRunning)
                 {
-                    if (this.IsRunning)
+                    int attempts = 5;
+                    while (attempts > 0)
                     {
-                        Thread.Sleep(2000);
-                        attempts--;
+                        if (this.IsProcessRunning)
+                        {
+                            Thread.Sleep(2000);
+                            attempts--;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
-                    {
-                        break;
-                    }
-                }
 
-                if (attempts <= 0)
-                {
-                    this._process.Kill();
-                    this.AddMessage("Service app forced stopped.", ServiceAppState.NotLoaded);
+                    if (attempts <= 0)
+                    {
+                        this._process.Kill();
+                        this.AddMessage("Service app forced stopped.", ServiceAppState.NotLoaded);
+                    }
                 }
             }
+            catch (InvalidOperationException)
+            {
+                // the process must have died already but the state of this probably did not update correctly
+            }
 
-            if (!this.IsRunning)
+            if (!this.IsProcessRunning)
             {
                 if (this.ServiceApp.CurrentState != ServiceAppState.NotLoaded)
                 {
@@ -255,6 +272,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 }
 
                 // This is done in here to ensure that the object is never left in a dirty state.
+                // This is fine because the process is not running yet and just exists as a .NET object
+                // so as to prevent null reference exceptions.
                 this.CreateProcess();
             }
             else
@@ -271,7 +290,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             try
             {
-                return this._process.WorkingSet64;
+                PerformanceCounter ramCounter = new PerformanceCounter("Process", "Working Set - Private", this.GetProcessInstanceName());
+                decimal value = (decimal)ramCounter.NextValue();
+                return value;
             }
             catch (InvalidOperationException)
             {
@@ -288,8 +309,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             try
             {
-                PerformanceCounter cpuCounter = new PerformanceCounter("Process", "% Processor Time", this._process.ProcessName);
-                return (decimal)cpuCounter.NextValue();
+                PerformanceCounter cpuCounter = new PerformanceCounter("Process", "% Processor Time", this.GetProcessInstanceName());
+                decimal value = (decimal)cpuCounter.NextValue();
+                return value;
             }
             catch (InvalidOperationException)
             {
@@ -354,7 +376,31 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 return false;
             }
 
-            throw new NotImplementedException();
+            throw new NotImplementedException("Unrecognized message to process.");
+        }
+
+        /// <summary>
+        /// Gets the true instance name for the process which is running this service app.
+        /// </summary>
+        /// <returns></returns>
+        internal string GetProcessInstanceName()
+        {
+            PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
+
+            string[] instances = cat.GetInstanceNames();
+            foreach (string instance in instances)
+            {
+                using (PerformanceCounter cnt = new PerformanceCounter("Process", "ID Process", instance, true))
+                {
+                    int val = (int)cnt.RawValue;
+                    if (val == this._process.Id)
+                    {
+                        return instance;
+                    }
+                }
+            }
+
+            throw new KeyNotFoundException("Could not find performance counter instance name for current process. This is truly strange ...");
         }
 
         /// <summary>
@@ -413,7 +459,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         }
 
         /// <summary>
-        /// Processes the result value from the service app, based on the
+        /// Processes the result value from the service app, optionally sending the results if configured to do so.
         /// </summary>
         /// <param name="result">The result message to process.</param>
         private void ProcessResult(string result)
@@ -516,27 +562,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             this._process = new Process();
             this._process.StartInfo = startInfo;
-        }
-
-        /// <summary>
-        /// Determines whether the associated process is running.
-        /// </summary>
-        /// <returns></returns>
-        private bool IsProcessRunning()
-        {
-            if (this._process == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                return this._process.StartTime > default(DateTime) && !this._process.HasExited;
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
         }
 
         #endregion Methods

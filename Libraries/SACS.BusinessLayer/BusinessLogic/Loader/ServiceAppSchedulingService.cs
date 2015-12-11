@@ -27,9 +27,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
         /// <exception cref="System.InvalidOperationException">Cannot schedule an uninitialized ServiceApp.</exception>
         public string ScheduleServiceApp(ServiceAppProcess process)
         {
-            if (!process.IsRunning)
+            if (!process.IsProcessRunning)
             {
-                throw new InvalidOperationException("Cannot schedule an uninitialized ServiceApp.");
+                throw new InvalidOperationException("Cannot schedule a service app that has not been started.");
             }
 
             string errorMessage = string.Empty;
@@ -40,7 +40,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Loader
                 if (string.IsNullOrEmpty(process.ServiceApp.Schedule))
                 {
                     process.AddMessage(ServiceAppMessages.InvalidSchedule, ServiceAppState.Error);
-                    errorMessage = string.Format("Schedule for '{0}' was not defined", appName);
+                    errorMessage = string.Format("Schedule for service app '{0}' was not defined", appName);
                 }
                 else if (!this.HasJob(appName))
                 {

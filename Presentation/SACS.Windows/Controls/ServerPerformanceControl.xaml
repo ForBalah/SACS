@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="SACS.Windows.Controls.ServerPerformanceControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:datavis="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:chartingprimitives="clr-namespace:System.Windows.Controls.DataVisualization.Charting.Primitives;assembly=System.Windows.Controls.DataVisualization.Toolkit"
              xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="425" d:DesignWidth="600" Loaded="UserControl_Loaded">
     <StackPanel>
         <chartingToolkit:Chart Name="CpuChart" Height="200" TitleStyle="{DynamicResource ChartTitleStyle}" PlotAreaStyle="{DynamicResource ChartPlotAreaStyle}">
@@ -21,8 +21,13 @@
                 <chartingToolkit:LinearAxis Orientation="Y" Title="Usage (MB)" />
             </chartingToolkit:Chart.Axes>
         </chartingToolkit:Chart>
-        <Label Foreground="#FF4F4F4F" FontSize="11">
-            Note: Update frequency is 1 minute.
-        </Label>
+        <StackPanel Orientation="Horizontal">
+            <Label Foreground="#FF4F4F4F" FontSize="11">
+                Note: Update frequency is 1 minute.
+            </Label>
+            <TextBlock Margin="0,4,0,0">
+                <Hyperlink Name="GraphRefreshLink" Click="GraphRefreshLink_Click">Refresh now</Hyperlink>
+            </TextBlock>
+        </StackPanel>
     </StackPanel>
 </UserControl>

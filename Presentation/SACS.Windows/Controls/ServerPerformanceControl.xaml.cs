@@ -47,6 +47,20 @@ namespace SACS.Windows.Controls
         #region Event Handlers
 
         /// <summary>
+        /// Handles the Click event of the GraphRefreshLink control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void GraphRefreshLink_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                var dispatcher = Application.Current.Dispatcher;
+                dispatcher.BeginInvoke((Action)this.LoadGraphs);
+            }
+        }
+
+        /// <summary>
         /// Handles the Elapsed event of the Timer control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -70,7 +84,7 @@ namespace SACS.Windows.Controls
             this.LoadGraphs();
         }
 
-        #endregion
+        #endregion Event Handlers
 
         /// <summary>
         /// Sets the cpu performance data.

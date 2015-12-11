@@ -168,7 +168,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
             if (sender != null)
             {
-                if (process.IsRunning)
+                if (process.IsProcessRunning)
                 {
                     _dao.RecordServiceAppStart(process.ServiceApp.Name);
                     if (process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic)
@@ -251,7 +251,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 this._log.Error("Error in InitializeServiceApp", e);
                 throw e;
             }
-            else if (process.IsRunning)
+            else if (process.IsProcessRunning)
             {
                 var e = new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be reinitialized.", appName));
                 this._log.Error("Error in InitializeServiceApp", e);
@@ -275,7 +275,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <param name="dao">The ServiceApp DAO</param>
         public void StopAllServiceApps(IServiceAppDao dao)
         {
-            foreach (var dom in this.ServiceAppProcesses.Where(d => d.IsRunning))
+            foreach (var dom in this.ServiceAppProcesses.Where(d => d.IsProcessRunning))
             {
                 this.StopServiceApp(dom.ServiceApp.Name, dao);
             }
@@ -296,7 +296,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 var e = new IndexOutOfRangeException(string.Format("appName '{0}' could not be found to stop.", appName));
                 this._log.Error("Error in StopServiceApp", e);
             }
-            else if (process.IsRunning)
+            else if (process.IsProcessRunning)
             {
                 process.Stop();
                 this.SchedulingService.RemoveJob(appName);
@@ -374,7 +374,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
 
             if (process != null)
             {
-                if (process.IsRunning)
+                if (process.IsProcessRunning)
                 {
                     throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be updated or removed.", appName));
                 }
@@ -413,9 +413,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             {
                 throw new IndexOutOfRangeException(string.Format("ServiceApp '{0}' could not be found to execute.", appName));
             }
-            else if (!process.IsRunning)
+            else if (!process.IsProcessRunning)
             {
-                throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be initialized before it can be run.", appName));
+                throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be started before it can be run.", appName));
             }
 
             // run the service app as if the timer elapsed
