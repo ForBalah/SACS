@@ -18,10 +18,12 @@ Implmement IoC
 
 Business Layer:
 ---------------
-Fix email provider
+put log debug all over the place
+Fix email provider by making it abstract and creating an SmtpEmailProvider instead.
 
 Service layer:
 --------------
+put log debug all over the place
 Send alert if CPU usage remains high for too long?
 Log the Container start and stop to event viewer.
 Create more useful error messages when the agent fails to start
@@ -32,6 +34,7 @@ Move DAO creation to IoC
 
 Server:
 -------
+put log debug all over the place
 Implmement IoC
 Create Wizard:
 - Install service as user

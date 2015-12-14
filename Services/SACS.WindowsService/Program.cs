@@ -23,7 +23,7 @@ namespace SACS.WindowsService
         private static ServiceState _serviceState = ServiceState.Unknown;
         private static EmailProvider _emailer = new EmailProvider();
 
-        #endregion
+        #endregion Fields
 
         #region Event Handlers
 
@@ -49,7 +49,7 @@ namespace SACS.WindowsService
             }
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -68,8 +68,9 @@ namespace SACS.WindowsService
                 case TopshelfExitCode.Ok:
                     _log.Info("SACS stopped successfully.");
                     break;
+
                 default:
-                    _log.Info("Problem stopping SACS.");
+                    _log.Error("Problem stopping SACS.");
                     break;
             }
         }
@@ -111,6 +112,6 @@ namespace SACS.WindowsService
             return exitCode;
         }
 
-        #endregion
+        #endregion Methods
     }
 }

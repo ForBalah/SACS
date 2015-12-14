@@ -171,6 +171,28 @@ namespace SACS.Common.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets the Max points setting for graphs in the performance section
+        /// </summary>
+        public int PerformanceGraphMaxPoints
+        {
+            get
+            {
+                return int.Parse(ConfigurationManager.AppSettings["Performance.GraphMaxPoints"] ?? "0");
+            }
+        }
+
+        /// <summary>
+        /// Gets the threshold setting for graphs in the performance section
+        /// </summary>
+        public decimal PerformanceGraphThreshold
+        {
+            get
+            {
+                return decimal.Parse(ConfigurationManager.AppSettings["Performance.GraphThreshold"] ?? "0.0");
+            }
+        }
+
         #endregion Properties
     }
 }

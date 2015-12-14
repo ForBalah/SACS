@@ -71,5 +71,15 @@ namespace SACS.Common.Configuration
         /// Gets the Web API base address
         /// </summary>
         string WebApiBaseAddress { get; }
+
+        /// <summary>
+        /// Gets the Max points setting for graphs in the performance section
+        /// </summary>
+        int PerformanceGraphMaxPoints { get; }
+
+        /// <summary>
+        /// Gets the threshold setting for graphs in the performance section
+        /// </summary>
+        decimal PerformanceGraphThreshold { get; }
     }
 }

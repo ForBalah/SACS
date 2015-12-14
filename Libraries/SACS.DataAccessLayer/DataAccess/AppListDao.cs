@@ -142,8 +142,8 @@ namespace SACS.DataAccessLayer.DataAccess
 
             if (appElement != null)
             {
-                appElement.Remove();
                 this.TryBackupXmlFile(null, null);
+                appElement.Remove();
 
                 if (this._isLoadFromFile)
                 {

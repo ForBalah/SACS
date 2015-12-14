@@ -1,134 +1,132 @@
 ﻿@{
-    ViewBag.Title = "Server Dashboard";
+	ViewBag.Title = "Server Dashboard";
 }
 
 @section Breadcrumbs {
-    <li>@Html.ActionLink("Home", "Index", "Server")</li>
-    <li>@Html.ActionLink("Server", "Index", "Server")</li>
-    <li class="active"><span class="glyphicon glyphicon-dashboard"></span>&nbsp;Dashboard</li>
+	<li>@Html.ActionLink("Home", "Index", "Server")</li>
+	<li>@Html.ActionLink("Server", "Index", "Server")</li>
+	<li class="active"><span class="glyphicon glyphicon-dashboard"></span>&nbsp;Dashboard</li>
 }
 
 @section scripts {
-    <script type="text/javascript">
-        $(function ()
-        {
-            $('#LogRefresh').click();
-        });
-    </script>
+	<script type="text/javascript">
+		$(function () {
+			$('#LogRefresh').click();
+		});
+	</script>
 }
 
-
 <div class="row">
-    <div class="col-md-4">
-        <!-- Logs box -->
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Logs</h3>
-                <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
-                </div>
-            </div>
-            <div class="box-body">
-                <div id="LogListView"></div>
-            </div><!-- /.box-body -->
-            <div class="box-footer">
-                @Ajax.ActionLink(linkText: "Refresh",
-                    actionName: "Mini",
-                    controllerName: "Logs",
-                    routeValues: null,
-                    ajaxOptions: new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "LogListView", InsertionMode = InsertionMode.Replace },
-                    htmlAttributes: new { id = "LogRefresh" })
-            </div><!-- /.box-footer-->
-        </div><!-- /.box -->
-    </div>
-    <div class="col-md-8">
-        <!-- Configuration box -->
-        <div class="box box-success">
-            <div class="box-header with-border">
-                <h3 class="box-title">Configuration</h3>
-                <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
-                </div>
-            </div>
-            <div class="box-body">
-                <div>
-                    <label>Server Version:</label>
-                    <span>
-                        @if (ViewBag.Version != null)
-                        {
-                            @ViewBag.Version
-                        }
-                        else
-                        {
-                            <span class="text-danger">No version info available.</span>
-                        }
-                    </span>
-                </div>
-                <div>
-                    <label>SACS Service URL:</label>
-                    <span>@ViewBag.BaseAddress</span>
-                </div>
-                <div>
-                    <label>Support Email Address:</label>
-                    <span>
-                        @if (ViewBag.SupportEmail != null)
-                        {
-                            @ViewBag.SupportEmail
-                        }
-                        else
-                        {
-                            <span class="text-danger">No support email address info available.</span>
-                        }
-                    </span>
-                </div>
-                <div>
-                    <label>Default paging size:</label>
-                    <span>@ViewBag.PagingSize</span>
-                </div>
-                <div>
-                    <label>Chart Look-back Days:</label>
-                    <span>@ViewBag.LookBackDays</span>
-                </div>
-            </div><!-- /.box-body -->
-            <div class="box-footer">
-                <small>Note: Some settings can only be updated on the server.</small>
-            </div><!-- /.box-footer-->
-        </div><!-- /.box -->
-    </div>
+	<div class="col-md-4">
+		<!-- Logs box -->
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Logs</h3>
+				<div class="box-tools pull-right">
+					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
+				</div>
+			</div>
+			<div class="box-body">
+				<div id="LogListView"></div>
+			</div><!-- /.box-body -->
+			<div class="box-footer">
+				@Ajax.ActionLink(linkText: "Refresh",
+					actionName: "Mini",
+					controllerName: "Logs",
+					routeValues: null,
+					ajaxOptions: new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "LogListView", InsertionMode = InsertionMode.Replace },
+					htmlAttributes: new { id = "LogRefresh" })
+			</div><!-- /.box-footer-->
+		</div><!-- /.box -->
+	</div>
+	<div class="col-md-8">
+		<!-- Configuration box -->
+		<div class="box box-success">
+			<div class="box-header with-border">
+				<h3 class="box-title">Configuration</h3>
+				<div class="box-tools pull-right">
+					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
+				</div>
+			</div>
+			<div class="box-body">
+				<div>
+					<label>Server Version:</label>
+					<span>
+						@if (ViewBag.Version != null)
+						{
+							@ViewBag.Version
+						}
+						else
+						{
+							<span class="text-danger">No version info available.</span>
+						}
+					</span>
+				</div>
+				<div>
+					<label>SACS Service URL:</label>
+					<span>@ViewBag.BaseAddress</span>
+				</div>
+				<div>
+					<label>Support Email Address:</label>
+					<span>
+						@if (ViewBag.SupportEmail != null)
+						{
+							@ViewBag.SupportEmail
+						}
+						else
+						{
+							<span class="text-danger">No support email address info available.</span>
+						}
+					</span>
+				</div>
+				<div>
+					<label>Default paging size:</label>
+					<span>@ViewBag.PagingSize</span>
+				</div>
+				<div>
+					<label>Chart Look-back Days:</label>
+					<span>@ViewBag.LookBackDays</span>
+				</div>
+			</div><!-- /.box-body -->
+			<div class="box-footer">
+				<small>Note: Settings can only be updated on the server.</small>
+			</div><!-- /.box-footer-->
+		</div><!-- /.box -->
+	</div>
 </div>
 <div class="row">
-    <div class="col-md-6">
-        <!-- CPU performance box -->
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <h3 class="box-title">CPU Performance (% Usage)</h3>
-                <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
-                </div>
-            </div>
-            <div class="box-body">
-                @Html.Partial("_CpuPerformance")
-            </div><!-- /.box-body -->
-            <div class="box-footer">
-                <small>Note: update frequency is 1 minute.</small>
-            </div><!-- /.box-footer-->
-        </div><!-- /.box -->
-    </div>
-    <div class="col-md-6">
-        <!-- Memory box -->
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <h3 class="box-title">Memory Performance (MB)</h3>
-                <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
-                </div>
-            </div>
-            <div class="box-body">
-                @Html.Partial("_MemoryPerformance")
-            </div><!-- /.box-body -->
-            <div class="box-footer">
-                <small>Note: update frequency is 1 minute.</small>
-            </div><!-- /.box-footer-->
-        </div><!-- /.box -->
-    </div>
+	<div class="col-md-6">
+		<!-- CPU performance box -->
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">CPU Performance (% Usage)</h3>
+				<div class="box-tools pull-right">
+					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
+				</div>
+			</div>
+			<div class="box-body">
+				@Html.Partial("_CpuPerformance")
+			</div><!-- /.box-body -->
+			<div class="box-footer">
+				<small>Note: update frequency is 1 minute.</small>
+			</div><!-- /.box-footer-->
+		</div><!-- /.box -->
+	</div>
+	<div class="col-md-6">
+		<!-- Memory box -->
+		<div class="box box-info">
+			<div class="box-header with-border">
+				<h3 class="box-title">Memory Performance (MB)</h3>
+				<div class="box-tools pull-right">
+					<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><span class="glyphicon glyphicon-minus"></span></button>
+				</div>
+			</div>
+			<div class="box-body">
+				@Html.Partial("_MemoryPerformance")
+			</div><!-- /.box-body -->
+			<div class="box-footer">
+				<small>Note: update frequency is 1 minute.</small>
+			</div><!-- /.box-footer-->
+		</div><!-- /.box -->
+	</div>
 </div>

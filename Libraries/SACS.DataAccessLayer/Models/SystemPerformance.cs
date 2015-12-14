@@ -91,12 +91,13 @@ namespace SACS.DataAccessLayer.Models
         public static void LowerResolution(IList<SystemPerformance> data, int maxPoints, decimal threshold)
         {
             Debug.Assert(maxPoints >= 0, "maxPoints cannot be less than zero");
+            Debug.Assert(threshold >= 0, "maxPoints threshold be less than zero");
 
-            int interval = data.Count < maxPoints ? 1 : data.Count / maxPoints;
-            decimal lastValue = 0; // used for aggregating changes so that upward/downward trends aren't missed.
+            var intervals = GetIntervals(data.Count, maxPoints);
 
             for (var i = 0; i < data.Count; i++)
             {
+                bool isIntervalPoint = intervals.Any(a => i == a);
                 bool removePoint = false;
                 decimal prevValue = i > 0 ? data[i - 1].Value : 0;
                 decimal currentValue = data[i].Value;
@@ -104,15 +105,14 @@ namespace SACS.DataAccessLayer.Models
 
                 // keeping points that are either on the interval or outside of the threshold
                 // will ensure that we keep seeing accurate data.
-                bool isResolutionPoint = i % interval == 0 || i == data.Count - 1;
+                bool isResolutionPoint = i == 0 || i == data.Count - 1 || isIntervalPoint;
 
                 if (!isResolutionPoint)
                 {
-                    decimal delta = SafeDivide(Math.Abs(currentValue - lastValue), currentValue);
                     decimal prevDelta = SafeDivide(Math.Abs(currentValue - prevValue), currentValue);
                     decimal nextDelta = SafeDivide(Math.Abs(currentValue - nextValue), currentValue);
 
-                    if (delta < threshold && prevDelta < threshold && nextDelta < threshold)
+                    if (prevDelta < threshold && nextDelta < threshold)
                     {
                         removePoint = true;
                     }
@@ -121,11 +121,11 @@ namespace SACS.DataAccessLayer.Models
                 if (removePoint)
                 {
                     data.RemoveAt(i);
-                    i--; // adjust i
-                }
-                else
-                {
-                    lastValue = currentValue;
+                    i--;
+                    for (int j = 0; j < intervals.Count; j++)
+                    {
+                        intervals[j]--;
+                    }
                 }
             }
         }
@@ -171,7 +171,38 @@ namespace SACS.DataAccessLayer.Models
         }
 
         /// <summary>
-        /// Performs a safe division.
+        /// Returns a list of indices where the data points must be retained.
+        /// </summary>
+        /// <param name="count">The list count.</param>
+        /// <param name="maxPoints">The max points parameter</param>
+        /// <returns></returns>
+        private static IList<int> GetIntervals(int count, int maxPoints)
+        {
+            if (count == 0)
+            {
+                return new List<int>();
+            }
+
+            if (maxPoints == 0)
+            {
+                return Enumerable.Range(0, count).ToList();
+            }
+
+            var intervals = new List<int>();
+            int lastPoint = 0;
+
+            while (maxPoints > intervals.Count)
+            {
+                lastPoint = ((count - lastPoint) / (maxPoints + 1)) + lastPoint;
+                intervals.Add(lastPoint);
+                lastPoint++;
+            }
+
+            return intervals;
+        }
+
+        /// <summary>
+        /// Performs a safe division, returning 1 where the denominator is zero.
         /// </summary>
         /// <param name="numerator">The numerator.</param>
         /// <param name="denominator">The denominator.</param>

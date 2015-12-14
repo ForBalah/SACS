@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using log4net;
+using SACS.Common.Configuration;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
@@ -83,7 +82,10 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 if (raw != true)
                 {
                     SystemPerformance.CompactData(data, SecondsInterval);
-                    SystemPerformance.LowerResolution(data, 100, 0.15m);
+                    SystemPerformance.LowerResolution(
+                        data,
+                        ApplicationSettings.Current.PerformanceGraphMaxPoints,
+                        ApplicationSettings.Current.PerformanceGraphThreshold);
                 }
 
                 return data;
@@ -119,7 +121,10 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 if (raw != true)
                 {
                     SystemPerformance.CompactData(data, SecondsInterval);
-                    SystemPerformance.LowerResolution(data, 100, 0.15m);
+                    SystemPerformance.LowerResolution(
+                        data,
+                        ApplicationSettings.Current.PerformanceGraphMaxPoints,
+                        ApplicationSettings.Current.PerformanceGraphThreshold);
                 }
 
                 return data;
