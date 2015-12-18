@@ -7,6 +7,9 @@ Log detail - Update the column headers
 Redirect metrics to different analytics app
 Fix SACS version column
 Implmement IoC
+Disable the stop server button when it has been clicked (at least for 10 seconds or until the service has stopped)
+Disable the start service app button when it has been clicked
+Add button to open app location
 
 Presentation Layer - Web:
 -------------------------
@@ -15,6 +18,7 @@ Redirect metrics to different analytics app
 Setup profiler - either MiniProfiler or Glimpse.
 Fix SACS version column
 Implmement IoC
+Fix the graph refresh returning 304 after a while (hence failing)
 
 Business Layer:
 ---------------

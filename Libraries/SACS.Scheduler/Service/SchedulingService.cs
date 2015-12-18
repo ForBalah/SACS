@@ -26,16 +26,16 @@ namespace SACS.Scheduler.Service
         }
 
         #region Properties
-        
+
         /// <summary>
         /// Gets a value indicating whether this schedule service is running.
         /// </summary>
-        public bool IsRunning { get; private set; } 
+        public bool IsRunning { get; private set; }
 
-        #endregion
+        #endregion Properties
 
         #region Event Handlers
-        
+
         /// <summary>
         /// Handles the Elapsed event of the TimerMonitor control.
         /// </summary>
@@ -55,7 +55,7 @@ namespace SACS.Scheduler.Service
             }
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -180,7 +180,7 @@ namespace SACS.Scheduler.Service
         /// <param name="job">The job.</param>
         internal void ScheduleNextExecution(IServiceJob job)
         {
-            var currentTime = SystemTime.UtcNow;
+            var currentTime = SystemTime.Now;
             var nextTime = job.NextOccurence(currentTime);
             Timer timer = new Timer((nextTime - currentTime).TotalMilliseconds);
             timer.AutoReset = false;
@@ -216,8 +216,8 @@ namespace SACS.Scheduler.Service
         private static bool JobComparison(IServiceJob job, string name)
         {
             return job.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase);
-        } 
+        }
 
-        #endregion
+        #endregion Methods
     }
 }

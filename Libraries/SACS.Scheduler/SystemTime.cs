@@ -21,7 +21,21 @@ namespace SACS.Scheduler
         /// </summary>
         public static DateTime UtcNow
         {
-            get { return Resolver == null ? DateTime.UtcNow : Resolver(); }
+            get
+            {
+                return Resolver == null ? DateTime.UtcNow : Resolver();
+            }
+        }
+
+        /// <summary>
+        /// Gets the current moment in time.
+        /// </summary>
+        public static DateTime Now
+        {
+            get
+            {
+                return Resolver == null ? DateTime.Now : Resolver();
+            }
         }
     }
 }
