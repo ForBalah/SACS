@@ -10,6 +10,7 @@ Implmement IoC
 Disable the stop server button when it has been clicked (at least for 10 seconds or until the service has stopped)
 Disable the start service app button when it has been clicked
 Add button to open app location
+Add an About section
 
 Presentation Layer - Web:
 -------------------------
@@ -45,8 +46,12 @@ Create Wizard:
 - Have a means to update the config files
 - Specify database to use, install database, give access
 - Specify email service location
-- Install Windows management console installer
+- Install Windows management console
+- Configure alternate log location
 - (optional) Install web (or use a different installer)
+
+Issues to address:
+- Seems MDF and LDF files are different in the zip which could cause the service to fail.
 
 Configuration:
 --------------

@@ -61,6 +61,12 @@ namespace SACS.DataAccessLayer.DataAccess
                 {
                     // TODO: move this out of the file so that it can be injected in by a factory
                     string path = Path.GetFullPath(ApplicationSettings.Current.AppListLocation);
+
+                    if (!File.Exists(path))
+                    {
+                        throw new InvalidOperationException("AppList not found at location: " + path);
+                    }
+
                     this._AppListDoc = XDocument.Load(path);
                     this._isLoadFromFile = true;
                 }

@@ -70,7 +70,7 @@ namespace SACS.WindowsService
                     break;
 
                 default:
-                    _log.Error("Problem stopping SACS.");
+                    _log.Error("Problem stopping SACS. " + exitCode.ToString());
                     break;
             }
         }

@@ -66,16 +66,25 @@ namespace SACS.BusinessLayer.Presenters
             }
             catch (Exception e)
             {
-                this.Log.Error(e);
+                Exception miniException = new Exception(e.Message);
+                this.Log.Error(e); // always log the original
 
                 if (exceptionAction != null)
                 {
-                    exceptionAction();
+                    try
+                    {
+                        exceptionAction();
+                    }
+                    catch (Exception ee)
+                    {
+                        miniException = new Exception(string.Format("{0}{1}{2}", e.Message, Environment.NewLine, ee.Message));
+                        this.Log.Error(ee); // always log the original, not the mini
+                    }
                 }
 
                 if (showError)
                 {
-                    this.View.ShowException("Error occured while contacting server", e);
+                    this.View.ShowException("Error occured while contacting server", miniException);
                 }
             }
         }

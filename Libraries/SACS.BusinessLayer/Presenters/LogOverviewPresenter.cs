@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SACS.BusinessLayer.Views;
+using SACS.Common.Configuration;
 using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.WebAPI.Interfaces;
 
@@ -50,7 +52,16 @@ namespace SACS.BusinessLayer.Presenters
                     logs = client.GetLogNames();
                     this.View.ClearException();
                 },
-                null,
+                () =>
+                {
+                    // If the service goes down, we still need to see the log files.
+                    string location = ApplicationSettings.Current.AlternateLogLocation;
+                    if (!string.IsNullOrWhiteSpace(location))
+                    {
+                        logs = Directory.GetFiles(location);
+                        this.View.ClearException();
+                    }
+                },
                 true);
 
             return logs;

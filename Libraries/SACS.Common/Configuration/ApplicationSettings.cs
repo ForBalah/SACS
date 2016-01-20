@@ -128,7 +128,8 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return "Templates/Email/SupportEmailTemplate.html";
+                return ConfigurationManager.AppSettings["System.SupportEmailTemplate"] ??
+                    "Templates/Email/SupportEmailTemplate.html";
             }
         }
 
@@ -142,7 +143,8 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return "Templates/Email/SuccessEmailTemplate.html";
+                return ConfigurationManager.AppSettings["System.SuccessEmailTemplate"] ??
+                    "Templates/Email/SuccessEmailTemplate.html";
             }
         }
 
@@ -190,6 +192,20 @@ namespace SACS.Common.Configuration
             get
             {
                 return decimal.Parse(ConfigurationManager.AppSettings["Performance.GraphThreshold"] ?? "0.0");
+            }
+        }
+
+        /// <summary>
+        /// Gets the alternate log location. This applies mainly to the windows management console.
+        /// </summary>
+        /// <value>
+        /// The alternate log location.
+        /// </value>
+        public string AlternateLogLocation
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["Logs.AlternateLocation"];
             }
         }
 

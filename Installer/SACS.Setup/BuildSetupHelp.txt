@@ -1,0 +1,74 @@
+﻿Setting up the Installer Build:
+----------------------------------
+Unload the project, right-click to edit the project file
+
+Add these to the bottom of the file, above the <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />:
+
+  <ItemGroup>
+	<CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb" />
+  </ItemGroup>
+  
+This specifies what files to copy that will be used for zipping. For both includes and excludes, multiple paths can be added by separating them with ';'.
+
+Next, add this as-is:
+
+  <!-- create zip file with content of bin\release folder -->
+  <UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <SourceDirectory ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.IO.Compression" />
+      <Reference Include="System.IO.Compression.FileSystem" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        try
+        {
+            FileInfo zipFile = new FileInfo(OutputFilename);
+            if (zipFile.Exists)
+            {
+                File.Delete(zipFile.FullName);
+            }
+			
+			if (!Directory.Exists(zipFile.DirectoryName))
+            {
+                Directory.CreateDirectory(zipFile.DirectoryName);
+            }
+
+            ZipFile.CreateFromDirectory(SourceDirectory, zipFile.FullName, CompressionLevel.Optimal, false);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Log.LogErrorFromException(ex);
+            return false;
+        }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
+This will create a task that will perform the zipping of a specified directory into a file.
+
+To make it perform Zip action post the build of the target project, add the following:
+uncomment <Target Name="AfterBuild"> and add this code below. The condition ensures this only works for release mode.
+  <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<!-- first copy the source files specified in the CorySourceFiles ItemGroup above. -->
+    <Copy SourceFiles="@(CopySourceFiles)" DestinationFiles="@(CopySourceFiles->'$(OutDir)\..\zip_working\%(RecursiveDir)%(Filename)%(Extension)')" />
+	<!-- Perform the zip by calling the UsingTask. Make sure the DestinationFiles and the SourceDirectory are pointing to the same place -->
+	<Zip SourceDirectory="$(OutDir)\..\zip_working" OutputFilename="$(OutDir)\..\zip\$(ProjectName).zip" />
+	<!-- Clean up. NB! Double-check that the correct zip workings directory is deleted -->
+	<RemoveDir Directories="$(OutDir)\..\zip_working" />
+  </Target>
+  
+Afterwards, you might want to check the project build order - to make sure that the installer project is always the last one being build:
+
+Right-click on the solution and select Project build order... On the dependencies tab, choose the installer project and select the projects containing the zips that must be built first before the isntaller project.
+
+References:
+https://msdn.microsoft.com/en-us/library/dd723643.aspx
+https://peteris.rocks/blog/creating-release-zip-archive-with-msbuild/
+https://msdn.microsoft.com/en-us/library/3e54c37h.aspx

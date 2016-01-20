@@ -3,7 +3,6 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Web.Http;
 using System.Xml.Linq;
 using log4net;
@@ -56,7 +55,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
 
             try
             {
-                LoadLogs(logs, fullPath);
+                logLoader.LoadLogs(logs, fullPath);
             }
             catch (FileNotFoundException)
             {
@@ -67,38 +66,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
 
-            LogSearchCriteria searchCriteria = new LogSearchCriteria { PageNumber = page ?? 0, SearchQuery = search, PagingSize = size };
-            var filteredLogs = searchCriteria.FilterLogs(logs);
-            return new PagingResult<LogEntry>(filteredLogs, searchCriteria.Total, size);
-        }
-
-        /// <summary>
-        /// Loads the logs.
-        /// </summary>
-        /// <param name="logs">The log list to load into.</param>
-        /// <param name="fileName">Name of the file.</param>
-        private static void LoadLogs(IList<LogEntry> logs, string fileName)
-        {
-            int retries = 10;
-            while (retries-- > 0)
-            {
-                try
-                {
-                    string xmlData = File.ReadAllText(fileName);
-                    logLoader.LoadLogsFromXml(logs, LogLoader.AppendRoot(xmlData), true);
-                    break;
-                }
-                catch (IOException)
-                {
-                    // If there is a lock on the file due to a current log write, retry after a few moments
-                    Thread.Sleep(500);
-                }
-            }
-
-            if (retries <= 0)
-            {
-                throw new IOException("Could not get exclusive access to " + fileName);
-            }
+            return LogLoader.FilterLogs(logs, page, search, size);
         }
 
         /// <summary>
@@ -127,8 +95,8 @@ namespace SACS.WindowsService.WebAPI.Controllers
             }
 
             string fileName = (from param in rollingLogAppender.Descendants("param")
-                                  where param.Attribute("name").Value == "File"
-                                  select param.Attribute("value").Value).First();
+                               where param.Attribute("name").Value == "File"
+                               select param.Attribute("value").Value).First();
 
             string fullFileName = Path.GetFullPath(fileName);
 

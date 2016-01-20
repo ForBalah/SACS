@@ -77,9 +77,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D98189
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Web", "Presentation\SACS.Web\SACS.Web.csproj", "{36856795-8DCD-4CC6-B7B8-066EE82A3041}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{7135C702-FE3D-4CBB-8195-ACA1697A24F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SACS.Setup", "Installer\SACS.Setup\SACS.Setup.csproj", "{C97056FA-8837-475C-AAC6-B6A2F242DB43}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EB1E93D5-D542-45C7-97B5-EECE3BB81DCB} = {EB1E93D5-D542-45C7-97B5-EECE3BB81DCB}
+		{25F058DE-DEB2-4B34-9186-0A86524C3D01} = {25F058DE-DEB2-4B34-9186-0A86524C3D01}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{E2777702-6C67-48C5-AECC-E350617D0073}"
+	ProjectSection(SolutionItems) = preProject
+		Build.proj = Build.proj
+		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
+		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 13
+		SccNumberOfProjects = 14
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://cbwright.visualstudio.com/defaultcollection
 		SccLocalPath0 = .
@@ -131,6 +146,10 @@ Global
 		SccProjectTopLevelParentUniqueName12 = SACS.sln
 		SccProjectName12 = Presentation/SACS.Web
 		SccLocalPath12 = Presentation\\SACS.Web
+		SccProjectUniqueName13 = Installer\\SACS.Setup\\SACS.Setup.csproj
+		SccProjectTopLevelParentUniqueName13 = SACS.sln
+		SccProjectName13 = Installer/SACS.Setup
+		SccLocalPath13 = Installer\\SACS.Setup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,6 +207,10 @@ Global
 		{36856795-8DCD-4CC6-B7B8-066EE82A3041}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36856795-8DCD-4CC6-B7B8-066EE82A3041}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36856795-8DCD-4CC6-B7B8-066EE82A3041}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C97056FA-8837-475C-AAC6-B6A2F242DB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C97056FA-8837-475C-AAC6-B6A2F242DB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C97056FA-8837-475C-AAC6-B6A2F242DB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C97056FA-8837-475C-AAC6-B6A2F242DB43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,5 +231,6 @@ Global
 		{C22A11CB-2E21-47D2-ADC0-262AB8AD339B} = {6A02D2B9-5F25-48DC-BEA7-ACEE2C0C204F}
 		{1ECF0F84-C203-4271-BA3D-6C0E4A983107} = {6A02D2B9-5F25-48DC-BEA7-ACEE2C0C204F}
 		{605AAF26-23E7-4A19-84A2-FB267F90DB6E} = {1ECF0F84-C203-4271-BA3D-6C0E4A983107}
+		{C97056FA-8837-475C-AAC6-B6A2F242DB43} = {7135C702-FE3D-4CBB-8195-ACA1697A24F2}
 	EndGlobalSection
 EndGlobal

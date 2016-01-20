@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using SACS.Common.DTOs;
 using SACS.Common.Enums;
 using SACS.DataAccessLayer.Models;
 
@@ -29,7 +32,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
         }
 
         #region Properties
-        
+
         /// <summary>
         /// Gets the default base date
         /// </summary>
@@ -39,12 +42,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
             {
                 return new DateTime(1970, 1, 1);
             }
-        } 
+        }
 
-        #endregion
-
-        #region Methods
-        
         /// <summary>
         /// Gets the base date.
         /// </summary>
@@ -52,6 +51,25 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
         /// The base date.
         /// </value>
         public DateTime BaseDate { get; private set; }
+
+        #endregion Properties
+
+        #region Methods
+
+        /// <summary>
+        /// Filters the logs.
+        /// </summary>
+        /// <param name="logs">The logs to filter.</param>
+        /// <param name="page">The page of results to return.</param>
+        /// <param name="search">The search query (if any) to filter by.</param>
+        /// <param name="size">The size of the pages.</param>
+        /// <returns></returns>
+        public static PagingResult<LogEntry> FilterLogs(IList<LogEntry> logs, int? page, string search, int size)
+        {
+            LogSearchCriteria searchCriteria = new LogSearchCriteria { PageNumber = page ?? 0, SearchQuery = search, PagingSize = size };
+            var filteredLogs = searchCriteria.FilterLogs(logs);
+            return new PagingResult<LogEntry>(filteredLogs, searchCriteria.Total, size);
+        }
 
         /// <summary>
         /// Appends the root.
@@ -74,12 +92,41 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
         }
 
         /// <summary>
+        /// Loads the logs.
+        /// </summary>
+        /// <param name="logs">The log list to load into.</param>
+        /// <param name="fileName">Name of the file.</param>
+        public void LoadLogs(IList<LogEntry> logs, string fileName)
+        {
+            int retries = 10;
+            while (retries-- > 0)
+            {
+                try
+                {
+                    string xmlData = File.ReadAllText(fileName);
+                    this.LoadLogsFromXml(logs, LogLoader.AppendRoot(xmlData), true);
+                    break;
+                }
+                catch (IOException)
+                {
+                    // If there is a lock on the file due to a current log write, retry after a few moments
+                    Thread.Sleep(500);
+                }
+            }
+
+            if (retries <= 0)
+            {
+                throw new IOException("Could not get exclusive access to " + fileName);
+            }
+        }
+
+        /// <summary>
         /// Loads the logs from XML.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="xmlData">The XML data.</param>
         /// <param name="sortDescending">Whether logs should be sorted descending.</param>
-        public void LoadLogsFromXml(IList<LogEntry> target, string xmlData, bool sortDescending)
+        internal void LoadLogsFromXml(IList<LogEntry> target, string xmlData, bool sortDescending)
         {
             if (string.IsNullOrWhiteSpace(xmlData))
             {
@@ -117,12 +164,15 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
                                 case "log4jmachinename":
                                     entry.MachineName = value;
                                     break;
+
                                 case "log4japp":
                                     entry.App = value;
                                     break;
+
                                 case "log4net:UserName":
                                     entry.UserName = value;
                                     break;
+
                                 case "log4net:HostName":
                                     entry.HostName = value;
                                     break;
@@ -150,11 +200,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
                 {
                     target.Add(entry);
                 }
-                
+
                 itemIndex++;
             }
-        } 
+        }
 
-        #endregion
+        #endregion Methods
     }
 }

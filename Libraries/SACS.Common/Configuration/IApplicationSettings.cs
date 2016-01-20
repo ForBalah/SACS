@@ -81,5 +81,13 @@ namespace SACS.Common.Configuration
         /// Gets the threshold setting for graphs in the performance section
         /// </summary>
         decimal PerformanceGraphThreshold { get; }
+
+        /// <summary>
+        /// Gets the alternate log location.
+        /// </summary>
+        /// <value>
+        /// The alternate log location.
+        /// </value>
+        string AlternateLogLocation { get; }
     }
 }
