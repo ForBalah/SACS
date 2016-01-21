@@ -181,9 +181,9 @@ namespace SACS.Setup.Controls
         {
             if (this.Visible)
             {
-                this.SetupNavigation();
                 this.SetupServerInstallation();
                 this.SetupWindowsInstallation();
+                this.SetupNavigation();
             }
         }
 

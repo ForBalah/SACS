@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SACS.Setup.Classes;
 using SACS.Setup.Forms;
+using SACS.Setup.Log;
 
 namespace SACS.Setup
 {
@@ -162,7 +163,10 @@ namespace SACS.Setup
         /// <param name="e">The <see cref="UnhandledExceptionEventArgs"/> instance containing the event data.</param>
         public void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            this.ShowError(e.ExceptionObject as Exception);
+            var exception = e.ExceptionObject as Exception;
+            LogHelper.GetLogger(this.GetType()).Log("CurrentDomain_UnhandledException", exception);
+            this.ShowError(exception);
+            LogHelper.TryOpenLog();
         }
 
         /// <summary>
@@ -172,7 +176,9 @@ namespace SACS.Setup
         /// <param name="e">The <see cref="ThreadExceptionEventArgs"/> instance containing the event data.</param>
         public void Application_UIThreadException(object sender, ThreadExceptionEventArgs e)
         {
+            LogHelper.GetLogger(this.GetType()).Log("Application_UIThreadException", e.Exception);
             this.ShowError(e.Exception);
+            LogHelper.TryOpenLog();
         }
 
         /// <summary>
@@ -233,6 +239,7 @@ namespace SACS.Setup
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SetupForm_Load(object sender, EventArgs e)
         {
+            LogHelper.GetLogger(this.GetType()).Log("===== Starting Setup =====");
             this.Text += " - version " + this.ProductVersion;
             this.RepositionControls();
             WizardManager.Current.SelectTab("Welcome");

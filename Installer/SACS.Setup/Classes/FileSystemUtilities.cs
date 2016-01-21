@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using SACS.Setup.Log;
 using Shell32;
 
 namespace SACS.Setup.Classes
@@ -229,8 +230,16 @@ namespace SACS.Setup.Classes
             FolderItem folderItem = folder.ParseName(filenameOnly);
             if (folderItem != null)
             {
-                Shell32.ShellLinkObject link = (Shell32.ShellLinkObject)folderItem.GetLink;
-                return link.Path;
+                try
+                {
+                    Shell32.ShellLinkObject link = (Shell32.ShellLinkObject)folderItem.GetLink;
+                    return link.Path;
+                }
+                catch
+                {
+                    // TODO: Get the type of Access denied exception and consume that.
+                    // otherwise, throw it.
+                }
             }
 
             return string.Empty;

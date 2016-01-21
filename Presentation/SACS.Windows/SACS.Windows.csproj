@@ -344,7 +344,7 @@
     <SplashScreen Include="Images\splash.png" />
   </ItemGroup>
   <ItemGroup>
-	<CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\*.mdf;$(OutDir)\*.ldf" />
+	<CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\*.mdf;$(OutDir)\*.ldf;$(OutDir)\*.vshost.*" />
   </ItemGroup>
   <!-- create zip file with content of bin\release folder -->
   <UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">

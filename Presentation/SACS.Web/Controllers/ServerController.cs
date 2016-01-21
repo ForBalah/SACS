@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -37,7 +38,7 @@ namespace SACS.Web.Controllers
         /// <returns></returns>
         public ActionResult CpuData(double? offset)
         {
-            double lookBackDays = double.Parse(lookBackDaysSetting);
+            double lookBackDays = double.Parse(lookBackDaysSetting, CultureInfo.InvariantCulture);
             DateTime toDate = DateTime.Now.AddMinutes(1).AddDays(offset ?? 0);
             var perfClient = this._factory.Create<IAnalyticsClient>();
             var data = perfClient.GetSystemCpuPerformance(toDate.AddDays(-lookBackDays), toDate);
@@ -51,7 +52,7 @@ namespace SACS.Web.Controllers
         /// <returns></returns>
         public ActionResult MemoryData(double? offset)
         {
-            double lookBackDays = double.Parse(lookBackDaysSetting);
+            double lookBackDays = double.Parse(lookBackDaysSetting, CultureInfo.InvariantCulture);
             DateTime toDate = DateTime.Now.AddMinutes(1).AddDays(offset ?? 0);
             var perfClient = this._factory.Create<IAnalyticsClient>();
             var data = perfClient.GetSystemMemoryPerformance(toDate.AddDays(-lookBackDays), toDate);

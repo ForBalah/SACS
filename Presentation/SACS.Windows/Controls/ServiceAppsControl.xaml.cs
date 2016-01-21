@@ -178,6 +178,7 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
         private void HelpCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            MainWindow.OpenHelp();
         }
 
         /// <summary>

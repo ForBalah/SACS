@@ -9,14 +9,14 @@
     Title="SACS Windows Management Console" Height="825" Width="950">
     <Grid Background="#FF1A2226">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StatusBar x:Name="MainStatusBar" Grid.Row="2" Grid.Column="0" >
+        <StatusBar x:Name="MainStatusBar" Grid.Row="2" Grid.Column="0">
             <StatusBarItem>
                 <TextBlock Name="StatusTextBlock" />
             </StatusBarItem>
@@ -29,8 +29,13 @@
                 SACS
             </Label>
             <Label Name="VersionLabel" Margin="0,10,0,0" Foreground="White" />
+            <Button ToolTip="View help document" Background="{x:Null}" Margin="0,10" Name="MainHelpButton" Click="MainHelpButton_Click">
+                <StackPanel>
+                    <Image Source="/SACS.Windows;component/Images/Help.png" Height="24" Width="24" Margin="0" />
+                </StackPanel>
+            </Button>
         </StackPanel>
-        <TabControl Grid.Row="1" Foreground="#FF1A2226" >
+        <TabControl Grid.Row="1" Foreground="#FF1A2226">
             <TabItem Header="Server Management">
                 <ScrollViewer>
                     <StackPanel>
@@ -44,10 +49,10 @@
                             <Expander.Header>
                                 <Label FontWeight="Bold">Dashboard</Label>
                             </Expander.Header>
-                            <Grid >
+                            <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="300"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="300" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0">
                                     <Label Content="Logs" BorderThickness="0,0,0,1" BorderBrush="Black" />

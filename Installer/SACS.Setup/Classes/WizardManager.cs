@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SACS.Setup.Controls;
 using SACS.Setup.Forms;
+using SACS.Setup.Log;
 
 namespace SACS.Setup.Classes
 {
@@ -265,6 +266,7 @@ namespace SACS.Setup.Classes
                 }
             }
 
+            LogHelper.GetLogger(this.GetType()).Log("===== Closing Setup =====");
             return true;
         }
 

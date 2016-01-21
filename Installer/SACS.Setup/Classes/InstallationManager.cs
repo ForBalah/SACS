@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using IWshRuntimeLibrary;
+using SACS.Setup.Log;
 
 namespace SACS.Setup.Classes
 {
@@ -23,6 +24,7 @@ namespace SACS.Setup.Classes
         #region Fields
 
         private static InstallationManager _Current;
+        private static LogHelper _logger = LogHelper.GetLogger(typeof(InstallationManager));
         private ManagementObject _SacsManagementObject;
         private string _ServerInstallLocation;
         private string _WindowsConsoleInstallLocation;
@@ -311,17 +313,19 @@ namespace SACS.Setup.Classes
             var installTask = Task.Run(() =>
                 {
                     WizardManager wizard = WizardManager.Current;
-                    string tempPath = Path.GetTempPath() + "SACS.WindowsService";
+                    string tempPath = Path.Combine(Path.GetTempPath(), "SACS.WindowsService");
 
                     try
                     {
                         wizard.ShowProgressDialog();
 
+                        _logger.Log("Extraction SACS service files");
                         wizard.UpdateProgressText("Extracting files...");
                         FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.WindowsService.zip", tempPath, "SACS.WindowsService");
                         wizard.UpdateProgressValue(0.2m);
                         Thread.Sleep(300);
 
+                        _logger.Log("Stopping agent");
                         wizard.UpdateProgressText("Stopping agent...");
                         if (!this.TryStopService())
                         {
@@ -331,11 +335,13 @@ namespace SACS.Setup.Classes
                         wizard.UpdateProgressValue(0.4m);
                         Thread.Sleep(300);
 
+                        _logger.Log("Backing up " + this.ServerInstallLocation);
                         wizard.UpdateProgressText("Backing up files...");
                         FileSystemUtilities.BackupDirectory(this.ServerInstallLocation, "SACS.WindowsService");
                         wizard.UpdateProgressValue(0.6m);
                         Thread.Sleep(300);
 
+                        _logger.Log("copying service files to " + this.ServerInstallLocation);
                         wizard.UpdateProgressText("Copying over files...");
                         this.CopyServerFiles(tempPath, this.ServerInstallLocation);
                         wizard.UpdateProgressValue(0.8m);
@@ -344,6 +350,7 @@ namespace SACS.Setup.Classes
                         // register SACS if a new installation
                         if (!this.IsServerUpgrade)
                         {
+                            _logger.Log("Registering service");
                             wizard.UpdateProgressText("Registering SACS Agent as a Windows service...");
                             FileInfo exeFile = new FileInfo(this.ServerInstallLocation + "\\SACS.WindowsService.exe");
                             if (exeFile.Exists)
@@ -481,16 +488,18 @@ namespace SACS.Setup.Classes
                     this.SacsServiceController.Stop();
                     this.SacsServiceController.WaitForStatus(ServiceControllerStatus.Stopped, new TimeSpan(0, 0, 15));
                 }
-                catch (InvalidOperationException)
+                catch (InvalidOperationException ioe)
                 {
                     if (this.SacsServiceController.Status != ServiceControllerStatus.Stopped)
                     {
+                        _logger.Log("Failed to stop service", ioe);
                         MessageBox.Show("SACS Agent failed to stop. Stop the service manually and try again.", "Server install error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         success = false;
                     }
                 }
-                catch (System.ServiceProcess.TimeoutException)
+                catch (System.ServiceProcess.TimeoutException te)
                 {
+                    _logger.Log("Service stop timed out", te);
                     MessageBox.Show("Could not stop SACS agent - timeout has expired.", "Server install error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     success = false;
                 }
@@ -538,7 +547,7 @@ namespace SACS.Setup.Classes
             var installTask = Task.Run(() =>
             {
                 WizardManager wizard = WizardManager.Current;
-                string tempPath = Path.GetTempPath() + "SACS.Windows";
+                string tempPath = Path.Combine(Path.GetTempPath(), "SACS.Windows");
 
                 try
                 {

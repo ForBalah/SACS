@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -142,7 +143,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Logs
                 LogEntry entry = new LogEntry
                 {
                     Item = itemIndex,
-                    TimeStamp = this.ConvertTimestamp(double.Parse(eventElement.Attribute("timestamp").Value)),
+                    TimeStamp = this.ConvertTimestamp(double.Parse(eventElement.Attribute("timestamp").Value, CultureInfo.InvariantCulture)),
                     Thread = eventElement.Attribute("thread").Value,
                     Level = eventElement.Attribute("level").Value
                 };

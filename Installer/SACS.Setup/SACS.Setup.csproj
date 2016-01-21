@@ -142,6 +142,9 @@
     <Compile Include="Forms\SqlDeployForm.Designer.cs">
       <DependentUpon>SqlDeployForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Log\FileLogProvider.cs" />
+    <Compile Include="Log\LogHelper.cs" />
+    <Compile Include="Log\LogProvider.cs" />
     <Compile Include="SetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,7 +195,9 @@
     <EmbeddedResource Include="..\..\Presentation\SACS.Windows\bin\zip\SACS.Windows.zip">
       <Link>Resources\SACS.Windows.zip</Link>
     </EmbeddedResource>
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="AutoItX.chm" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

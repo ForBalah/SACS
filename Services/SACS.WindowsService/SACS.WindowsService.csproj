@@ -198,7 +198,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\Logs\*.xml*;$(OutDir)\AppList *.xml;$(OutDir)\*.ldf" />
+    <CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\Logs\*.xml*;$(OutDir)\AppList *.xml;$(OutDir)\*.ldf;$(OutDir)\*.vshost.*" />
   </ItemGroup>
   <!-- create zip file with content of bin\release folder -->
   <UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">

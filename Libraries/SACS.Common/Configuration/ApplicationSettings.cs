@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -180,7 +181,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return int.Parse(ConfigurationManager.AppSettings["Performance.GraphMaxPoints"] ?? "0");
+                return int.Parse(ConfigurationManager.AppSettings["Performance.GraphMaxPoints"] ?? "0", CultureInfo.InvariantCulture);
             }
         }
 
@@ -191,7 +192,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return decimal.Parse(ConfigurationManager.AppSettings["Performance.GraphThreshold"] ?? "0.0");
+                return decimal.Parse(ConfigurationManager.AppSettings["Performance.GraphThreshold"] ?? "0.0", CultureInfo.InvariantCulture);
             }
         }
 
