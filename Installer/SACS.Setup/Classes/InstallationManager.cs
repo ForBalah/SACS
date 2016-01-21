@@ -318,6 +318,7 @@ namespace SACS.Setup.Classes
                     try
                     {
                         wizard.ShowProgressDialog();
+                        wizard.UpdateProgressValue(0);
 
                         _logger.Log("Extraction SACS service files");
                         wizard.UpdateProgressText("Extracting files...");
@@ -552,6 +553,7 @@ namespace SACS.Setup.Classes
                 try
                 {
                     wizard.ShowProgressDialog();
+                    wizard.UpdateProgressValue(0);
 
                     wizard.UpdateProgressText("Extracting files...");
                     FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.Windows.zip", tempPath, "SACS.Windows");

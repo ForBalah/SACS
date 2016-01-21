@@ -19,5 +19,14 @@ namespace SACS.Setup.Config
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Updates the underlying configuration.
+        /// </summary>
+        /// <exception cref="System.NotImplementedException"></exception>
+        protected override void UpdateUnderlyingConfig()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data.EntityClient;
 using System.Data.SqlClient;
@@ -22,11 +23,12 @@ namespace SACS.Setup.Config
         /// <value>
         /// The data source.
         /// </value>
+        [Browsable(false)]
         public string DatabaseLocation
         {
             get
             {
-                var entityPart = new EntityConnectionStringBuilder(this.DefaultConnectionString.ConnectionString);
+                var entityPart = new EntityConnectionStringBuilder(this.ConnectionString.Settings.ConnectionString);
                 var sqlPart = new SqlConnectionStringBuilder(entityPart.ProviderConnectionString);
                 return string.Format("{0}\\{1}", sqlPart.DataSource, string.IsNullOrWhiteSpace(sqlPart.InitialCatalog) ? sqlPart.AttachDBFilename : sqlPart.InitialCatalog);
             }
@@ -38,7 +40,11 @@ namespace SACS.Setup.Config
         /// <value>
         /// The default connection string.
         /// </value>
-        public ConnectionStringSettings DefaultConnectionString { get; set; }
+        [Category(ConnectionStringCategory)]
+        [DisplayName("Connection String")]
+        [RefreshProperties(RefreshProperties.All)]
+        [Description("The connection string used to connect to the datasource. Default is \"(LocalDB)\v11.0\"")]
+        public ConnectionStringBuilderFacade ConnectionString { get; private set; }
 
         #endregion Properties
 
@@ -49,7 +55,16 @@ namespace SACS.Setup.Config
         /// </summary>
         protected override void ReloadProperties()
         {
-            this.DefaultConnectionString = this.UnderlyingConfig.ConnectionStrings.ConnectionStrings["SACSEntitiesContainer"];
+            this.ConnectionString = new ConnectionStringBuilderFacade(this.UnderlyingConfig.ConnectionStrings.ConnectionStrings["SACSEntitiesContainer"]);
+        }
+
+        /// <summary>
+        /// Updates the underlying configuration.
+        /// </summary>
+        protected override void UpdateUnderlyingConfig()
+        {
+            // o_O* I really need better names here.
+            this.UnderlyingConfig.ConnectionStrings.ConnectionStrings["SACSEntitiesContainer"].ConnectionString = this.ConnectionString.Settings.ConnectionString;
         }
 
         #endregion Methods

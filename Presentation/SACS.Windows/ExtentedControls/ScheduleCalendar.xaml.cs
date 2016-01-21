@@ -58,7 +58,7 @@ namespace SACS.Windows.ExtentedControls
         }
 
         #region Event Handlers
-        
+
         /// <summary>
         /// Handles the SelectedDatesChanged event of the DayCalendar control.
         /// </summary>
@@ -100,17 +100,17 @@ namespace SACS.Windows.ExtentedControls
             }
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
-        
+
         /// <summary>
         /// Higlights the days.
         /// </summary>
         private void HiglightDays()
         {
             this.NormalizeDisplayDate();
-            this._nextOccurences = ScheduleUtility.GetNextOccurrences(this.Schedule, this.DayCalendar.DisplayDate, this.DayCalendar.DisplayDate.LastDayOfMonth().AddDays(1)).ToList();
+            this._nextOccurences = ScheduleUtility.GetNextOccurrences(this.Schedule, this.DayCalendar.DisplayDate.AddMinutes(-1), this.DayCalendar.DisplayDate.LastDayOfMonth().AddDays(1)).ToList();
 
             DateTime? selectedDate = this.DayCalendar.SelectedDate ?? DateTime.Today;
             this.DayCalendar.SelectedDates.Clear();
@@ -212,6 +212,6 @@ namespace SACS.Windows.ExtentedControls
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }

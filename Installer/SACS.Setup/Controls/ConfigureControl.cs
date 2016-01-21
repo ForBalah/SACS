@@ -24,6 +24,7 @@ namespace SACS.Setup.Controls
     {
         #region Fields
 
+        private bool _hasServerPropertyChanges = false;
         private ServerConfigFile _serverConfig = new ServerConfigFile();
 
         #endregion Fields
@@ -75,6 +76,48 @@ namespace SACS.Setup.Controls
         private void RefreshAccountButton_Click(object sender, EventArgs e)
         {
             this.RefreshServerLogin();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ServerApplyButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ServerApplyButton_Click(object sender, EventArgs e)
+        {
+            this._serverConfig.SaveChanges();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ServerCancelButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ServerCancelButton_Click(object sender, EventArgs e)
+        {
+            bool canRefresh = true;
+            if (this._hasServerPropertyChanges)
+            {
+                if (MessageBox.Show("There are unsaved changes. Cancel?", "Cancel changes", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    canRefresh = false;
+                }
+            }
+
+            if (canRefresh)
+            {
+                this.RefreshServerConfig();
+            }
+        }
+
+        /// <summary>
+        /// Handles the PropertyValueChanged event of the ServerPropertyGrid control.
+        /// </summary>
+        /// <param name="s">The source of the event.</param>
+        /// <param name="e">The <see cref="PropertyValueChangedEventArgs"/> instance containing the event data.</param>
+        private void ServerPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            this._hasServerPropertyChanges = true;
         }
 
         /// <summary>
@@ -156,6 +199,14 @@ namespace SACS.Setup.Controls
             {
                 this.TooltipLabel.Text = "Click to start the SQL script deployment.";
             }
+            else if (sender == ServerApplyButton)
+            {
+                this.TooltipLabel.Text = "Will save the current changes to SACS.WindowsService.exe.config file.";
+            }
+            else if (sender == ServerCancelButton)
+            {
+                this.TooltipLabel.Text = "Will discard current changes and reload the SACS.WindowsService.exe.config file.";
+            }
         }
 
         /// <summary>
@@ -191,18 +242,23 @@ namespace SACS.Setup.Controls
             }
             else
             {
-                this.ServerApplyButton.Enabled = this.ServerCancelButton.Enabled = false;
-
-                this._serverConfig.RefreshFromFile(Path.Combine(InstallationManager.Current.CurrentServerLocation, "SACS.WindowsService.exe"));
-                this.ServerPropertyGrid.SelectedObject = this._serverConfig;
-                this.DatabaseLocationTextBox.Text = this._serverConfig.DatabaseLocation;
-
-                this.ServerApplyButton.Enabled = this.ServerCancelButton.Enabled = true;
+                this.RefreshServerConfig();
             }
         }
 
-        private void SaveServerConfig()
+        /// <summary>
+        /// Refreshes the server configuration.
+        /// </summary>
+        private void RefreshServerConfig()
         {
+            this.ServerApplyButton.Enabled = this.ServerCancelButton.Enabled = false;
+
+            this._serverConfig.RefreshFromFile(Path.Combine(InstallationManager.Current.CurrentServerLocation, "SACS.WindowsService.exe"));
+            this.ServerPropertyGrid.SelectedObject = this._serverConfig;
+            this.DatabaseLocationTextBox.Text = this._serverConfig.DatabaseLocation;
+
+            this.ServerApplyButton.Enabled = this.ServerCancelButton.Enabled = true;
+            this._hasServerPropertyChanges = false;
         }
 
         /// <summary>
@@ -220,6 +276,13 @@ namespace SACS.Setup.Controls
             }
 
             this.ServiceAccountChangeButton.Enabled = !string.IsNullOrWhiteSpace(InstallationManager.Current.ServiceAccount);
+        }
+
+        /// <summary>
+        /// Saves the server configuration.
+        /// </summary>
+        private void SaveServerConfig()
+        {
         }
 
         #endregion Methods

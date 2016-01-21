@@ -265,7 +265,10 @@ namespace SACS.Setup
         {
             if (!this.InDesignMode)
             {
+                int oldTop = MainSetupTabControl.Top;
+                int newTop = 29;
                 MainSetupTabControl.Top = 29;
+                MainSetupTabControl.Height += (oldTop - newTop);
             }
         }
 

@@ -67,6 +67,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Design" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
@@ -92,6 +93,8 @@
     <Compile Include="Classes\WizardTab.cs" />
     <Compile Include="Classes\WizardTabSettings.cs" />
     <Compile Include="Config\ConfigFile.cs" />
+    <Compile Include="Config\ConnectionStringBuilderFacade.cs" />
+    <Compile Include="Config\ConnectionStringConverter.cs" />
     <Compile Include="Config\ServerConfigFile.cs" />
     <Compile Include="Config\WindowsConsoleConfigFile.cs" />
     <Compile Include="Controls\ChecklistControl.cs">
@@ -158,6 +161,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ConfigureControl.resx">
       <DependentUpon>ConfigureControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InstallationTypeControl.resx">
       <DependentUpon>InstallationTypeControl.cs</DependentUpon>

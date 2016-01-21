@@ -328,6 +328,7 @@ namespace SACS.Setup.Controls
             this.ServerLocationTextBox.Text = currentPath;
             this.ServerBrowseButton.Visible = string.IsNullOrWhiteSpace(currentPath);
             this.ServerInstallButton.Enabled = !string.IsNullOrWhiteSpace(currentPath);
+            this.ServerInstallButton.Text = string.IsNullOrWhiteSpace(currentPath) ? "Install Now" : "Update Now";
             this.ServerVersionLabel.Text = version != null ? "Existing version: " + version : null;
         }
 
@@ -343,6 +344,7 @@ namespace SACS.Setup.Controls
             this.WindowsLocationTextBox.Text = currentPath;
             this.WindowsBrowseButton.Visible = string.IsNullOrWhiteSpace(currentPath);
             this.WindowsInstallButton.Enabled = !string.IsNullOrWhiteSpace(currentPath);
+            this.WindowsInstallButton.Text = string.IsNullOrWhiteSpace(currentPath) ? "Install Now" : "Update Now";
             this.WindowsVersionLabel.Text = version != null ? "Existing version: " + version : null;
         }
 

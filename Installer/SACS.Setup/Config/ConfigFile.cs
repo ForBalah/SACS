@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using SACS.Setup.Classes;
 
 namespace SACS.Setup.Config
 {
@@ -16,6 +17,15 @@ namespace SACS.Setup.Config
     /// </summary>
     public abstract class ConfigFile
     {
+        #region Fields
+
+        /// <summary>
+        /// The connection string category
+        /// </summary>
+        protected const string ConnectionStringCategory = "Default Connection String";
+
+        #endregion Fields
+
         #region Constructors and Destructors
 
         /// <summary>
@@ -59,20 +69,6 @@ namespace SACS.Setup.Config
         /// <exception cref="System.InvalidOperationException">SACS.WindowsService.exe.config is read-only or not found at location:  + configInfo.FullName</exception>
         public void RefreshFromFile(string exeFile)
         {
-            // TODO: clean up
-            ////if (string.IsNullOrWhiteSpace(exeFile))
-            ////{
-            ////    throw new ArgumentNullException("filename", "Must specify a filename.");
-            ////}
-
-            ////FileInfo configInfo = new FileInfo(exeFile);
-            ////bool isCorrectFile = Regex.IsMatch(configInfo.FullName, @"SACS\.WindowsService\.exe$");
-
-            ////if (!configInfo.Exists || configInfo.IsReadOnly || !isCorrectFile)
-            ////{
-            ////    throw new InvalidOperationException("SACS.WindowsService.exe.config is read-only or not found at location: " + configInfo.FullName);
-            ////}
-
             this.UnderlyingConfig = ConfigurationManager.OpenExeConfiguration(exeFile);
 
             // TODO: Put any base property loads here, then call ReloadProperties()
@@ -80,9 +76,25 @@ namespace SACS.Setup.Config
         }
 
         /// <summary>
+        /// Saves the current config changes to the underlying config file.
+        /// </summary>
+        public void SaveChanges()
+        {
+            FileSystemUtilities.BackupFile(this.UnderlyingConfig.FilePath);
+            // TODO: Put any base config updates here.
+            this.UpdateUnderlyingConfig();
+            this.UnderlyingConfig.Save(ConfigurationSaveMode.Minimal, false);
+        }
+
+        /// <summary>
         /// Reloads the properties from the configXml
         /// </summary>
         protected abstract void ReloadProperties();
+
+        /// <summary>
+        /// Updates the underlying configuration.
+        /// </summary>
+        protected abstract void UpdateUnderlyingConfig();
 
         #endregion Methods
     }

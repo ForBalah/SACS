@@ -23,37 +23,6 @@ namespace SACS.Setup.Classes
         ////public static FileSystemProvider Provider { get; set; }
 
         /// <summary>
-        /// Extracts a zip file from the specified embedded resource.
-        /// </summary>
-        /// <param name="resourceName">Name of the resource.</param>
-        /// <param name="destination">The destination.</param>
-        /// <param name="pathValidation">The path validation string.</param>
-        public static void ExtractFromResource(string resourceName, string destination, string pathValidation)
-        {
-            Debug.Assert(!string.IsNullOrWhiteSpace(resourceName));
-            Debug.Assert(!string.IsNullOrWhiteSpace(destination));
-
-            var currentAssembly = Assembly.GetAssembly(typeof(FileSystemUtilities));
-
-            if (destination.Contains(pathValidation))
-            {
-                if (Directory.Exists(destination))
-                {
-                    Directory.Delete(destination, true);
-                }
-
-                using (var archive = new ZipArchive(currentAssembly.GetManifestResourceStream(resourceName), System.IO.Compression.ZipArchiveMode.Read))
-                {
-                    archive.ExtractToDirectory(destination);
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException("Incorrect path was detected. Aborting delete: " + destination);
-            }
-        }
-
-        /// <summary>
         /// Backs up the target path into a zip with the specified backup name.
         /// </summary>
         /// <param name="targetPath">The target path.</param>
@@ -81,6 +50,20 @@ namespace SACS.Setup.Classes
 
             string archiveName = string.Format("{0}\\{1}_{2}.zip", backupPath, backupName, DateTime.Now.ToString("yyyyMMddHHmmss"));
             ZipFile.CreateFromDirectory(targetPath, archiveName, CompressionLevel.Optimal, false);
+        }
+
+        /// <summary>
+        /// Backs up the specified file to the same directory.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        public static void BackupFile(string filename)
+        {
+            FileInfo file = new FileInfo(filename);
+            string backupFilename = string.Format("{0} {1}.bak", file.FullName, DateTime.Now.ToString("yyyyMMdd HHmm"));
+            if (file.Exists)
+            {
+                File.Copy(file.FullName, backupFilename, true);
+            }
         }
 
         /// <summary>
@@ -156,6 +139,37 @@ namespace SACS.Setup.Classes
                     string.Format("Could not copy files to new destination. Maximum number of tries exceeded. File: {0}. Directory: {1}",
                         lastFile,
                         lastDirectory));
+            }
+        }
+
+        /// <summary>
+        /// Extracts a zip file from the specified embedded resource.
+        /// </summary>
+        /// <param name="resourceName">Name of the resource.</param>
+        /// <param name="destination">The destination.</param>
+        /// <param name="pathValidation">The path validation string.</param>
+        public static void ExtractFromResource(string resourceName, string destination, string pathValidation)
+        {
+            Debug.Assert(!string.IsNullOrWhiteSpace(resourceName));
+            Debug.Assert(!string.IsNullOrWhiteSpace(destination));
+
+            var currentAssembly = Assembly.GetAssembly(typeof(FileSystemUtilities));
+
+            if (destination.Contains(pathValidation))
+            {
+                if (Directory.Exists(destination))
+                {
+                    Directory.Delete(destination, true);
+                }
+
+                using (var archive = new ZipArchive(currentAssembly.GetManifestResourceStream(resourceName), System.IO.Compression.ZipArchiveMode.Read))
+                {
+                    archive.ExtractToDirectory(destination);
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Incorrect path was detected. Aborting delete: " + destination);
             }
         }
 

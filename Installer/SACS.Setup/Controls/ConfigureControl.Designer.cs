@@ -166,6 +166,7 @@
             this.ServerApplyButton.TabIndex = 6;
             this.ServerApplyButton.Text = "Apply";
             this.ServerApplyButton.UseVisualStyleBackColor = true;
+            this.ServerApplyButton.Click += new System.EventHandler(this.ServerApplyButton_Click);
             this.ServerApplyButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
             this.ServerApplyButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
             // 
@@ -178,6 +179,7 @@
             this.ServerCancelButton.TabIndex = 5;
             this.ServerCancelButton.Text = "Cancel";
             this.ServerCancelButton.UseVisualStyleBackColor = true;
+            this.ServerCancelButton.Click += new System.EventHandler(this.ServerCancelButton_Click);
             this.ServerCancelButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
             this.ServerCancelButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
             // 
@@ -201,6 +203,7 @@
             this.ServerPropertyGrid.Name = "ServerPropertyGrid";
             this.ServerPropertyGrid.Size = new System.Drawing.Size(440, 256);
             this.ServerPropertyGrid.TabIndex = 3;
+            this.ServerPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.ServerPropertyGrid_PropertyValueChanged);
             // 
             // ServiceAccountChangeButton
             // 
@@ -240,7 +243,7 @@
             this.WindowsTabPage.Location = new System.Drawing.Point(4, 24);
             this.WindowsTabPage.Name = "WindowsTabPage";
             this.WindowsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.WindowsTabPage.Size = new System.Drawing.Size(601, 357);
+            this.WindowsTabPage.Size = new System.Drawing.Size(566, 357);
             this.WindowsTabPage.TabIndex = 1;
             this.WindowsTabPage.Text = "Windows Console";
             this.WindowsTabPage.UseVisualStyleBackColor = true;

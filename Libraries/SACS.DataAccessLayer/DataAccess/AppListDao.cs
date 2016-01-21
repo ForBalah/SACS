@@ -234,7 +234,7 @@ namespace SACS.DataAccessLayer.DataAccess
                     string backupFile = string.Format(
                         "{0} {1}{2}",
                         Path.Combine(Path.GetDirectoryName(original), Path.GetFileNameWithoutExtension(original)),
-                        DateTime.Now.ToString("yyyyMMdd hhmm"),
+                        DateTime.Now.ToString("yyyyMMdd HHmm"),
                         Path.GetExtension(original));
 
                     this.AppListDoc.Save(Path.GetFullPath(backupFile));
