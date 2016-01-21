@@ -74,7 +74,7 @@ namespace SACS.Setup.Classes
         }
 
         /// <summary>
-        /// Gets the current server location.
+        /// Gets the automatically detected current server location.
         /// </summary>
         /// <returns></returns>
         public string CurrentServerLocation
@@ -94,7 +94,7 @@ namespace SACS.Setup.Classes
         }
 
         /// <summary>
-        /// Gets the current windows console location.
+        /// Gets the automatically detected current windows console location.
         /// </summary>
         /// <value>
         /// The current windows console location.
@@ -144,7 +144,7 @@ namespace SACS.Setup.Classes
         }
 
         /// <summary>
-        /// Gets or sets the server install location.
+        /// Gets or sets the server install location, returning the current server location if it is detected.
         /// </summary>
         /// <value>
         /// The new server location.
@@ -190,7 +190,7 @@ namespace SACS.Setup.Classes
         }
 
         /// <summary>
-        /// Gets or sets the windows console install location.
+        /// Gets or sets the windows console install location, returning the current windows console location if it is detected.
         /// </summary>
         /// <value>
         /// The windows console install location.

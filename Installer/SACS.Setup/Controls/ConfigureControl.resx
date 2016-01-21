@@ -120,4 +120,18 @@
   <metadata name="ServerErrorProvider.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="RefreshAccountButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsEAAA7BAbiRa+0AAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8
+        AAABiklEQVQ4T52Sz0sCURDH99QpCAPREBR3w3VddbUNXX+u5i5o/Qfdqz+g6Cgdkv4CoaPRxT+gKOrW
+        L/ojunRJ1sXNThUE077nRNlqaB8YeDPznfdmHsNMgtvtnsXj/1AyCrCL7D6606PpGqglFcSo+IqhvwkG
+        g21JkiCtpCGXz0FFq1Arr5RBlmUIBALrKHUiiiIUigUqHme6rgPKh7GL30lxUS3SF6/vrsB87lL/y+p7
+        dbAsy48l37As61cUhba8ubUB5ovJY4ohMWK39zdvGHKilooPmWwGyI/3+/15DFPIX3TMp0t0RxONRSGV
+        TkEimXDM1+111/A4nkxWAXlZBnIRhqZjZ3f7MbmUhFg8Bi6Xaw7DQ/A8fxQRIyAIgvMR8mmkOC7FgeVY
+        IpgZZAbY61wNC2Gar63WRnfZPGx+kBHsjQOO48C74O14PJ4Ln88HIT5ExyM5o2dUscRJ67gFpE3aakSg
+        7f70Tctoo3Q89vKcNQ4agwts0/QKnJ6fgGEZeZRMzu+dGIZhPgGblbVR9ecp9AAAAABJRU5ErkJggg==
+</value>
+  </data>
 </root>

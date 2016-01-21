@@ -55,6 +55,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>install1.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoItX3.Assembly, Version=3.0.0.0, Culture=neutral, PublicKeyToken=a646454c8d475470, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -63,6 +66,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
@@ -87,6 +91,9 @@
     <Compile Include="Classes\WizardManager.cs" />
     <Compile Include="Classes\WizardTab.cs" />
     <Compile Include="Classes\WizardTabSettings.cs" />
+    <Compile Include="Config\ConfigFile.cs" />
+    <Compile Include="Config\ServerConfigFile.cs" />
+    <Compile Include="Config\WindowsConsoleConfigFile.cs" />
     <Compile Include="Controls\ChecklistControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -129,6 +136,12 @@
     <Compile Include="Forms\InstallProgressForm.Designer.cs">
       <DependentUpon>InstallProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SqlDeployForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SqlDeployForm.Designer.cs">
+      <DependentUpon>SqlDeployForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -157,6 +170,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InstallProgressForm.resx">
       <DependentUpon>InstallProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SqlDeployForm.resx">
+      <DependentUpon>SqlDeployForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SetupForm.resx">
       <DependentUpon>SetupForm.cs</DependentUpon>
@@ -194,6 +210,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Database\SACS.Database\ChangeScripts\DeploymentScript.sql">
+      <Link>DeploymentScript.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="AutoItX3.Assembly.dll" />
     <Content Include="AutoItX3.Assembly.xml" />
     <Content Include="AutoItX3.dll">
@@ -203,7 +223,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BuildSetupHelp.txt" />
+    <Content Include="Images\info icon 1.png" />
     <Content Include="install1.ico" />
+    <Content Include="refresh.png" />
+    <Content Include="refreshSmall.png" />
     <Content Include="Resources\__placeholder.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +266,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
