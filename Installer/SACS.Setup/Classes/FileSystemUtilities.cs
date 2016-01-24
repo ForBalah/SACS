@@ -23,6 +23,34 @@ namespace SACS.Setup.Classes
         ////public static FileSystemProvider Provider { get; set; }
 
         /// <summary>
+        /// Gets the release notes temporary path.
+        /// </summary>
+        /// <value>
+        /// The release notes temporary path.
+        /// </value>
+        public static string ReleaseNotesTempPath
+        {
+            get
+            {
+                return Path.Combine(Path.GetTempPath(), "SACS.Setup", "ReleaseNotes.txt");
+            }
+        }
+
+        /// <summary>
+        /// Gets the release notes setup path.
+        /// </summary>
+        /// <value>
+        /// The release notes setup path.
+        /// </value>
+        public static string ReleaseNotesSetupPath
+        {
+            get
+            {
+                return Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "ReleaseNotes.txt");
+            }
+        }
+
+        /// <summary>
         /// Backs up the target path into a zip with the specified backup name.
         /// </summary>
         /// <param name="targetPath">The target path.</param>
@@ -64,6 +92,21 @@ namespace SACS.Setup.Classes
             {
                 File.Copy(file.FullName, backupFilename, true);
             }
+        }
+
+        /// <summary>
+        /// Copies the file.
+        /// </summary>
+        /// <param name="sourceFile">The source file.</param>
+        /// <param name="destinationFile">The destination file.</param>
+        public static void CopyFile(string sourceFile, string destinationFile)
+        {
+            if (!Directory.GetParent(destinationFile).Exists)
+            {
+                Directory.CreateDirectory(Directory.GetParent(destinationFile).FullName);
+            }
+
+            File.Copy(sourceFile, destinationFile, true);
         }
 
         /// <summary>

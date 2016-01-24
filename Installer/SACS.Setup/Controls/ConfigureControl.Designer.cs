@@ -47,9 +47,14 @@
             this.ServiceAccountLabel = new System.Windows.Forms.Label();
             this.ServiceAccountTextBox = new System.Windows.Forms.TextBox();
             this.WindowsTabPage = new System.Windows.Forms.TabPage();
+            this.WindowsApplyButton = new System.Windows.Forms.Button();
+            this.WindowsCancelButton = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.WindowsPropertyGrid = new System.Windows.Forms.PropertyGrid();
             ((System.ComponentModel.ISupportInitialize)(this.ServerErrorProvider)).BeginInit();
             this.ConfigureTabControl.SuspendLayout();
             this.ServerTabPage.SuspendLayout();
+            this.WindowsTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -240,6 +245,10 @@
             // 
             // WindowsTabPage
             // 
+            this.WindowsTabPage.Controls.Add(this.label2);
+            this.WindowsTabPage.Controls.Add(this.WindowsPropertyGrid);
+            this.WindowsTabPage.Controls.Add(this.WindowsApplyButton);
+            this.WindowsTabPage.Controls.Add(this.WindowsCancelButton);
             this.WindowsTabPage.Location = new System.Drawing.Point(4, 24);
             this.WindowsTabPage.Name = "WindowsTabPage";
             this.WindowsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -247,6 +256,52 @@
             this.WindowsTabPage.TabIndex = 1;
             this.WindowsTabPage.Text = "Windows Console";
             this.WindowsTabPage.UseVisualStyleBackColor = true;
+            // 
+            // WindowsApplyButton
+            // 
+            this.WindowsApplyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.WindowsApplyButton.Location = new System.Drawing.Point(404, 328);
+            this.WindowsApplyButton.Name = "WindowsApplyButton";
+            this.WindowsApplyButton.Size = new System.Drawing.Size(75, 23);
+            this.WindowsApplyButton.TabIndex = 8;
+            this.WindowsApplyButton.Text = "Apply";
+            this.WindowsApplyButton.UseVisualStyleBackColor = true;
+            this.WindowsApplyButton.Click += new System.EventHandler(this.WindowsApplyButton_Click);
+            this.WindowsApplyButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.WindowsApplyButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // WindowsCancelButton
+            // 
+            this.WindowsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.WindowsCancelButton.Location = new System.Drawing.Point(485, 328);
+            this.WindowsCancelButton.Name = "WindowsCancelButton";
+            this.WindowsCancelButton.Size = new System.Drawing.Size(75, 23);
+            this.WindowsCancelButton.TabIndex = 7;
+            this.WindowsCancelButton.Text = "Cancel";
+            this.WindowsCancelButton.UseVisualStyleBackColor = true;
+            this.WindowsCancelButton.Click += new System.EventHandler(this.WindowsCancelButton_Click);
+            this.WindowsCancelButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.WindowsCancelButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(36, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(67, 15);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "App.config:";
+            // 
+            // WindowsPropertyGrid
+            // 
+            this.WindowsPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.WindowsPropertyGrid.Location = new System.Drawing.Point(120, 6);
+            this.WindowsPropertyGrid.Name = "WindowsPropertyGrid";
+            this.WindowsPropertyGrid.Size = new System.Drawing.Size(440, 316);
+            this.WindowsPropertyGrid.TabIndex = 9;
+            this.WindowsPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.WindowsPropertyGrid_PropertyValueChanged);
             // 
             // ConfigureControl
             // 
@@ -262,6 +317,8 @@
             this.ConfigureTabControl.ResumeLayout(false);
             this.ServerTabPage.ResumeLayout(false);
             this.ServerTabPage.PerformLayout();
+            this.WindowsTabPage.ResumeLayout(false);
+            this.WindowsTabPage.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -286,5 +343,9 @@
         private System.Windows.Forms.Label DatabaseLabel;
         private System.Windows.Forms.TextBox DatabaseLocationTextBox;
         private System.Windows.Forms.Button DeployScriptsButton;
+        private System.Windows.Forms.Button WindowsApplyButton;
+        private System.Windows.Forms.Button WindowsCancelButton;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.PropertyGrid WindowsPropertyGrid;
     }
 }

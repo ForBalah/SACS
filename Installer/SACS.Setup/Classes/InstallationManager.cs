@@ -320,7 +320,7 @@ namespace SACS.Setup.Classes
                         wizard.ShowProgressDialog();
                         wizard.UpdateProgressValue(0);
 
-                        _logger.Log("Extraction SACS service files");
+                        _logger.Log("Extracting SACS service files to " + tempPath);
                         wizard.UpdateProgressText("Extracting files...");
                         FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.WindowsService.zip", tempPath, "SACS.WindowsService");
                         wizard.UpdateProgressValue(0.2m);
@@ -373,7 +373,7 @@ namespace SACS.Setup.Classes
                     }
                     catch (InstallException ie)
                     {
-                        // TODO: log exception somewhere.
+                        _logger.Log("InstallServer exception", ie);
                         wizard.HideProgressDialog();
                         wizard.PerformOnUI(() => completionCallback(false));
                     }
@@ -555,16 +555,19 @@ namespace SACS.Setup.Classes
                     wizard.ShowProgressDialog();
                     wizard.UpdateProgressValue(0);
 
+                    _logger.Log("Extracting SACS Windows Console Manager files to " + tempPath);
                     wizard.UpdateProgressText("Extracting files...");
                     FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.Windows.zip", tempPath, "SACS.Windows");
                     wizard.UpdateProgressValue(0.2m);
                     Thread.Sleep(300);
 
+                    _logger.Log("Backing up Windows Console Manager files at " + this.WindowsConsoleInstallLocation);
                     wizard.UpdateProgressText("Backing up files...");
                     FileSystemUtilities.BackupDirectory(this.WindowsConsoleInstallLocation, "SACS.Windows");
                     wizard.UpdateProgressValue(0.5m);
                     Thread.Sleep(300);
 
+                    _logger.Log("Copying over Windows Console Manager files to " + this.WindowsConsoleInstallLocation);
                     wizard.UpdateProgressText("Copying over files...");
                     this.CopyServerFiles(tempPath, this.WindowsConsoleInstallLocation);
                     wizard.UpdateProgressValue(0.8m);
@@ -573,6 +576,7 @@ namespace SACS.Setup.Classes
                     // create shortcut if new installation.
                     if (!this.IsWindowsConsoleUpgrade)
                     {
+                        _logger.Log("Creating shortcut for SACS Windows Console Manager");
                         wizard.UpdateProgressText("Creating shortcut...");
                         AddWindowsShortcut(Path.Combine(this.WindowsConsoleInstallLocation, "SACS.Windows.exe"));
                     }
@@ -585,7 +589,7 @@ namespace SACS.Setup.Classes
                 }
                 catch (InstallException ie)
                 {
-                    // TODO: log exception somewhere.
+                    _logger.Log("InstallWindowsConsole exception", ie);
                     wizard.HideProgressDialog();
                     wizard.PerformOnUI(() => completionCallback(false));
                 }

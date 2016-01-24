@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SACS.Setup.Classes;
+using SACS.Setup.Forms;
 
 namespace SACS.Setup.Controls
 {
@@ -181,9 +182,13 @@ namespace SACS.Setup.Controls
         {
             if (this.Visible)
             {
+                var loadingForm = new NoControlsForm();
+                loadingForm.Show(this.Parent);
+                Application.DoEvents();
                 this.SetupServerInstallation();
                 this.SetupWindowsInstallation();
                 this.SetupNavigation();
+                loadingForm.Close();
             }
         }
 

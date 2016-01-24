@@ -86,6 +86,7 @@
       <Link>AssemblyVersion.cs</Link>
     </Compile>
     <Compile Include="Classes\FileSystemUtilities.cs" />
+    <Compile Include="Classes\INavigationValidator.cs" />
     <Compile Include="Classes\InstallationManager.cs" />
     <Compile Include="Classes\InstallException.cs" />
     <Compile Include="Classes\SetupState.cs" />
@@ -139,6 +140,12 @@
     <Compile Include="Forms\InstallProgressForm.Designer.cs">
       <DependentUpon>InstallProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\NoControlsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NoControlsForm.Designer.cs">
+      <DependentUpon>NoControlsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SqlDeployForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -177,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InstallProgressForm.resx">
       <DependentUpon>InstallProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NoControlsForm.resx">
+      <DependentUpon>NoControlsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SqlDeployForm.resx">
       <DependentUpon>SqlDeployForm.cs</DependentUpon>
@@ -223,6 +233,14 @@
       <Link>DeploymentScript.sql</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\Libraries\SACS.Implementation\bin\Release\SACS.Implementation.dll">
+      <Link>lib\SACS.Implementation.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\SolutionItems\ReleaseNotes.txt">
+      <Link>ReleaseNotes.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="AutoItX3.Assembly.dll" />
     <Content Include="AutoItX3.Assembly.xml" />
     <Content Include="AutoItX3.dll">
@@ -234,6 +252,9 @@
     <Content Include="BuildSetupHelp.txt" />
     <Content Include="Images\info icon 1.png" />
     <Content Include="install1.ico" />
+    <Content Include="lib\_Find the latest SACS.Implementation.dll here.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="refresh.png" />
     <Content Include="refreshSmall.png" />
     <Content Include="Resources\__placeholder.txt" />

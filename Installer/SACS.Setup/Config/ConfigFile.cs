@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Configuration;
+using System.Drawing.Design;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using System.Web.UI.Design;
 using SACS.Setup.Classes;
+using SACS.Setup.Log;
 
 namespace SACS.Setup.Config
 {
@@ -22,7 +19,19 @@ namespace SACS.Setup.Config
         /// <summary>
         /// The connection string category
         /// </summary>
-        protected const string ConnectionStringCategory = "Default Connection String";
+        protected const string ConnectionStringCategory = "Database Connection Settings";
+
+        /// <summary>
+        /// The application settings category
+        /// </summary>
+        protected const string AppSettingsCategory = "AppSettings";
+
+        /// <summary>
+        /// The mail settings category
+        /// </summary>
+        protected const string MailSettingsCategory = "Mail Settings";
+
+        private static LogHelper _logger = LogHelper.GetLogger(typeof(ConfigFile));
 
         #endregion Fields
 
@@ -41,6 +50,19 @@ namespace SACS.Setup.Config
         #region Properties
 
         /// <summary>
+        /// Gets or sets the default size of the paging.
+        /// </summary>
+        /// <value>
+        /// The default size of the paging.
+        /// </value>
+        [Category(AppSettingsCategory)]
+        [DisplayName("Default paging size")]
+        [RefreshProperties(RefreshProperties.All)]
+        [DefaultValue(50)]
+        [Description("The value used for paging throughout the system. Applies primarily to logs. A size of '0' indicates unbounded page size.")]
+        public int DefaultPagingSize { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether there are unsaved changes to this config.
         /// </summary>
         /// <value>
@@ -48,6 +70,20 @@ namespace SACS.Setup.Config
         /// </value>
         [Browsable(false)]
         public bool HasChanges { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the server address.
+        /// </summary>
+        /// <value>
+        /// The server address.
+        /// </value>
+        [Category(AppSettingsCategory)]
+        [DisplayName("Server Address")]
+        [RefreshProperties(RefreshProperties.All)]
+        [DefaultValue("http://localhost:3800/")]
+        [Description("The base URL (with port) that the server is accessible through. Default is http://localhost:3800/ for the server and http://localhost:3800/api for the management consoles.")]
+        [Editor(typeof(UrlEditor), typeof(UITypeEditor))]
+        public string ServerAddress { get; set; }
 
         /// <summary>
         /// Gets the underlying configuration.
@@ -62,6 +98,16 @@ namespace SACS.Setup.Config
         #region Methods
 
         /// <summary>
+        /// Gets the application setting value returning an empty string if not found.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
+        public string GetAppSettingValue(string key)
+        {
+            return (this.UnderlyingConfig.AppSettings.Settings[key] ?? new KeyValueConfigurationElement(key, string.Empty)).Value;
+        }
+
+        /// <summary>
         /// Loads the config from the specified file.
         /// </summary>
         /// <param name="exeFile">The executable to open the configuration for.</param>
@@ -71,7 +117,13 @@ namespace SACS.Setup.Config
         {
             this.UnderlyingConfig = ConfigurationManager.OpenExeConfiguration(exeFile);
 
-            // TODO: Put any base property loads here, then call ReloadProperties()
+            if (!this.UnderlyingConfig.HasFile)
+            {
+                throw new FileNotFoundException(string.Format("The config file for {0} cannot be found. Try reinstalling SACS.", exeFile));
+            }
+
+            this.DefaultPagingSize = int.Parse("0" + this.GetAppSettingValue("System.DefaultPagingSize"));
+            this.ServerAddress = this.GetAppSettingValue("WebAPI.BaseAddress");
             this.ReloadProperties();
         }
 
@@ -80,10 +132,30 @@ namespace SACS.Setup.Config
         /// </summary>
         public void SaveChanges()
         {
+            _logger.Log("Saving config changes to " + this.UnderlyingConfig.FilePath);
             FileSystemUtilities.BackupFile(this.UnderlyingConfig.FilePath);
-            // TODO: Put any base config updates here.
+
+            this.SetAppSettingValue("System.DefaultPagingSize", this.DefaultPagingSize.ToString());
+            this.SetAppSettingValue("WebAPI.BaseAddress", this.ServerAddress);
             this.UpdateUnderlyingConfig();
             this.UnderlyingConfig.Save(ConfigurationSaveMode.Minimal, false);
+        }
+
+        /// <summary>
+        /// Sets the application setting value.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        public void SetAppSettingValue(string key, string value)
+        {
+            if (this.UnderlyingConfig.AppSettings.Settings.AllKeys.Contains(key))
+            {
+                this.UnderlyingConfig.AppSettings.Settings[key].Value = value;
+            }
+            else
+            {
+                this.UnderlyingConfig.AppSettings.Settings.Add(new KeyValueConfigurationElement(key, value));
+            }
         }
 
         /// <summary>

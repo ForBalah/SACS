@@ -129,8 +129,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return ConfigurationManager.AppSettings["System.SupportEmailTemplate"] ??
-                    "Templates/Email/SupportEmailTemplate.html";
+                return IfNullOrEmpty(ConfigurationManager.AppSettings["System.SupportEmailTemplate"], "Templates/Email/SupportEmailTemplate.html");
             }
         }
 
@@ -144,8 +143,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return ConfigurationManager.AppSettings["System.SuccessEmailTemplate"] ??
-                    "Templates/Email/SuccessEmailTemplate.html";
+                return IfNullOrEmpty(ConfigurationManager.AppSettings["System.SuccessEmailTemplate"], "Templates/Email/SuccessEmailTemplate.html");
             }
         }
 
@@ -181,7 +179,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return int.Parse(ConfigurationManager.AppSettings["Performance.GraphMaxPoints"] ?? "0", CultureInfo.InvariantCulture);
+                return int.Parse(IfNullOrEmpty(ConfigurationManager.AppSettings["Performance.GraphMaxPoints"], "0"), CultureInfo.InvariantCulture);
             }
         }
 
@@ -192,7 +190,7 @@ namespace SACS.Common.Configuration
         {
             get
             {
-                return decimal.Parse(ConfigurationManager.AppSettings["Performance.GraphThreshold"] ?? "0.0", CultureInfo.InvariantCulture);
+                return decimal.Parse(IfNullOrEmpty(ConfigurationManager.AppSettings["Performance.GraphThreshold"], "0.0"), CultureInfo.InvariantCulture);
             }
         }
 
@@ -211,5 +209,25 @@ namespace SACS.Common.Configuration
         }
 
         #endregion Properties
+
+        #region Methods
+
+        /// <summary>
+        /// Returns the replacement string if the specified string is null or empty, otherwise it will return the string
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="replacement">The replacement.</param>
+        /// <returns></returns>
+        public static string IfNullOrEmpty(string value, string replacement)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return replacement;
+            }
+
+            return value;
+        }
+
+        #endregion Methods
     }
 }

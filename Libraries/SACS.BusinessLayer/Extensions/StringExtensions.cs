@@ -39,5 +39,21 @@ namespace SACS.BusinessLayer.Extensions
                 return string.Format("{0}{1}", value.Substring(0, length), replacement);
             }
         }
+
+        /// <summary>
+        /// Returns the replacement string if the specified string is null or empty, otherwise it will return the string
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="replacement">The replacement.</param>
+        /// <returns></returns>
+        public static string IfNullOrEmpty(this string value, string replacement)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return replacement;
+            }
+
+            return value;
+        }
     }
 }

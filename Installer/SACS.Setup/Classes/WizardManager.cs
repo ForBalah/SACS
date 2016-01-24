@@ -130,6 +130,16 @@ namespace SACS.Setup.Classes
         }
 
         /// <summary>
+        /// Finds the wizard tab from the specified name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public WizardTab FindTab(string name)
+        {
+            return this._WizardTabs.FirstOrDefault(t => t.Name.Equals(name));
+        }
+
+        /// <summary>
         /// Finds and selects wizard tab page.
         /// </summary>
         /// <param name="tabPage">The tab page.</param>

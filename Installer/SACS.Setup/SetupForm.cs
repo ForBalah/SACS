@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SACS.Setup.Classes;
 using SACS.Setup.Forms;
@@ -80,17 +74,6 @@ namespace SACS.Setup
                     Position = Setup.Controls.NavigationPosition.Middle,
                     State = SetupState.InProgress,
                     PreviousTab = "Install / Upgrade",
-                    NextTab = "Checklist"
-                });
-            WizardManager.Current.AddTab(
-                "Checklist",
-                new WizardTabSettings
-                {
-                    TabPage = this.ChecklistTabPage,
-                    Label = this.ChecklistLabel,
-                    Position = Setup.Controls.NavigationPosition.Middle,
-                    State = SetupState.InProgress,
-                    PreviousTab = "Configure",
                     NextTab = "Complete"
                 });
             WizardManager.Current.AddTab(
@@ -101,7 +84,7 @@ namespace SACS.Setup
                     Label = this.CompleteLabel,
                     Position = Setup.Controls.NavigationPosition.Finish,
                     State = SetupState.Complete,
-                    PreviousTab = "Checklist"
+                    PreviousTab = "Configure"
                 });
         }
 
@@ -182,6 +165,30 @@ namespace SACS.Setup
         }
 
         /// <summary>
+        /// Handles the Back event of the MainNavigationButtons control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
+        private void MainNavigationButtons_Back(object sender, CancelEventArgs e)
+        {
+            // TODO: implement something similar to the MainNavigationButtons_Next
+        }
+
+        /// <summary>
+        /// Handles the Next event of the MainNavigationButtons control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
+        private void MainNavigationButtons_Next(object sender, CancelEventArgs e)
+        {
+            if (WizardManager.Current.CurrentTab.Name.Equals("Configure"))
+            {
+                bool isValid = ((INavigationValidator)this.configureControl1).ValidateGoNext();
+                e.Cancel = !isValid;
+            }
+        }
+
+        /// <summary>
         /// Handles the Cancel event of the MainNavigationButtons control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -243,6 +250,17 @@ namespace SACS.Setup
             this.Text += " - version " + this.ProductVersion;
             this.RepositionControls();
             WizardManager.Current.SelectTab("Welcome");
+            FileSystemUtilities.CopyFile(FileSystemUtilities.ReleaseNotesSetupPath, FileSystemUtilities.ReleaseNotesTempPath);
+        }
+
+        /// <summary>
+        /// Handles the Click event of the ReleaseNotesButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ReleaseNotesButton_Click(object sender, EventArgs e)
+        {
+            Process.Start(FileSystemUtilities.ReleaseNotesTempPath);
         }
 
         #endregion Event Handlers

@@ -24,6 +24,16 @@ namespace SACS.Setup.Controls
         public event EventHandler Cancel;
 
         /// <summary>
+        /// Occurs when the next button is clicked.
+        /// </summary>
+        public event CancelEventHandler Next;
+
+        /// <summary>
+        /// Occurs when the back button is clicked.
+        /// </summary>
+        public event CancelEventHandler Back;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="NavigationButtons"/> class.
         /// </summary>
         public NavigationButtons()
@@ -85,7 +95,16 @@ namespace SACS.Setup.Controls
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void NextButton_Click(object sender, EventArgs e)
         {
-            WizardManager.Current.GoNext();
+            var eventArgs = new CancelEventArgs();
+            if (this.Next != null)
+            {
+                this.Next(this, eventArgs);
+            }
+
+            if (!eventArgs.Cancel)
+            {
+                WizardManager.Current.GoNext();
+            }
         }
 
         /// <summary>
@@ -95,7 +114,16 @@ namespace SACS.Setup.Controls
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void BackButton_Click(object sender, EventArgs e)
         {
-            WizardManager.Current.GoBack();
+            var eventArgs = new CancelEventArgs();
+            if (this.Back != null)
+            {
+                this.Back(this, eventArgs);
+            }
+
+            if (!eventArgs.Cancel)
+            {
+                WizardManager.Current.GoBack();
+            }
         }
 
         /// <summary>
@@ -120,7 +148,7 @@ namespace SACS.Setup.Controls
 
                 case NavigationPosition.Finish:
                     this.BackButton.Visible = true;
-                    this.BackButton.Enabled = false;
+                    this.BackButton.Enabled = true;
                     this.CancelWizardButton.Text = "Finish";
                     this.CanGoNext = false;
                     break;

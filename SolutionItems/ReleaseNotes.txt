@@ -1,0 +1,7 @@
+SERVICE APPLICATION CONTAINER SERVER
+====================================
+Release Notes
+
+v1.0.0.0
+--------
+- Added installer for the server and the Windows management console.

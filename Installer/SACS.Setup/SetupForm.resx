@@ -131,7 +131,8 @@ Once you are ready, click next to begin
   <data name="label9.Text" xml:space="preserve">
     <value>* Run the Windows Management Console to start the server, configure Service Apps, or view logs
 * Navigate to the Web Management Console to view logs or the status of Service Apps
-* Update the SACS.Implementation dll in the service apps</value>
+* Update the SACS.Implementation dll in the service apps. This can be found in the "lib" folder where this setup was ran.
+* View the release notes below</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

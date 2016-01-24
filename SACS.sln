@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{321F83D4-3B84-4983-BC4D-D9FB2DFD18FE}"
 	ProjectSection(SolutionItems) = preProject
 		SolutionItems\AssemblyVersion.cs = SolutionItems\AssemblyVersion.cs
+		SolutionItems\ReleaseNotes.txt = SolutionItems\ReleaseNotes.txt
 		SolutionItems\SACS Help.mht = SolutionItems\SACS Help.mht
 		TODO.txt = TODO.txt
 	EndProjectSection

@@ -35,7 +35,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.InstallationTabPage = new System.Windows.Forms.TabPage();
+            this.UninstallTabPage = new System.Windows.Forms.TabPage();
             this.PerformInstallTabPage = new System.Windows.Forms.TabPage();
+            this.ConfigureTabPage = new System.Windows.Forms.TabPage();
             this.ChecklistTabPage = new System.Windows.Forms.TabPage();
             this.CompleteTabPage = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
@@ -46,27 +48,25 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.WelcomeLabel = new System.Windows.Forms.Label();
-            this.ChecklistLabel = new System.Windows.Forms.Label();
             this.CompleteLabel = new System.Windows.Forms.Label();
             this.InstallationTypeLabel = new System.Windows.Forms.Label();
             this.InstallUpgradeLabel = new System.Windows.Forms.Label();
             this.ConfigureLabel = new System.Windows.Forms.Label();
             this.UninstallLabel = new System.Windows.Forms.Label();
-            this.UninstallTabPage = new System.Windows.Forms.TabPage();
-            this.ConfigureTabPage = new System.Windows.Forms.TabPage();
+            this.ReleaseNotesButton = new System.Windows.Forms.Button();
             this.MainNavigationButtons = new SACS.Setup.Controls.NavigationButtons();
             this.MainInstallationTypeControl = new SACS.Setup.Controls.InstallationTypeControl();
             this.MainInstallUpdateControl = new SACS.Setup.Controls.InstallUpdateControl();
-            this.Checklists = new SACS.Setup.Controls.ChecklistControl();
             this.configureControl1 = new SACS.Setup.Controls.ConfigureControl();
+            this.Checklists = new SACS.Setup.Controls.ChecklistControl();
             this.MainSetupTabControl.SuspendLayout();
             this.WelcomeTabPage.SuspendLayout();
             this.InstallationTabPage.SuspendLayout();
             this.PerformInstallTabPage.SuspendLayout();
+            this.ConfigureTabPage.SuspendLayout();
             this.ChecklistTabPage.SuspendLayout();
             this.CompleteTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.ConfigureTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainSetupTabControl
@@ -140,6 +140,16 @@
             this.InstallationTabPage.Text = "Installation Type";
             this.InstallationTabPage.UseVisualStyleBackColor = true;
             // 
+            // UninstallTabPage
+            // 
+            this.UninstallTabPage.Location = new System.Drawing.Point(4, 22);
+            this.UninstallTabPage.Name = "UninstallTabPage";
+            this.UninstallTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.UninstallTabPage.Size = new System.Drawing.Size(597, 431);
+            this.UninstallTabPage.TabIndex = 5;
+            this.UninstallTabPage.Text = "Uninstall";
+            this.UninstallTabPage.UseVisualStyleBackColor = true;
+            // 
             // PerformInstallTabPage
             // 
             this.PerformInstallTabPage.Controls.Add(this.MainInstallUpdateControl);
@@ -150,6 +160,17 @@
             this.PerformInstallTabPage.TabIndex = 4;
             this.PerformInstallTabPage.Text = "Install / Upgrade";
             this.PerformInstallTabPage.UseVisualStyleBackColor = true;
+            // 
+            // ConfigureTabPage
+            // 
+            this.ConfigureTabPage.Controls.Add(this.configureControl1);
+            this.ConfigureTabPage.Location = new System.Drawing.Point(4, 22);
+            this.ConfigureTabPage.Name = "ConfigureTabPage";
+            this.ConfigureTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.ConfigureTabPage.Size = new System.Drawing.Size(597, 431);
+            this.ConfigureTabPage.TabIndex = 6;
+            this.ConfigureTabPage.Text = "Configure";
+            this.ConfigureTabPage.UseVisualStyleBackColor = true;
             // 
             // ChecklistTabPage
             // 
@@ -164,6 +185,7 @@
             // 
             // CompleteTabPage
             // 
+            this.CompleteTabPage.Controls.Add(this.ReleaseNotesButton);
             this.CompleteTabPage.Controls.Add(this.label9);
             this.CompleteTabPage.Controls.Add(this.label8);
             this.CompleteTabPage.Controls.Add(this.label7);
@@ -181,7 +203,7 @@
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(13, 144);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(594, 70);
+            this.label9.Size = new System.Drawing.Size(578, 86);
             this.label9.TabIndex = 3;
             this.label9.Text = resources.GetString("label9.Text");
             // 
@@ -261,24 +283,12 @@
             this.WelcomeLabel.TabIndex = 4;
             this.WelcomeLabel.Text = "Welcome";
             // 
-            // ChecklistLabel
-            // 
-            this.ChecklistLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.ChecklistLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ChecklistLabel.ForeColor = System.Drawing.Color.Black;
-            this.ChecklistLabel.Location = new System.Drawing.Point(0, 308);
-            this.ChecklistLabel.Name = "ChecklistLabel";
-            this.ChecklistLabel.Padding = new System.Windows.Forms.Padding(15);
-            this.ChecklistLabel.Size = new System.Drawing.Size(165, 46);
-            this.ChecklistLabel.TabIndex = 7;
-            this.ChecklistLabel.Text = "Checklist";
-            // 
             // CompleteLabel
             // 
             this.CompleteLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.CompleteLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CompleteLabel.ForeColor = System.Drawing.Color.Black;
-            this.CompleteLabel.Location = new System.Drawing.Point(0, 354);
+            this.CompleteLabel.Location = new System.Drawing.Point(0, 308);
             this.CompleteLabel.Name = "CompleteLabel";
             this.CompleteLabel.Padding = new System.Windows.Forms.Padding(15);
             this.CompleteLabel.Size = new System.Drawing.Size(165, 46);
@@ -333,26 +343,15 @@
             this.UninstallLabel.TabIndex = 12;
             this.UninstallLabel.Text = "Uninstall";
             // 
-            // UninstallTabPage
+            // ReleaseNotesButton
             // 
-            this.UninstallTabPage.Location = new System.Drawing.Point(4, 22);
-            this.UninstallTabPage.Name = "UninstallTabPage";
-            this.UninstallTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.UninstallTabPage.Size = new System.Drawing.Size(597, 431);
-            this.UninstallTabPage.TabIndex = 5;
-            this.UninstallTabPage.Text = "Uninstall";
-            this.UninstallTabPage.UseVisualStyleBackColor = true;
-            // 
-            // ConfigureTabPage
-            // 
-            this.ConfigureTabPage.Controls.Add(this.configureControl1);
-            this.ConfigureTabPage.Location = new System.Drawing.Point(4, 22);
-            this.ConfigureTabPage.Name = "ConfigureTabPage";
-            this.ConfigureTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ConfigureTabPage.Size = new System.Drawing.Size(597, 431);
-            this.ConfigureTabPage.TabIndex = 6;
-            this.ConfigureTabPage.Text = "Configure";
-            this.ConfigureTabPage.UseVisualStyleBackColor = true;
+            this.ReleaseNotesButton.Location = new System.Drawing.Point(16, 233);
+            this.ReleaseNotesButton.Name = "ReleaseNotesButton";
+            this.ReleaseNotesButton.Size = new System.Drawing.Size(127, 23);
+            this.ReleaseNotesButton.TabIndex = 4;
+            this.ReleaseNotesButton.Text = "View Release Notes";
+            this.ReleaseNotesButton.UseVisualStyleBackColor = true;
+            this.ReleaseNotesButton.Click += new System.EventHandler(this.ReleaseNotesButton_Click);
             // 
             // MainNavigationButtons
             // 
@@ -363,6 +362,8 @@
             this.MainNavigationButtons.Size = new System.Drawing.Size(247, 31);
             this.MainNavigationButtons.TabIndex = 6;
             this.MainNavigationButtons.Cancel += new System.EventHandler(this.MainNavigationButtons_Cancel);
+            this.MainNavigationButtons.Next += new System.ComponentModel.CancelEventHandler(this.MainNavigationButtons_Next);
+            this.MainNavigationButtons.Back += new System.ComponentModel.CancelEventHandler(this.MainNavigationButtons_Back);
             // 
             // MainInstallationTypeControl
             // 
@@ -382,13 +383,6 @@
             this.MainInstallUpdateControl.TabIndex = 0;
             this.MainInstallUpdateControl.WindowsInstallCompleted = false;
             // 
-            // Checklists
-            // 
-            this.Checklists.Location = new System.Drawing.Point(6, 6);
-            this.Checklists.Name = "Checklists";
-            this.Checklists.Size = new System.Drawing.Size(150, 150);
-            this.Checklists.TabIndex = 0;
-            // 
             // configureControl1
             // 
             this.configureControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -396,6 +390,14 @@
             this.configureControl1.Name = "configureControl1";
             this.configureControl1.Size = new System.Drawing.Size(591, 425);
             this.configureControl1.TabIndex = 0;
+            // 
+            // Checklists
+            // 
+            this.Checklists.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Checklists.Location = new System.Drawing.Point(3, 3);
+            this.Checklists.Name = "Checklists";
+            this.Checklists.Size = new System.Drawing.Size(591, 425);
+            this.Checklists.TabIndex = 0;
             // 
             // SetupForm
             // 
@@ -408,7 +410,6 @@
             this.Controls.Add(this.InstallUpgradeLabel);
             this.Controls.Add(this.InstallationTypeLabel);
             this.Controls.Add(this.CompleteLabel);
-            this.Controls.Add(this.ChecklistLabel);
             this.Controls.Add(this.MainNavigationButtons);
             this.Controls.Add(this.WelcomeLabel);
             this.Controls.Add(this.panel1);
@@ -428,12 +429,12 @@
             this.WelcomeTabPage.PerformLayout();
             this.InstallationTabPage.ResumeLayout(false);
             this.PerformInstallTabPage.ResumeLayout(false);
+            this.ConfigureTabPage.ResumeLayout(false);
             this.ChecklistTabPage.ResumeLayout(false);
             this.CompleteTabPage.ResumeLayout(false);
             this.CompleteTabPage.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.ConfigureTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -451,7 +452,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label WelcomeLabel;
         private Controls.NavigationButtons MainNavigationButtons;
-        private System.Windows.Forms.Label ChecklistLabel;
         private System.Windows.Forms.TabPage CompleteTabPage;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
@@ -470,6 +470,7 @@
         private System.Windows.Forms.Label ConfigureLabel;
         private System.Windows.Forms.Label UninstallLabel;
         private Controls.ConfigureControl configureControl1;
+        private System.Windows.Forms.Button ReleaseNotesButton;
     }
 }
 
