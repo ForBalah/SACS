@@ -22,6 +22,13 @@ namespace SACS.Setup.Config
         public int ChartLookBackDays { get; set; }
 
         [Category(AppSettingsCategory)]
+        [DisplayName("Server Connection Timeout")]
+        [RefreshProperties(RefreshProperties.All)]
+        [DefaultValue(15)]
+        [Description("The number of minutes that individual web API requests to the server will timeout.")]
+        public int WebApiTimeoutSeconds { get; set; }
+
+        [Category(AppSettingsCategory)]
         [DisplayName("Alternative Log Location")]
         [DefaultValue("..\\..\\..\\..\\services\\SACS.WindowsService\\bin\\Debug\\Logs")]
         [RefreshProperties(RefreshProperties.All)]
@@ -38,6 +45,7 @@ namespace SACS.Setup.Config
         protected override void ReloadProperties()
         {
             this.ChartLookBackDays = int.Parse("0" + this.GetAppSettingValue("Performance.LookBackDays"));
+            this.WebApiTimeoutSeconds = int.Parse("0" + this.GetAppSettingValue("WebAPI.Timeout"));
             this.AlternativeLogLocation = this.GetAppSettingValue("Logs.AlternateLocation");
         }
 
@@ -47,6 +55,7 @@ namespace SACS.Setup.Config
         protected override void UpdateUnderlyingConfig()
         {
             this.SetAppSettingValue("Performance.LookBackDays", this.ChartLookBackDays.ToString());
+            this.SetAppSettingValue("WebAPI.Timeout", this.WebApiTimeoutSeconds.ToString());
             this.SetAppSettingValue("Logs.AlternateLocation", this.AlternativeLogLocation);
         }
 

@@ -122,7 +122,9 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="ExecutedRoutedEventArgs"/> instance containing the event data.</param>
         private void RefreshCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            WaitWindow.SingleInstance.ShowDrawn();
             this._presenter.LoadServiceApps();
+            WaitWindow.SingleInstance.Close();
         }
 
         /// <summary>
@@ -311,8 +313,10 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            WaitWindow.SingleInstance.ShowDrawn();
             this.LoadComboBoxes();
             this._presenter.LoadServiceApps(this.IsVisible);
+            WaitWindow.SingleInstance.Close();
             this.ServiceAppListView.Focus();
         }
 

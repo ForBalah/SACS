@@ -98,6 +98,7 @@ namespace SACS.Setup.Controls
         {
             if (this.Visible)
             {
+                // todo: this should be a singleton instead
                 var loadingForm = new NoControlsForm();
                 loadingForm.Show(this.Parent);
                 Application.DoEvents();

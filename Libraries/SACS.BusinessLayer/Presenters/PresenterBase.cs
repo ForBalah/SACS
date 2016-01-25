@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using SACS.BusinessLayer.Views;
@@ -62,6 +63,23 @@ namespace SACS.BusinessLayer.Presenters
         {
             try
             {
+                ////Thread threadToKill = null;
+                ////Action wrappedAction = () =>
+                ////{
+                ////    threadToKill = Thread.CurrentThread;
+                ////    action();
+                ////};
+
+                ////IAsyncResult result = wrappedAction.BeginInvoke(null, null);
+                ////if (result.AsyncWaitHandle.WaitOne(2000))
+                ////{
+                ////    wrappedAction.EndInvoke(result);
+                ////}
+                ////else
+                ////{
+                ////    throw new TimeoutException();
+                ////}
+
                 action();
             }
             catch (Exception e)

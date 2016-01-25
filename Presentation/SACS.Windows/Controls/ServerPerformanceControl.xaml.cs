@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.DataVisualization.Charting;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SACS.BusinessLayer.Presenters;
 using SACS.BusinessLayer.Views;
 using SACS.DataAccessLayer.Factories;
+using SACS.Windows.Windows;
 
 namespace SACS.Windows.Controls
 {
@@ -119,12 +110,15 @@ namespace SACS.Windows.Controls
         /// </summary>
         private void LoadGraphs()
         {
+            WaitWindow.SingleInstance.ShowDrawn();
             double lookBackDays;
             if (double.TryParse(ConfigurationManager.AppSettings["Performance.LookBackDays"], out lookBackDays))
             {
                 DateTime toDate = DateTime.Now.AddMinutes(1);
                 this._presenter.LoadData(toDate.AddDays(-lookBackDays), toDate);
             }
+
+            WaitWindow.SingleInstance.Close();
         }
 
         /// <summary>

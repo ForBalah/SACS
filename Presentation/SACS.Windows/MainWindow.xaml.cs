@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using SACS.Windows.Windows;
 
 namespace SACS.Windows
 {
@@ -22,6 +11,8 @@ namespace SACS.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
+        private WaitWindow _waitWindow;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
@@ -29,6 +20,7 @@ namespace SACS.Windows
         {
             this.InitializeComponent();
             this.VersionLabel.Content = string.Format("v{0}", this.GetType().Assembly.GetName().Version);
+            this._waitWindow = new WaitWindow();
         }
 
         /// <summary>
@@ -59,6 +51,16 @@ namespace SACS.Windows
         protected void MainHelpButton_Click(object sender, RoutedEventArgs e)
         {
             OpenHelp();
+        }
+
+        /// <summary>
+        /// Handles the Closed event of the main Window.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The event args.</param>
+        protected void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

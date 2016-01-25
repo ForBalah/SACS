@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using log4net;
+using SACS.Common.Configuration;
 
 namespace SACS.DataAccessLayer.WebAPI
 {
@@ -165,7 +166,7 @@ namespace SACS.DataAccessLayer.WebAPI
             uriBuilder.Scheme = baseAddress.Scheme;
 
             HttpClient client = new HttpClient(httpMessageHandler);
-            client.Timeout = new TimeSpan(TimeSpan.TicksPerSecond * 30); // TODO: make this configurable
+            client.Timeout = new TimeSpan(TimeSpan.TicksPerSecond * ApplicationSettings.Current.WebApiTimeout); // TODO: make this configurable
             client.BaseAddress = uriBuilder.Uri;
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

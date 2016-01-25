@@ -208,6 +208,17 @@ namespace SACS.Common.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets the timeout (in seconds) to use for Web API requests
+        /// </summary>
+        public int WebApiTimeout
+        {
+            get
+            {
+                return int.Parse(IfNullOrEmpty(ConfigurationManager.AppSettings["WebAPI.Timeout"], "15"), CultureInfo.InvariantCulture);
+            }
+        }
+
         #endregion Properties
 
         #region Methods

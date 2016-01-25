@@ -6,7 +6,7 @@
     xmlns:uc="clr-namespace:SACS.Windows.Controls"
     mc:Ignorable="d"
     x:Class="SACS.Windows.MainWindow"
-    Title="SACS Windows Management Console" Height="825" Width="950">
+    Title="SACS Windows Management Console" Height="825" Width="950" Closed="Window_Closed">
     <Grid Background="#FF1A2226">
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -35,7 +35,7 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        <TabControl Grid.Row="1" Foreground="#FF1A2226">
+        <TabControl x:Name="MainTabControl" Grid.Row="1" Foreground="#FF1A2226">
             <TabItem Header="Server Management">
                 <ScrollViewer>
                     <StackPanel>
@@ -75,7 +75,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Application Management">
+            <TabItem x:Name="ApplicationsTabItem" Header="Application Management">
                 <uc:ServiceAppsControl GeneralStatusChange="ServiceAppsControl_GeneralStatusChange" />
             </TabItem>
         </TabControl>

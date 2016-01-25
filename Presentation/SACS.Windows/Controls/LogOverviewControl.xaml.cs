@@ -2,21 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SACS.BusinessLayer.Presenters;
 using SACS.BusinessLayer.Views;
 using SACS.DataAccessLayer.Factories;
-using SACS.Windows.ViewModels;
 using SACS.Windows.Windows;
 
 namespace SACS.Windows.Controls
@@ -81,7 +73,9 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            WaitWindow.SingleInstance.ShowDrawn();
             this._presenter.LoadControl();
+            WaitWindow.SingleInstance.Close();
         }
 
         /// <summary>
@@ -91,10 +85,12 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            WaitWindow.SingleInstance.ShowDrawn();
             this._presenter.LoadControl();
+            WaitWindow.SingleInstance.Close();
         }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -143,6 +139,6 @@ namespace SACS.Windows.Controls
             view.Refresh();
         }
 
-        #endregion
+        #endregion Methods
     }
 }

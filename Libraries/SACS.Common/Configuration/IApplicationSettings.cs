@@ -89,5 +89,10 @@ namespace SACS.Common.Configuration
         /// The alternate log location.
         /// </value>
         string AlternateLogLocation { get; }
+
+        /// <summary>
+        /// Gets the timeout (in seconds) to use for Web API requests
+        /// </summary>
+        int WebApiTimeout { get; }
     }
 }
