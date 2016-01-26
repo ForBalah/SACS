@@ -167,10 +167,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="bin\Debug\SACS_log.ldf">
-      <DependentUpon>SACS.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Logs\Default_log_location.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -201,9 +197,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\Logs\*.xml*;$(OutDir)\AppList *.xml;$(OutDir)\*.ldf;$(OutDir)\*.vshost.*" />
-  </ItemGroup>
+  
   <!-- create zip file with content of bin\release folder -->
   <UsingTask TaskName="Zip" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
@@ -247,12 +241,16 @@
   </Target>
   -->
   <Target Name="AfterBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <ItemGroup>
+      <CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\*.mdf;$(OutDir)\*.ldf;$(OutDir)\*.vshost.*" />
+    </ItemGroup>
+	<!-- <MakeDir Directories="$(OutDir)\..\zip_working" /> -->
     <!-- first copy the source files specified in the CorySourceFiles ItemGroup above. -->
     <Copy SourceFiles="@(CopySourceFiles)" DestinationFiles="@(CopySourceFiles->'$(OutDir)\..\zip_working\%(RecursiveDir)%(Filename)%(Extension)')" />
     <!-- Perform the zip by calling the UsingTask. Make sure the DestinationFiles and the SourceDirectory are pointing to the same place -->
     <Zip SourceDirectory="$(OutDir)\..\zip_working" OutputFilename="$(OutDir)\..\zip\$(ProjectName).zip" />
     <!-- Clean up. NB! Double-check that the correct zip workings directory is deleted -->
-    <RemoveDir Directories="$(OutDir)\..\zip_working" />
+    <!-- <RemoveDir Directories="$(OutDir)\..\zip_working" /> -->
   </Target>
   <Import Project="..\..\Standards\StyleCop\StyleCop.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
