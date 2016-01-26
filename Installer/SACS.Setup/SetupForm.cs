@@ -251,6 +251,7 @@ namespace SACS.Setup
             this.RepositionControls();
             WizardManager.Current.SelectTab("Welcome");
             FileSystemUtilities.CopyFile(FileSystemUtilities.ReleaseNotesSetupPath, FileSystemUtilities.ReleaseNotesTempPath);
+            FileSystemUtilities.CopyFromResource("SACS.Setup.Resources.DeploymentScript.sql", FileSystemUtilities.DeploymentScriptTempPath);
         }
 
         /// <summary>

@@ -229,10 +229,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Database\SACS.Database\ChangeScripts\DeploymentScript.sql">
-      <Link>DeploymentScript.sql</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="..\..\Database\SACS.Database\ChangeScripts\DeploymentScript.sql">
+      <Link>Resources\DeploymentScript.sql</Link>
+    </EmbeddedResource>
     <Content Include="..\..\Libraries\SACS.Implementation\bin\Release\SACS.Implementation.dll">
       <Link>lib\SACS.Implementation.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

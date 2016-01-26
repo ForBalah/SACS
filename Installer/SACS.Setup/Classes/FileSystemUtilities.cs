@@ -19,8 +19,24 @@ namespace SACS.Setup.Classes
     /// </summary>
     public static class FileSystemUtilities
     {
+        private static LogHelper _logger = LogHelper.GetLogger(typeof(FileSystemUtilities));
+
         // TODO: Create a provider so that this class can be used in unit tests.
         ////public static FileSystemProvider Provider { get; set; }
+
+        /// <summary>
+        /// Gets the deployment script temporary path.
+        /// </summary>
+        /// <value>
+        /// The deployment script temporary path.
+        /// </value>
+        public static string DeploymentScriptTempPath
+        {
+            get
+            {
+                return Path.Combine(Path.GetTempPath(), "SACS.Setup", "DeploymentScript.sql");
+            }
+        }
 
         /// <summary>
         /// Gets the release notes temporary path.
@@ -60,6 +76,8 @@ namespace SACS.Setup.Classes
             Debug.Assert(!string.IsNullOrWhiteSpace(targetPath));
             Debug.Assert(!string.IsNullOrWhiteSpace(backupName));
 
+            _logger.Log(string.Format("Backing up directory {0} to {1}", targetPath, backupName));
+
             if (!Directory.Exists(targetPath) ||
                 Directory.GetFiles(targetPath).Length == 0 ||
                 Directory.GetDirectories(targetPath).Length == 0)
@@ -86,6 +104,7 @@ namespace SACS.Setup.Classes
         /// <param name="filename">The filename.</param>
         public static void BackupFile(string filename)
         {
+            _logger.Log(string.Format("Backing up file {0}", filename));
             FileInfo file = new FileInfo(filename);
             string backupFilename = string.Format("{0} {1}.bak", file.FullName, DateTime.Now.ToString("yyyyMMdd HHmm"));
             if (file.Exists)
@@ -101,6 +120,7 @@ namespace SACS.Setup.Classes
         /// <param name="destinationFile">The destination file.</param>
         public static void CopyFile(string sourceFile, string destinationFile)
         {
+            _logger.Log(string.Format("Copying file {0} to {1}", sourceFile, destinationFile));
             if (!Directory.GetParent(destinationFile).Exists)
             {
                 Directory.CreateDirectory(Directory.GetParent(destinationFile).FullName);
@@ -119,6 +139,7 @@ namespace SACS.Setup.Classes
         /// <exception cref="System.IO.DirectoryNotFoundException">Source directory does not exist or could not be found</exception>
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs, IList<string> excludes = null)
         {
+            _logger.Log(string.Format("Copying directory {0} to {1}", sourceDirName, destDirName));
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
 
             if (!dir.Exists)
@@ -186,6 +207,34 @@ namespace SACS.Setup.Classes
         }
 
         /// <summary>
+        /// Copies a file from the embedded resouce to the destination.
+        /// </summary>
+        /// <param name="resourceName">Name of the resource.</param>
+        /// <param name="destination">The destination file to copy the resource to.</param>
+        public static void CopyFromResource(string resourceName, string destinationFilePath)
+        {
+            _logger.Log(string.Format("Copying resource {0} to {1}", resourceName, destinationFilePath));
+            Debug.Assert(!string.IsNullOrWhiteSpace(resourceName));
+            Debug.Assert(!string.IsNullOrWhiteSpace(destinationFilePath));
+
+            var currentAssembly = Assembly.GetAssembly(typeof(FileSystemUtilities));
+            FileInfo destFile = new FileInfo(destinationFilePath);
+
+            if (!destFile.Directory.Exists)
+            {
+                Directory.CreateDirectory(destFile.DirectoryName);
+            }
+
+            using (var fileStream = destFile.Create())
+            {
+                using (var resouceStream = currentAssembly.GetManifestResourceStream(resourceName))
+                {
+                    resouceStream.CopyTo(fileStream);
+                }
+            }
+        }
+
+        /// <summary>
         /// Extracts a zip file from the specified embedded resource.
         /// </summary>
         /// <param name="resourceName">Name of the resource.</param>
@@ -193,6 +242,7 @@ namespace SACS.Setup.Classes
         /// <param name="pathValidation">The path validation string.</param>
         public static void ExtractFromResource(string resourceName, string destination, string pathValidation)
         {
+            _logger.Log(string.Format("Extracting {0} to {1}", resourceName, destination));
             Debug.Assert(!string.IsNullOrWhiteSpace(resourceName));
             Debug.Assert(!string.IsNullOrWhiteSpace(destination));
 

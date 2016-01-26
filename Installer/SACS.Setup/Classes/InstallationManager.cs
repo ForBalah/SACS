@@ -317,16 +317,15 @@ namespace SACS.Setup.Classes
 
                     try
                     {
+                        _logger.Log("Installing SACS server");
                         wizard.ShowProgressDialog();
                         wizard.UpdateProgressValue(0);
 
-                        _logger.Log("Extracting SACS service files to " + tempPath);
                         wizard.UpdateProgressText("Extracting files...");
                         FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.WindowsService.zip", tempPath, "SACS.WindowsService");
                         wizard.UpdateProgressValue(0.2m);
                         Thread.Sleep(300);
 
-                        _logger.Log("Stopping agent");
                         wizard.UpdateProgressText("Stopping agent...");
                         if (!this.TryStopService())
                         {
@@ -336,13 +335,11 @@ namespace SACS.Setup.Classes
                         wizard.UpdateProgressValue(0.4m);
                         Thread.Sleep(300);
 
-                        _logger.Log("Backing up " + this.ServerInstallLocation);
                         wizard.UpdateProgressText("Backing up files...");
                         FileSystemUtilities.BackupDirectory(this.ServerInstallLocation, "SACS.WindowsService");
                         wizard.UpdateProgressValue(0.6m);
                         Thread.Sleep(300);
 
-                        _logger.Log("copying service files to " + this.ServerInstallLocation);
                         wizard.UpdateProgressText("Copying over files...");
                         this.CopyServerFiles(tempPath, this.ServerInstallLocation);
                         wizard.UpdateProgressValue(0.8m);
@@ -480,6 +477,7 @@ namespace SACS.Setup.Classes
         /// <returns></returns>
         private bool TryStopService()
         {
+            _logger.Log("Stopping agent");
             bool success = true;
 
             if (this.SacsServiceController != null)
@@ -547,6 +545,7 @@ namespace SACS.Setup.Classes
 
             var installTask = Task.Run(() =>
             {
+                _logger.Log("Installing SACS Windows Console Manager");
                 WizardManager wizard = WizardManager.Current;
                 string tempPath = Path.Combine(Path.GetTempPath(), "SACS.Windows");
 
@@ -555,19 +554,15 @@ namespace SACS.Setup.Classes
                     wizard.ShowProgressDialog();
                     wizard.UpdateProgressValue(0);
 
-                    _logger.Log("Extracting SACS Windows Console Manager files to " + tempPath);
-                    wizard.UpdateProgressText("Extracting files...");
                     FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.Windows.zip", tempPath, "SACS.Windows");
                     wizard.UpdateProgressValue(0.2m);
                     Thread.Sleep(300);
 
-                    _logger.Log("Backing up Windows Console Manager files at " + this.WindowsConsoleInstallLocation);
                     wizard.UpdateProgressText("Backing up files...");
                     FileSystemUtilities.BackupDirectory(this.WindowsConsoleInstallLocation, "SACS.Windows");
                     wizard.UpdateProgressValue(0.5m);
                     Thread.Sleep(300);
 
-                    _logger.Log("Copying over Windows Console Manager files to " + this.WindowsConsoleInstallLocation);
                     wizard.UpdateProgressText("Copying over files...");
                     this.CopyServerFiles(tempPath, this.WindowsConsoleInstallLocation);
                     wizard.UpdateProgressValue(0.8m);
@@ -576,7 +571,6 @@ namespace SACS.Setup.Classes
                     // create shortcut if new installation.
                     if (!this.IsWindowsConsoleUpgrade)
                     {
-                        _logger.Log("Creating shortcut for SACS Windows Console Manager");
                         wizard.UpdateProgressText("Creating shortcut...");
                         AddWindowsShortcut(Path.Combine(this.WindowsConsoleInstallLocation, "SACS.Windows.exe"));
                     }
@@ -602,6 +596,7 @@ namespace SACS.Setup.Classes
         /// <param name="pathToExe">The path to executable.</param>
         private static void AddWindowsShortcut(string pathToExe)
         {
+            _logger.Log("Creating shortcut for SACS Windows Console Manager");
             string commonStartMenuPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);
             string appStartMenuPath = Path.Combine(commonStartMenuPath, "Programs", ConfigurationManager.AppSettings["SacsStartFolder"]);
 
@@ -615,9 +610,9 @@ namespace SACS.Setup.Classes
             IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
 
             shortcut.Description = ConfigurationManager.AppSettings["WindowsShortcutDescription"];
-            //shortcut.IconLocation = @"C:\Program Files (x86)\TestApp\TestApp.ico"; //uncomment to set the icon of the shortcut
             shortcut.TargetPath = pathToExe;
             shortcut.Save();
+            _logger.Log("Shortcut created at " + shortcutLocation);
         }
 
         /// <summary>

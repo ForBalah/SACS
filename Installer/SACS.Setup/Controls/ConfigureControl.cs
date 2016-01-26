@@ -394,14 +394,18 @@ namespace SACS.Setup.Controls
         /// </summary>
         private void RefreshServerConfig()
         {
-            this.ServerApplyButton.Enabled = this.ServerCancelButton.Enabled = false;
+            this.ServerConfigurePanel.Enabled = false;
 
-            this._serverConfig.RefreshFromFile(Path.Combine(InstallationManager.Current.CurrentServerLocation, "SACS.WindowsService.exe"));
-            this.ServerPropertyGrid.SelectedObject = this._serverConfig;
-            this.DatabaseLocationTextBox.Text = this._serverConfig.DatabaseLocation;
+            string installLocation = InstallationManager.Current.CurrentServerLocation;
+            if (!string.IsNullOrWhiteSpace(installLocation))
+            {
+                this._serverConfig.RefreshFromFile(Path.Combine(installLocation, "SACS.WindowsService.exe"));
+                this.ServerPropertyGrid.SelectedObject = this._serverConfig;
+                this.DatabaseLocationTextBox.Text = this._serverConfig.DatabaseLocation;
 
-            this.ServerApplyButton.Enabled = this.ServerCancelButton.Enabled = true;
-            this.HasServerPropertyChanges = false;
+                this.ServerConfigurePanel.Enabled = true;
+                this.HasServerPropertyChanges = false;
+            }
         }
 
         /// <summary>
@@ -409,13 +413,17 @@ namespace SACS.Setup.Controls
         /// </summary>
         private void RefreshWindowsConsoleConfig()
         {
-            this.WindowsApplyButton.Enabled = this.WindowsCancelButton.Enabled = false;
+            this.WindowsConfigurePanel.Enabled = false;
+            string windowsLocation = InstallationManager.Current.CurrentWindowsConsoleLocation;
 
-            this._windowsConfig.RefreshFromFile(Path.Combine(InstallationManager.Current.CurrentWindowsConsoleLocation, "SACS.Windows.exe"));
-            this.WindowsPropertyGrid.SelectedObject = this._windowsConfig;
+            if (!string.IsNullOrWhiteSpace(windowsLocation))
+            {
+                this._windowsConfig.RefreshFromFile(Path.Combine(windowsLocation, "SACS.Windows.exe"));
+                this.WindowsPropertyGrid.SelectedObject = this._windowsConfig;
 
-            this.WindowsApplyButton.Enabled = this.WindowsCancelButton.Enabled = true;
-            this.HasWindowsPropertyChanges = false;
+                this.WindowsConfigurePanel.Enabled = true;
+                this.HasWindowsPropertyChanges = false;
+            }
         }
 
         /// <summary>

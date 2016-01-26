@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SACS.Setup.Classes;
 
 namespace SACS.Setup.Forms
 {
@@ -48,7 +49,7 @@ namespace SACS.Setup.Forms
             UriBuilder uri = new UriBuilder(codeBase);
             string path = Uri.UnescapeDataString(uri.Path);
 
-            this.ScriptsTextBox.Text = File.ReadAllText(Path.Combine(Path.GetDirectoryName(path), "DeploymentScript.sql"));
+            this.ScriptsTextBox.Text = File.ReadAllText(FileSystemUtilities.DeploymentScriptTempPath);
         }
     }
 }

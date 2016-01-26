@@ -132,12 +132,13 @@ namespace SACS.Setup.Config
         /// </summary>
         public void SaveChanges()
         {
-            _logger.Log("Saving config changes to " + this.UnderlyingConfig.FilePath);
             FileSystemUtilities.BackupFile(this.UnderlyingConfig.FilePath);
 
             this.SetAppSettingValue("System.DefaultPagingSize", this.DefaultPagingSize.ToString());
             this.SetAppSettingValue("WebAPI.BaseAddress", this.ServerAddress);
             this.UpdateUnderlyingConfig();
+
+            _logger.Log("Saving config changes to " + this.UnderlyingConfig.FilePath);
             this.UnderlyingConfig.Save(ConfigurationSaveMode.Minimal, false);
         }
 
