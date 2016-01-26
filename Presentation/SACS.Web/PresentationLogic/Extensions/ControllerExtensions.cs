@@ -19,7 +19,7 @@ namespace SACS.Web.PresentationLogic.Extensions
         public static void AddError(this Controller controller, Exception e)
         {
             controller.ViewBag.Message = e.Message;
-            controller.ViewBag.StackTrace = HttpUtility.HtmlEncode(e.StackTrace).Replace(Environment.NewLine, "<br />");
+            controller.ViewBag.StackTrace = HttpUtility.HtmlEncode(e.StackTrace ?? string.Empty).Replace(Environment.NewLine, "<br />");
 
             if (e.InnerException != null)
             {

@@ -1,60 +1,53 @@
 ﻿@using SACS.Web.PresentationLogic.Extensions
 
 @this.ScriptBlock(
-    @<script type="text/javascript">
-        (function (self)
-        {
-            var _plot,
+	@<script type="text/javascript">
+		(function (self) {
+			var _plot,
                 _placeholder = '#CpuChart';
 
-            // Makes the call to get the data and then update the graph
-            self.getData = function ()
-            {
-                $.getJSON('@Url.Action("CpuData")', null, function (data, status)
-                {
-                    self.updateGraph(GraphHelper.mapAuditTimeTo2DArray(data));
-                });
-            };
+			// Makes the call to get the data and then update the graph
+			self.getData = function () {
+				$.getJSON('@Url.Action("CpuData")', { r: Math.random() }, function (data, status) {
+					self.updateGraph(GraphHelper.mapAuditTimeTo2DArray(data));
+				});
+			};
 
-            // Updates the graph with the given data
-            self.updateGraph = function (newData)
-            {
-                if (!_plot)
-                {
-                    _plot = $.plot($(_placeholder), [newData], {
-                        grid: {
-                            borderColor: "#f3f3f3",
-                            borderWidth: 1,
-                            tickColor: "#f3f3f3"
-                        },
-                        series: {
-                            lines: {
-                                show: true,
-                                fill: true,
-                                zero: false
-                            }
-                        },
-                        xaxis: {
-                            mode: 'time'
-                        }
-                    });
-                }
-                else
-                {
-                    _plot.setData([newData]);
-                    _plot.setupGrid();
-                    _plot.draw();
-                }
-            };
+			// Updates the graph with the given data
+			self.updateGraph = function (newData) {
+				if (!_plot) {
+					_plot = $.plot($(_placeholder), [newData], {
+						grid: {
+							borderColor: "#f3f3f3",
+							borderWidth: 1,
+							tickColor: "#f3f3f3"
+						},
+						series: {
+							lines: {
+								show: true,
+								fill: true,
+								zero: false
+							}
+						},
+						xaxis: {
+							mode: 'time'
+						}
+					});
+				}
+				else {
+					_plot.setData([newData]);
+					_plot.setupGrid();
+					_plot.draw();
+				}
+			};
 
-            // load events
-            $(function ()
-            {
-                self.getData();
-                window.setInterval(self.getData, 1000 * 60);
-            });
-        })(window.CpuPerformance = window.CpuPerformance || {});
-    </script>
-)
+			// load events
+			$(function () {
+				self.getData();
+				window.setInterval(self.getData, 1000 * 60);
+			});
+		})(window.CpuPerformance = window.CpuPerformance || {});
+	</script>
+		)
 
 <div id="CpuChart" style="height: 200px; position: relative;"></div>

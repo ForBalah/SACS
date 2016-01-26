@@ -11,26 +11,26 @@ Disable the stop server button when it has been clicked (at least for 10 seconds
 Disable the start service app button when it has been clicked
 Add button to open app location
 Add an About section
+Add Last Run column
+Make hitting "refresh" on any button in the server will just refresh everything
 
 Presentation Layer - Web:
 -------------------------
-Add Help
+Configure elmah in web project
 Redirect metrics to different analytics app
 Setup profiler - either MiniProfiler or Glimpse.
 Fix SACS version column
 Implmement IoC
-Fix the graph refresh returning 304 after a while (hence failing)
+Add Last Run column
 
 Business Layer:
 ---------------
 put log debug all over the place
-Fix email provider by making it abstract and creating an SmtpEmailProvider instead.
 
 Service layer:
 --------------
 put log debug all over the place
 Send alert if CPU usage remains high for too long?
-Log the Container start and stop to event viewer.
 Create more useful error messages when the agent fails to start
 
 Data Access Layer:
@@ -43,15 +43,10 @@ put log debug all over the place
 Implmement IoC
 Create Wizard:
 - Install service as user
-- Have a means to update the config files
-- Specify database to use, install database, give access
-- Specify email service location
-- Install Windows management console
-- Configure alternate log location
 - (optional) Install web (or use a different installer)
 
 Issues to address:
-- Seems MDF and LDF files are different in the zip which could cause the service to fail.
+-
 
 Configuration:
 --------------
