@@ -41,11 +41,18 @@ namespace SACS.WindowsService
                 _log.Error("Unhandled Exception occured in SACS service", ex);
                 EmailHelper.SendSupportEmail(_emailer, ex, null);
             }
-            catch
+            catch (Exception finalEx)
             {
-                // At this point there is nothing more we can do but let the app die
-                Console.WriteLine("goodbye--^v--^v-----^v------------");
-                Process.GetCurrentProcess().Kill();
+                try
+                {
+                    // At this point there is nothing more we can do but let the app die
+                    Console.WriteLine("goodbye--^v--^v-----^v------------");
+                    _log.Fatal("SACS has crashed.", finalEx);
+                }
+                finally
+                {
+                    Process.GetCurrentProcess().Kill();
+                }
             }
         }
 

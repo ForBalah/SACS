@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using log4net;
 using NCrontab;
 
 namespace SACS.Scheduler.Service
@@ -16,6 +17,7 @@ namespace SACS.Scheduler.Service
         private readonly Dictionary<IServiceJob, Timer> _jobs = new Dictionary<IServiceJob, Timer>();
         private readonly Timer _timerMonitor = new Timer(30000);
         private readonly List<Timer> _timers = new List<Timer>();
+        private ILog _log = LogManager.GetLogger(typeof(SchedulingService));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SchedulingService"/> class.
@@ -169,8 +171,20 @@ namespace SACS.Scheduler.Service
             if (this.HasJob(name))
             {
                 var entry = this._jobs.FirstOrDefault(i => JobComparison(i.Key, name));
-                entry.Value.Stop();
-                this._jobs.Remove(entry.Key);
+                try
+                {
+                    entry.Value.Stop();
+                }
+                catch (NullReferenceException e)
+                {
+                    // There is a potential problem of the timer not existing. this is just
+                    // here to prevent the server from dying.
+                    this._log.Error(string.Format("The timer for job {0} no longer exists!", name), e);
+                }
+                finally
+                {
+                    this._jobs.Remove(entry.Key);
+                }
             }
         }
 
