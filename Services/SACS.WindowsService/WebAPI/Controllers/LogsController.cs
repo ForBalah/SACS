@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
-using System.Xml.Linq;
 using log4net;
+using log4net.Appender;
 using SACS.BusinessLayer.BusinessLogic.Logs;
 using SACS.Common.DTOs;
 using SACS.DataAccessLayer.Models;
@@ -85,23 +85,12 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <returns></returns>
         private static IList<string> GetNamesFromRollingLogConfiguration()
         {
-            // TODO: might be able to get this from the Logger, instead of going via the config
-            var log4netSection = XElement.Parse(((System.Xml.XmlElement)ConfigurationManager.GetSection("log4net")).OuterXml);
+            var rootAppender = LogManager.GetRepository()
+                                  .GetAppenders()
+                                  .OfType<FileAppender>()
+                                  .FirstOrDefault();
 
-            var rollingLogAppender = log4netSection.Descendants("appender").FirstOrDefault(e => e.Attribute("type").Value == "log4net.Appender.RollingFileAppender");
-            if (rollingLogAppender == null)
-            {
-                throw new ConfigurationErrorsException("log4net.Appender.RollingFileAppender not specified");
-            }
-
-            string fileName = (from param in rollingLogAppender.Descendants("param")
-                               where param.Attribute("name").Value == "File"
-                               select param.Attribute("value").Value).First();
-
-            string fullFileName = Path.GetFullPath(fileName);
-
-            var logPathNames = Directory.GetFiles(Path.GetDirectoryName(fullFileName), Path.GetFileName(fullFileName) + "*");
-
+            var logPathNames = Directory.GetFiles(Path.GetDirectoryName(rootAppender.File), Path.GetFileName(rootAppender.File) + "*");
             return logPathNames.ToList();
         }
     }

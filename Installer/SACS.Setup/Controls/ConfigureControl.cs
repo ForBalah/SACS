@@ -141,6 +141,7 @@ namespace SACS.Setup.Controls
             {
                 this._serverConfig.SaveChanges();
                 this.HasServerPropertyChanges = false;
+                MessageBox.Show("Config changes saved succesfully.");
             }
         }
 
@@ -298,6 +299,7 @@ namespace SACS.Setup.Controls
             {
                 this._windowsConfig.SaveChanges();
                 this.HasWindowsPropertyChanges = false;
+                MessageBox.Show("Config changes saved succesfully.");
             }
         }
 

@@ -125,9 +125,9 @@ namespace SACS.Windows.Controls
         private void PopupCloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.ExceptionPopup.IsOpen = false;
-        } 
+        }
 
-        #endregion
+        #endregion Event Handlers
 
         #region Methods
 
@@ -150,21 +150,31 @@ namespace SACS.Windows.Controls
                     this.StartServerButton.IsEnabled = false;
                     this.StopServerButton.IsEnabled = true;
                     break;
+
                 case ServerStatus.Starting:
                     this.ServerStatusEllipse.Fill = Brushes.Yellow;
                     this.StartServerButton.IsEnabled = false;
                     this.StopServerButton.IsEnabled = false;
                     break;
+
                 case ServerStatus.Stopped:
                     this.ServerStatusEllipse.Fill = Brushes.DarkOrange;
                     this.StartServerButton.IsEnabled = true;
                     this.StopServerButton.IsEnabled = false;
                     break;
+
                 case ServerStatus.Error:
                     this.ServerStatusEllipse.Fill = Brushes.Red;
                     this.StartServerButton.IsEnabled = false;
                     this.StopServerButton.IsEnabled = false;
                     break;
+
+                case ServerStatus.Stopping:
+                    this.ServerStatusEllipse.Fill = Brushes.LightGreen;
+                    this.StartServerButton.IsEnabled = false;
+                    this.StopServerButton.IsEnabled = false;
+                    break;
+
                 case ServerStatus.Unknown:
                 default:
                     this.ServerStatusEllipse.Fill = Brushes.Black;
@@ -220,6 +230,6 @@ namespace SACS.Windows.Controls
             throw new NotImplementedException();
         }
 
-        #endregion
+        #endregion Methods
     }
 }

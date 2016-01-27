@@ -164,9 +164,15 @@ namespace SACS.DataAccessLayer.WebAPI
             UriBuilder uriBuilder = new UriBuilder();
             uriBuilder.Host = baseAddress.Host;
             uriBuilder.Scheme = baseAddress.Scheme;
+            long timeout = ApplicationSettings.Current.WebApiTimeout;
+            if (timeout <= 0)
+            {
+                // we can't have it breaking
+                timeout = 15;
+            }
 
             HttpClient client = new HttpClient(httpMessageHandler);
-            client.Timeout = new TimeSpan(TimeSpan.TicksPerSecond * ApplicationSettings.Current.WebApiTimeout); // TODO: make this configurable
+            client.Timeout = new TimeSpan(TimeSpan.TicksPerSecond * timeout);
             client.BaseAddress = uriBuilder.Uri;
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

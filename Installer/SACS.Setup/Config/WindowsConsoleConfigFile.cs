@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.Design;
 
 namespace SACS.Setup.Config
 {
@@ -33,6 +35,7 @@ namespace SACS.Setup.Config
         [DefaultValue("..\\..\\..\\..\\services\\SACS.WindowsService\\bin\\Debug\\Logs")]
         [RefreshProperties(RefreshProperties.All)]
         [Description("If the server goes down, this is where the logs can also be searched for physically.")]
+        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
         public string AlternativeLogLocation { get; set; }
 
         #endregion Properties

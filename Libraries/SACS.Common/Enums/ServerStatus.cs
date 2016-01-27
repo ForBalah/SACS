@@ -15,7 +15,7 @@ namespace SACS.Common.Enums
         /// The status is unknown
         /// </summary>
         Unknown = 0,
-        
+
         /// <summary>
         /// The server is known to be in an error state
         /// </summary>
@@ -34,6 +34,11 @@ namespace SACS.Common.Enums
         /// <summary>
         /// The server start is in progress.
         /// </summary>
-        Starting = 4
+        Starting = 4,
+
+        /// <summary>
+        /// The server stop is pending.
+        /// </summary>
+        Stopping = 5
     }
 }

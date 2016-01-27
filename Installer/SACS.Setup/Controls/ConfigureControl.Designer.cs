@@ -35,12 +35,6 @@
             this.ServerErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.ConfigureTabControl = new System.Windows.Forms.TabControl();
             this.ServerTabPage = new System.Windows.Forms.TabPage();
-            this.WindowsTabPage = new System.Windows.Forms.TabPage();
-            this.WindowsConfigurePanel = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.WindowsPropertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.WindowsApplyButton = new System.Windows.Forms.Button();
-            this.WindowsCancelButton = new System.Windows.Forms.Button();
             this.ServerConfigurePanel = new System.Windows.Forms.Panel();
             this.DeployScriptsButton = new System.Windows.Forms.Button();
             this.DatabaseLocationTextBox = new System.Windows.Forms.TextBox();
@@ -53,12 +47,18 @@
             this.ServiceAccountChangeButton = new System.Windows.Forms.Button();
             this.ServiceAccountLabel = new System.Windows.Forms.Label();
             this.ServiceAccountTextBox = new System.Windows.Forms.TextBox();
+            this.WindowsTabPage = new System.Windows.Forms.TabPage();
+            this.WindowsConfigurePanel = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.WindowsPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.WindowsApplyButton = new System.Windows.Forms.Button();
+            this.WindowsCancelButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ServerErrorProvider)).BeginInit();
             this.ConfigureTabControl.SuspendLayout();
             this.ServerTabPage.SuspendLayout();
+            this.ServerConfigurePanel.SuspendLayout();
             this.WindowsTabPage.SuspendLayout();
             this.WindowsConfigurePanel.SuspendLayout();
-            this.ServerConfigurePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -111,6 +111,151 @@
             this.ServerTabPage.Text = "Server and container";
             this.ServerTabPage.UseVisualStyleBackColor = true;
             // 
+            // ServerConfigurePanel
+            // 
+            this.ServerConfigurePanel.Controls.Add(this.DeployScriptsButton);
+            this.ServerConfigurePanel.Controls.Add(this.DatabaseLocationTextBox);
+            this.ServerConfigurePanel.Controls.Add(this.DatabaseLabel);
+            this.ServerConfigurePanel.Controls.Add(this.RefreshAccountButton);
+            this.ServerConfigurePanel.Controls.Add(this.ServerApplyButton);
+            this.ServerConfigurePanel.Controls.Add(this.ServerCancelButton);
+            this.ServerConfigurePanel.Controls.Add(this.AppConfigLabel);
+            this.ServerConfigurePanel.Controls.Add(this.ServerPropertyGrid);
+            this.ServerConfigurePanel.Controls.Add(this.ServiceAccountChangeButton);
+            this.ServerConfigurePanel.Controls.Add(this.ServiceAccountLabel);
+            this.ServerConfigurePanel.Controls.Add(this.ServiceAccountTextBox);
+            this.ServerConfigurePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ServerConfigurePanel.Location = new System.Drawing.Point(3, 3);
+            this.ServerConfigurePanel.Name = "ServerConfigurePanel";
+            this.ServerConfigurePanel.Size = new System.Drawing.Size(560, 351);
+            this.ServerConfigurePanel.TabIndex = 0;
+            // 
+            // DeployScriptsButton
+            // 
+            this.DeployScriptsButton.Location = new System.Drawing.Point(420, 35);
+            this.DeployScriptsButton.Name = "DeployScriptsButton";
+            this.DeployScriptsButton.Size = new System.Drawing.Size(138, 23);
+            this.DeployScriptsButton.TabIndex = 21;
+            this.DeployScriptsButton.Text = "Deploy Scripts";
+            this.DeployScriptsButton.UseVisualStyleBackColor = true;
+            this.DeployScriptsButton.Click += new System.EventHandler(this.DeployScriptsButton_Click);
+            this.DeployScriptsButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.DeployScriptsButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // DatabaseLocationTextBox
+            // 
+            this.DatabaseLocationTextBox.Location = new System.Drawing.Point(117, 36);
+            this.DatabaseLocationTextBox.Name = "DatabaseLocationTextBox";
+            this.DatabaseLocationTextBox.ReadOnly = true;
+            this.DatabaseLocationTextBox.Size = new System.Drawing.Size(296, 21);
+            this.DatabaseLocationTextBox.TabIndex = 20;
+            this.DatabaseLocationTextBox.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.DatabaseLocationTextBox.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // DatabaseLabel
+            // 
+            this.DatabaseLabel.AutoSize = true;
+            this.DatabaseLabel.Location = new System.Drawing.Point(36, 39);
+            this.DatabaseLabel.Name = "DatabaseLabel";
+            this.DatabaseLabel.Size = new System.Drawing.Size(63, 15);
+            this.DatabaseLabel.TabIndex = 19;
+            this.DatabaseLabel.Text = "Database:";
+            this.DatabaseLabel.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.DatabaseLabel.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // RefreshAccountButton
+            // 
+            this.RefreshAccountButton.Image = ((System.Drawing.Image)(resources.GetObject("RefreshAccountButton.Image")));
+            this.RefreshAccountButton.Location = new System.Drawing.Point(420, 8);
+            this.RefreshAccountButton.Name = "RefreshAccountButton";
+            this.RefreshAccountButton.Size = new System.Drawing.Size(24, 23);
+            this.RefreshAccountButton.TabIndex = 18;
+            this.RefreshAccountButton.UseVisualStyleBackColor = true;
+            this.RefreshAccountButton.Click += new System.EventHandler(this.RefreshAccountButton_Click);
+            this.RefreshAccountButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.RefreshAccountButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // ServerApplyButton
+            // 
+            this.ServerApplyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ServerApplyButton.Location = new System.Drawing.Point(401, 325);
+            this.ServerApplyButton.Name = "ServerApplyButton";
+            this.ServerApplyButton.Size = new System.Drawing.Size(75, 23);
+            this.ServerApplyButton.TabIndex = 17;
+            this.ServerApplyButton.Text = "Apply";
+            this.ServerApplyButton.UseVisualStyleBackColor = true;
+            this.ServerApplyButton.Click += new System.EventHandler(this.ServerApplyButton_Click);
+            this.ServerApplyButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.ServerApplyButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // ServerCancelButton
+            // 
+            this.ServerCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ServerCancelButton.Location = new System.Drawing.Point(482, 325);
+            this.ServerCancelButton.Name = "ServerCancelButton";
+            this.ServerCancelButton.Size = new System.Drawing.Size(75, 23);
+            this.ServerCancelButton.TabIndex = 16;
+            this.ServerCancelButton.Text = "Cancel";
+            this.ServerCancelButton.UseVisualStyleBackColor = true;
+            this.ServerCancelButton.Click += new System.EventHandler(this.ServerCancelButton_Click);
+            this.ServerCancelButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.ServerCancelButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // AppConfigLabel
+            // 
+            this.AppConfigLabel.AutoSize = true;
+            this.AppConfigLabel.Location = new System.Drawing.Point(32, 63);
+            this.AppConfigLabel.Name = "AppConfigLabel";
+            this.AppConfigLabel.Size = new System.Drawing.Size(67, 15);
+            this.AppConfigLabel.TabIndex = 15;
+            this.AppConfigLabel.Text = "App.config:";
+            this.AppConfigLabel.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.AppConfigLabel.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // ServerPropertyGrid
+            // 
+            this.ServerPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ServerPropertyGrid.Location = new System.Drawing.Point(117, 63);
+            this.ServerPropertyGrid.Name = "ServerPropertyGrid";
+            this.ServerPropertyGrid.Size = new System.Drawing.Size(440, 256);
+            this.ServerPropertyGrid.TabIndex = 14;
+            this.ServerPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.ServerPropertyGrid_PropertyValueChanged);
+            // 
+            // ServiceAccountChangeButton
+            // 
+            this.ServiceAccountChangeButton.Location = new System.Drawing.Point(450, 8);
+            this.ServiceAccountChangeButton.Name = "ServiceAccountChangeButton";
+            this.ServiceAccountChangeButton.Size = new System.Drawing.Size(108, 23);
+            this.ServiceAccountChangeButton.TabIndex = 13;
+            this.ServiceAccountChangeButton.Text = "Open Services";
+            this.ServiceAccountChangeButton.UseVisualStyleBackColor = true;
+            this.ServiceAccountChangeButton.Click += new System.EventHandler(this.ServiceAccountChangeButton_Click);
+            this.ServiceAccountChangeButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.ServiceAccountChangeButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // ServiceAccountLabel
+            // 
+            this.ServiceAccountLabel.AutoSize = true;
+            this.ServiceAccountLabel.Location = new System.Drawing.Point(3, 12);
+            this.ServiceAccountLabel.Name = "ServiceAccountLabel";
+            this.ServiceAccountLabel.Size = new System.Drawing.Size(96, 15);
+            this.ServiceAccountLabel.TabIndex = 11;
+            this.ServiceAccountLabel.Text = "Service Account:";
+            this.ServiceAccountLabel.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.ServiceAccountLabel.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
+            // ServiceAccountTextBox
+            // 
+            this.ServiceAccountTextBox.Location = new System.Drawing.Point(117, 9);
+            this.ServiceAccountTextBox.Name = "ServiceAccountTextBox";
+            this.ServiceAccountTextBox.ReadOnly = true;
+            this.ServiceAccountTextBox.Size = new System.Drawing.Size(296, 21);
+            this.ServiceAccountTextBox.TabIndex = 12;
+            this.ServiceAccountTextBox.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.ServiceAccountTextBox.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
+            // 
             // WindowsTabPage
             // 
             this.WindowsTabPage.Controls.Add(this.WindowsConfigurePanel);
@@ -142,6 +287,8 @@
             this.label2.Size = new System.Drawing.Size(67, 15);
             this.label2.TabIndex = 14;
             this.label2.Text = "App.config:";
+            this.label2.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.label2.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
             // 
             // WindowsPropertyGrid
             // 
@@ -152,6 +299,7 @@
             this.WindowsPropertyGrid.Name = "WindowsPropertyGrid";
             this.WindowsPropertyGrid.Size = new System.Drawing.Size(440, 302);
             this.WindowsPropertyGrid.TabIndex = 13;
+            this.WindowsPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.WindowsPropertyGrid_PropertyValueChanged);
             // 
             // WindowsApplyButton
             // 
@@ -162,6 +310,9 @@
             this.WindowsApplyButton.TabIndex = 12;
             this.WindowsApplyButton.Text = "Apply";
             this.WindowsApplyButton.UseVisualStyleBackColor = true;
+            this.WindowsApplyButton.Click += new System.EventHandler(this.WindowsApplyButton_Click);
+            this.WindowsApplyButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.WindowsApplyButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
             // 
             // WindowsCancelButton
             // 
@@ -172,125 +323,9 @@
             this.WindowsCancelButton.TabIndex = 11;
             this.WindowsCancelButton.Text = "Cancel";
             this.WindowsCancelButton.UseVisualStyleBackColor = true;
-            // 
-            // ServerConfigurePanel
-            // 
-            this.ServerConfigurePanel.Controls.Add(this.DeployScriptsButton);
-            this.ServerConfigurePanel.Controls.Add(this.DatabaseLocationTextBox);
-            this.ServerConfigurePanel.Controls.Add(this.DatabaseLabel);
-            this.ServerConfigurePanel.Controls.Add(this.RefreshAccountButton);
-            this.ServerConfigurePanel.Controls.Add(this.ServerApplyButton);
-            this.ServerConfigurePanel.Controls.Add(this.ServerCancelButton);
-            this.ServerConfigurePanel.Controls.Add(this.AppConfigLabel);
-            this.ServerConfigurePanel.Controls.Add(this.ServerPropertyGrid);
-            this.ServerConfigurePanel.Controls.Add(this.ServiceAccountChangeButton);
-            this.ServerConfigurePanel.Controls.Add(this.ServiceAccountLabel);
-            this.ServerConfigurePanel.Controls.Add(this.ServiceAccountTextBox);
-            this.ServerConfigurePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ServerConfigurePanel.Location = new System.Drawing.Point(3, 3);
-            this.ServerConfigurePanel.Name = "ServerConfigurePanel";
-            this.ServerConfigurePanel.Size = new System.Drawing.Size(560, 351);
-            this.ServerConfigurePanel.TabIndex = 0;
-            // 
-            // DeployScriptsButton
-            // 
-            this.DeployScriptsButton.Location = new System.Drawing.Point(420, 35);
-            this.DeployScriptsButton.Name = "DeployScriptsButton";
-            this.DeployScriptsButton.Size = new System.Drawing.Size(138, 23);
-            this.DeployScriptsButton.TabIndex = 21;
-            this.DeployScriptsButton.Text = "Deploy Scripts";
-            this.DeployScriptsButton.UseVisualStyleBackColor = true;
-            // 
-            // DatabaseLocationTextBox
-            // 
-            this.DatabaseLocationTextBox.Location = new System.Drawing.Point(117, 36);
-            this.DatabaseLocationTextBox.Name = "DatabaseLocationTextBox";
-            this.DatabaseLocationTextBox.ReadOnly = true;
-            this.DatabaseLocationTextBox.Size = new System.Drawing.Size(296, 21);
-            this.DatabaseLocationTextBox.TabIndex = 20;
-            // 
-            // DatabaseLabel
-            // 
-            this.DatabaseLabel.AutoSize = true;
-            this.DatabaseLabel.Location = new System.Drawing.Point(36, 39);
-            this.DatabaseLabel.Name = "DatabaseLabel";
-            this.DatabaseLabel.Size = new System.Drawing.Size(63, 15);
-            this.DatabaseLabel.TabIndex = 19;
-            this.DatabaseLabel.Text = "Database:";
-            // 
-            // RefreshAccountButton
-            // 
-            this.RefreshAccountButton.Image = ((System.Drawing.Image)(resources.GetObject("RefreshAccountButton.Image")));
-            this.RefreshAccountButton.Location = new System.Drawing.Point(420, 8);
-            this.RefreshAccountButton.Name = "RefreshAccountButton";
-            this.RefreshAccountButton.Size = new System.Drawing.Size(24, 23);
-            this.RefreshAccountButton.TabIndex = 18;
-            this.RefreshAccountButton.UseVisualStyleBackColor = true;
-            // 
-            // ServerApplyButton
-            // 
-            this.ServerApplyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ServerApplyButton.Location = new System.Drawing.Point(401, 325);
-            this.ServerApplyButton.Name = "ServerApplyButton";
-            this.ServerApplyButton.Size = new System.Drawing.Size(75, 23);
-            this.ServerApplyButton.TabIndex = 17;
-            this.ServerApplyButton.Text = "Apply";
-            this.ServerApplyButton.UseVisualStyleBackColor = true;
-            // 
-            // ServerCancelButton
-            // 
-            this.ServerCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ServerCancelButton.Location = new System.Drawing.Point(482, 325);
-            this.ServerCancelButton.Name = "ServerCancelButton";
-            this.ServerCancelButton.Size = new System.Drawing.Size(75, 23);
-            this.ServerCancelButton.TabIndex = 16;
-            this.ServerCancelButton.Text = "Cancel";
-            this.ServerCancelButton.UseVisualStyleBackColor = true;
-            // 
-            // AppConfigLabel
-            // 
-            this.AppConfigLabel.AutoSize = true;
-            this.AppConfigLabel.Location = new System.Drawing.Point(32, 63);
-            this.AppConfigLabel.Name = "AppConfigLabel";
-            this.AppConfigLabel.Size = new System.Drawing.Size(67, 15);
-            this.AppConfigLabel.TabIndex = 15;
-            this.AppConfigLabel.Text = "App.config:";
-            // 
-            // ServerPropertyGrid
-            // 
-            this.ServerPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ServerPropertyGrid.Location = new System.Drawing.Point(117, 63);
-            this.ServerPropertyGrid.Name = "ServerPropertyGrid";
-            this.ServerPropertyGrid.Size = new System.Drawing.Size(440, 256);
-            this.ServerPropertyGrid.TabIndex = 14;
-            // 
-            // ServiceAccountChangeButton
-            // 
-            this.ServiceAccountChangeButton.Location = new System.Drawing.Point(450, 8);
-            this.ServiceAccountChangeButton.Name = "ServiceAccountChangeButton";
-            this.ServiceAccountChangeButton.Size = new System.Drawing.Size(108, 23);
-            this.ServiceAccountChangeButton.TabIndex = 13;
-            this.ServiceAccountChangeButton.Text = "Open Services";
-            this.ServiceAccountChangeButton.UseVisualStyleBackColor = true;
-            // 
-            // ServiceAccountLabel
-            // 
-            this.ServiceAccountLabel.AutoSize = true;
-            this.ServiceAccountLabel.Location = new System.Drawing.Point(3, 12);
-            this.ServiceAccountLabel.Name = "ServiceAccountLabel";
-            this.ServiceAccountLabel.Size = new System.Drawing.Size(96, 15);
-            this.ServiceAccountLabel.TabIndex = 11;
-            this.ServiceAccountLabel.Text = "Service Account:";
-            // 
-            // ServiceAccountTextBox
-            // 
-            this.ServiceAccountTextBox.Location = new System.Drawing.Point(117, 9);
-            this.ServiceAccountTextBox.Name = "ServiceAccountTextBox";
-            this.ServiceAccountTextBox.ReadOnly = true;
-            this.ServiceAccountTextBox.Size = new System.Drawing.Size(296, 21);
-            this.ServiceAccountTextBox.TabIndex = 12;
+            this.WindowsCancelButton.Click += new System.EventHandler(this.WindowsCancelButton_Click);
+            this.WindowsCancelButton.MouseEnter += new System.EventHandler(this.Tooltip_MouseEnter);
+            this.WindowsCancelButton.MouseLeave += new System.EventHandler(this.Tooltip_MouseLeave);
             // 
             // ConfigureControl
             // 
@@ -305,11 +340,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.ServerErrorProvider)).EndInit();
             this.ConfigureTabControl.ResumeLayout(false);
             this.ServerTabPage.ResumeLayout(false);
+            this.ServerConfigurePanel.ResumeLayout(false);
+            this.ServerConfigurePanel.PerformLayout();
             this.WindowsTabPage.ResumeLayout(false);
             this.WindowsConfigurePanel.ResumeLayout(false);
             this.WindowsConfigurePanel.PerformLayout();
-            this.ServerConfigurePanel.ResumeLayout(false);
-            this.ServerConfigurePanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
