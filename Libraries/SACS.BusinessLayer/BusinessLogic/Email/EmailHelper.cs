@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SACS.Common.Configuration;
+using SACS.Scheduler;
 
 namespace SACS.BusinessLayer.BusinessLogic.Email
 {
@@ -22,14 +23,17 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
         public static void SendSupportEmail(EmailProvider emailer, Exception ex, string serviceAppName)
         {
             string subjectName = !string.IsNullOrWhiteSpace(serviceAppName) ? string.Format(" ({0})", serviceAppName) : string.Empty;
+            string source = !string.IsNullOrWhiteSpace(serviceAppName) ? string.Format("Service App: {0}", serviceAppName) : "SACS Server";
             EmailTemplateProvider templater = new HtmlEmailTemplateProvider(ApplicationSettings.Current.SupportEmailTemplatePath);
             templater.AddValue("MachineName", Environment.MachineName);
             templater.AddValue("Message", ex.Message);
             templater.AddValue("StackTrace", ex.StackTrace);
+            templater.AddValue("Time", SystemTime.Now.ToString());
+            templater.AddValue("Source", source);
 
             EmailMessage email = templater.GetEmailMessage();
             email.Subject = string.Format("{0}: Error in SACS{1}", Environment.MachineName, subjectName);
-            email.FromAddress = ApplicationSettings.Current.SupportEmailAddress;
+            email.FromAddress = ApplicationSettings.Current.SupportEmailAddress; // TODO: use SMTP settings instead?
             email.AddToAddresses(ApplicationSettings.Current.SupportEmailAddress);
 
             emailer.Send(email);

@@ -1,3 +1,9 @@
+General Issues
+--------------
+I think the scheduler is killing timers and not renewing them when it should. 
+Might be related to services crashing during execution, and then the timer is null, therefore the server crashes on stop.
+Check the SchedulingService timers to see under what situations it could be possible that the timers don't reinitialize.
+
 Presentation Layer - Windows:
 -----------------------------
 Add Help

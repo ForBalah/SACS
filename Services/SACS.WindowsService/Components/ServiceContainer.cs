@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Description;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Application;
+using SACS.BusinessLayer.BusinessLogic.Email;
 using SACS.BusinessLayer.BusinessLogic.Loader.Interfaces;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
@@ -21,12 +20,14 @@ namespace SACS.WindowsService.Components
     {
         #region fields
 
+        private static EmailProvider _emailer = new EmailProvider();
         private readonly ILog _log = LogManager.GetLogger(typeof(ServiceContainer));
         private readonly IServiceAppSchedulingService _schedulingService;
         private readonly WebAPIComponent _webApiComponent;
         private readonly IAppManager _appManager = AppManager.Current;
+        private bool _isStarted = false; // for debugging
 
-        #endregion
+        #endregion fields
 
         #region Constructors and Destructors
 
@@ -41,8 +42,8 @@ namespace SACS.WindowsService.Components
             this._webApiComponent = webApiComponent;
         }
 
-        #endregion
-        
+        #endregion Constructors and Destructors
+
         #region Methods
 
         /// <summary>
@@ -53,6 +54,7 @@ namespace SACS.WindowsService.Components
             this.StartScheduleMonitor();
             this.StartCommunicationService();
             this.StartServiceApps();
+            this._isStarted = true;
         }
 
         /// <summary>
@@ -60,9 +62,26 @@ namespace SACS.WindowsService.Components
         /// </summary>
         public void Stop()
         {
-            this.StopServiceApps();
-            this.StopCommunicationService();
-            this.StopScheduleMonitor();
+            try
+            {
+                this.StopServiceApps();
+                this.StopCommunicationService();
+                this.StopScheduleMonitor();
+            }
+            catch (Exception ex)
+            {
+                // We don't want to interfere with the service stopping so we try to handle
+                // the exception as best as possible, then let TopShelf shutdown the service
+                try
+                {
+                    this._log.Fatal("Fatal exception stopping SACS", ex);
+                    EmailHelper.SendSupportEmail(_emailer, ex, null);
+                }
+                finally
+                {
+                    this._isStarted = false;
+                }
+            }
         }
 
         /// <summary>
@@ -136,6 +155,6 @@ namespace SACS.WindowsService.Components
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }

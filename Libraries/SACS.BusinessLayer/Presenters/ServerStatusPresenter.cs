@@ -39,18 +39,23 @@ namespace SACS.BusinessLayer.Presenters
                     case ServiceControllerStatus.Running:
                         this.View.SetStatus(ServerStatus.Started, "Server is up and running.", serverStartTime, null);
                         break;
+
                     case ServiceControllerStatus.Stopped:
                         this.View.SetStatus(ServerStatus.Stopped, "Server has stopped.", null, null);
                         break;
+
                     case ServiceControllerStatus.Paused:
                         this.View.SetStatus(ServerStatus.Started, "Server is currently paused.", serverStartTime, null);
                         break;
+
                     case ServiceControllerStatus.StopPending:
-                        this.View.SetStatus(ServerStatus.Started, "Server stop is pending.", serverStartTime, null);
+                        this.View.SetStatus(ServerStatus.Stopping, "Server stop is pending.", serverStartTime, null);
                         break;
+
                     case ServiceControllerStatus.StartPending:
                         this.View.SetStatus(ServerStatus.Starting, "Server start is in progress.", null, null);
                         break;
+
                     default:
                         this.View.SetStatus(ServerStatus.Unknown, "Server state was changing. Please refresh.", null, null);
                         break;
@@ -142,18 +147,23 @@ namespace SACS.BusinessLayer.Presenters
                 case 0:
                     startupType = "BOOT";
                     break;
+
                 case 1:
                     startupType = "SYSTEM";
                     break;
+
                 case 2:
                     startupType = "AUTOMATIC";
                     break;
+
                 case 3:
                     startupType = "MANUAL";
                     break;
+
                 case 4:
                     startupType = "DISABLED";
                     break;
+
                 default:
                     startupType = "UNKNOWN";
                     break;

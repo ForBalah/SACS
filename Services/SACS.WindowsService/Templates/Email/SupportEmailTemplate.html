@@ -9,16 +9,22 @@
 	<h2>An Error occured in SACS on #{MachineName}#</h2>
 	<table style="width: 800px">
 		<tr>
-			<td>Message:</td>
+			<td>Time:</td>
+			<td>#{Time}#</td>
 		</tr>
 		<tr>
+			<td>Source:</td>
+			<td>#{Source}#</td>
+		</tr>
+		<tr>
+			<td>Message:</td>
 			<td>#{Message}#</td>
 		</tr>
 		<tr>
-			<td>Stack Trace:</td>
+			<td colspan="2">Stack Trace:</td>
 		</tr>
 		<tr>
-			<td>#{StackTrace}#</td>
+			<td colspan="2">#{StackTrace}#</td>
 		</tr>
 	</table>
 </body>

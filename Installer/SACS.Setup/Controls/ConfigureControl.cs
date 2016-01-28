@@ -98,7 +98,7 @@ namespace SACS.Setup.Controls
         {
             if (this.Visible)
             {
-                // todo: this should be a singleton instead
+                // TODO: this should be a singleton instead
                 var loadingForm = new NoControlsForm();
                 loadingForm.Show(this.Parent);
                 Application.DoEvents();
@@ -215,7 +215,7 @@ namespace SACS.Setup.Controls
                     Thread.Sleep(2000);
                     if (attempts-- == 0)
                     {
-                        result = 1; // pretend true;
+                        result = 1; // pretend true; no need to break.
                     }
                 }
             }

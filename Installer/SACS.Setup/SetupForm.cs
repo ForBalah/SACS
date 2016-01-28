@@ -246,7 +246,7 @@ namespace SACS.Setup
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SetupForm_Load(object sender, EventArgs e)
         {
-            LogHelper.GetLogger(this.GetType()).Log("===== Starting Setup =====");
+            LogHelper.GetLogger(this.GetType()).Log(string.Format("===== Starting Setup v{0} =====", this.ProductVersion));
             this.Text += " - version " + this.ProductVersion;
             this.RepositionControls();
             WizardManager.Current.SelectTab("Welcome");

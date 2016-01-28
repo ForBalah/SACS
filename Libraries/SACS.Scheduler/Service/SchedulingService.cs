@@ -177,8 +177,7 @@ namespace SACS.Scheduler.Service
                 }
                 catch (NullReferenceException e)
                 {
-                    // There is a potential problem of the timer not existing. this is just
-                    // here to prevent the server from dying.
+                    // There is a potential problem of the timer not existing. this attempts to catch the problem.
                     this._log.Error(string.Format("The timer for job {0} no longer exists!", name), e);
                 }
                 finally
