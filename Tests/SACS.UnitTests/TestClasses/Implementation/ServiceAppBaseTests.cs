@@ -49,7 +49,7 @@ namespace SACS.UnitTests.TestClasses.Implementation
                 ExecuteResolver(context);
             }
 
-            protected override void Initialze()
+            protected override void Initialize()
             {
                 InitializeResolver();
             }

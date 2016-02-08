@@ -213,6 +213,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="AutoItX.chm" />
+    <None Include="lib\SACS.Implementation Docs.chm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -251,9 +254,6 @@
     <Content Include="BuildSetupHelp.txt" />
     <Content Include="Images\info icon 1.png" />
     <Content Include="install1.ico" />
-    <Content Include="lib\_Find the latest SACS.Implementation.dll here.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="refresh.png" />
     <Content Include="refreshSmall.png" />
     <Content Include="Resources\__placeholder.txt" />

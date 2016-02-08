@@ -9,8 +9,7 @@ using SACS.Scheduler;
 namespace SACS.BusinessLayer.BusinessLogic.Email
 {
     /// <summary>
-    /// This just helps to temporarily group common email functionality. This
-    /// should be removed.
+    /// This just wraps common email functionality.
     /// </summary>
     public static class EmailHelper
     {
@@ -57,7 +56,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
 
             EmailMessage email = templater.GetEmailMessage();
             email.Subject = string.Format("{0}: {1} ({2}) has successfully executed", Environment.MachineName, serviceAppName, environment);
-            email.FromAddress = ApplicationSettings.Current.SupportEmailAddress;
+            email.FromAddress = ApplicationSettings.Current.SupportEmailAddress; // TODO: use SMTP settings instead?
             email.AddToAddresses(ApplicationSettings.Current.SupportEmailAddress);
 
             emailer.Send(email);

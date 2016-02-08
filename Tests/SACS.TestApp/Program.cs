@@ -61,7 +61,7 @@ namespace SACS.TestApp
             Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["SleepSeconds"]) * 1000);
         }
 
-        protected override void Initialze()
+        protected override void Initialize()
         {
             // can initialize app here
         }

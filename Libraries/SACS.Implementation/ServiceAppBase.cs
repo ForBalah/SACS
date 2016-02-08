@@ -16,8 +16,6 @@ namespace SACS.Implementation
 {
     /// <summary>
     /// Base class that service apps must implement to make use of SAC Server.
-    /// For ease-of-use, the class implementing this must expose a parameter-less
-    /// constructor.
     /// </summary>
     [Serializable]
     public abstract class ServiceAppBase : MarshalByRefObject
@@ -327,7 +325,7 @@ namespace SACS.Implementation
                     this.ExecutionMode = mode;
 
                     Messages.WriteDebug("Starting {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
-                    this.Initialze();
+                    this.Initialize();
                     this.IsLoaded = true;
                     Messages.WriteState(Enums.State.Started);
 
@@ -360,7 +358,7 @@ namespace SACS.Implementation
         /// <summary>
         /// Initializes this ServiceApp implementation. Place any once-off initializations in here.
         /// </summary>
-        protected abstract void Initialze();
+        protected abstract void Initialize();
 
         /// <summary>
         /// Signals to start a new execution at the next available slot.

@@ -11,7 +11,7 @@ namespace SACS.IntegrationTests.ServiceAppDomain
 {
     public class TestService : ServiceAppBase
     {
-        protected override void Initialze()
+        protected override void Initialize()
         {
             // do nothing
         }

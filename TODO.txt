@@ -1,3 +1,22 @@
+BUILDING THE DOCUMENTATION FILE
+===============================
+Sandcastle Help File Builder is used to generate the documetation for SACS.Implementation. The .shfbproj file resides in the 
+SolutionItems folder.
+
+If any changes are made to the SACS implementation file, the documentation should be rebuild (manually, using the help file 
+builder) and copied into the setup folder.
+
+To build the documentation:
+- Download and install Sandcastle Help File Builder: https://github.com/EWSoftware/SHFB.
+- Open the sacs.implementation.shfbproj file with the program.
+- Remove and re-add the SACS.Implementation.dll and SACS.Implementation.xml files on the right. It looks like the location
+  of the files is not relative so you may get an error "cannot find sources" even though the source files are clearly 
+  visible in the list.
+- Build the project - this will generate the help file. Replace the .chm file in the SACS.Setup/lib folder.
+
+ISSUES
+======
+
 General Issues
 --------------
 I think the scheduler is killing timers and not renewing them when it should. 

@@ -48,6 +48,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
 
                 System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient();
                 smtp.Send(message);
+                _log.Info(string.Format("Sent '{0}' email to {1} and {2}", email.Subject, string.Join(",", email.ToAddresses), string.Join(",", email.CCAddresses)));
                 return true;
             }
             catch (SmtpException se)
