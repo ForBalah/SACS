@@ -416,7 +416,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     guid: performanceObject.guid.Value as string,
                     failed: (bool)performanceObject.failed.Value,
                     startTime: performanceObject.startTime.Value as DateTime?,
-                    endTime: performanceObject.startTime.Value as DateTime?,
+                    endTime: performanceObject.endTime.Value as DateTime?,
                     message: performanceObject.message.Value as string);
 
                 this.Performance(this, args);

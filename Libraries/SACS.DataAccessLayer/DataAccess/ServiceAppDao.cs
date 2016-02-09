@@ -90,7 +90,7 @@ namespace SACS.DataAccessLayer.DataAccess
                     Source = this.GetType().Name,
                     Guid = performance.Guid
                 };
-                this.Insert(performance);
+                this.Insert<ServiceApplicationPerfomance>(perfEntity);
             }
 
             perfEntity.StartTime = performance.StartTime;

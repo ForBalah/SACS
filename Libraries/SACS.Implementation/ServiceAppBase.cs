@@ -145,7 +145,7 @@ namespace SACS.Implementation
 
                 if (this.StartupCommands.GetCommands().ContainsKey("name"))
                 {
-                    name = string.Format("{0} ({1})", this.StartupCommands.GetCommands()["name"] as string, Settings.AlternateName);
+                    name = this.StartupCommands.GetCommands()["name"] as string;
                 }
                 else
                 {
