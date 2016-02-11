@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		SolutionItems\AssemblyVersion.cs = SolutionItems\AssemblyVersion.cs
 		SolutionItems\ReleaseNotes.txt = SolutionItems\ReleaseNotes.txt
+		SolutionItems\SACS Help.hhp = SolutionItems\SACS Help.hhp
 		SolutionItems\SACS Help.mht = SolutionItems\SACS Help.mht
 		SolutionItems\sacs.implementation.shfbproj = SolutionItems\sacs.implementation.shfbproj
 		TODO.txt = TODO.txt
