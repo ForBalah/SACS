@@ -274,6 +274,11 @@ namespace SACS.Implementation
         /// decides to take its liberties.
         /// </para>
         /// <para>
+        /// UPDATE: Service apps are now plain executables. The override is still valid, however it now relates to the service
+        /// apps instantiation during startup and keeping the object alive throughout the idle state of the exe while awaiting
+        /// commands to execute.
+        /// </para>
+        /// <para>
         /// see https://msdn.microsoft.com/en-us/magazine/cc300474.aspx for more information on leases, sponsorship and
         /// object lifetime management.
         /// </para>

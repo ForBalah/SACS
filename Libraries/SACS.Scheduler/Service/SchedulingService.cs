@@ -14,9 +14,9 @@ namespace SACS.Scheduler.Service
     /// </summary>
     public class SchedulingService : ISchedulingService
     {
-        private readonly Dictionary<IServiceJob, Timer> _jobs = new Dictionary<IServiceJob, Timer>();
-        private readonly Timer _timerMonitor = new Timer(30000);
-        private readonly List<Timer> _timers = new List<Timer>();
+        private readonly Dictionary<IServiceJob, PersistentTimer> _jobs = new Dictionary<IServiceJob, PersistentTimer>();
+        private readonly PersistentTimer _timerMonitor = new PersistentTimer(30000, "TimerMonitor");
+        private readonly List<PersistentTimer> _timers = new List<PersistentTimer>();
         private ILog _log = LogManager.GetLogger(typeof(SchedulingService));
 
         /// <summary>
@@ -45,16 +45,21 @@ namespace SACS.Scheduler.Service
         /// <param name="e">The <see cref="ElapsedEventArgs"/> instance containing the event data.</param>
         private void TimerMonitor_Elapsed(object sender, ElapsedEventArgs e)
         {
+            List<string> cleanedTimers = new List<string>();
+
             // clean up timers
             for (int i = this._timers.Count - 1; i >= 0; i--)
             {
                 var timer = this._timers[i];
                 if (!timer.Enabled)
                 {
+                    cleanedTimers.Add(timer.Name);
                     this._timers.RemoveAt(i);
                     timer.Dispose();
                 }
             }
+
+            this._log.Debug(string.Format("SchedulingService.TimerMonitor_Elapsed(,). Cleaned up: {0}", string.Join(",", cleanedTimers)));
         }
 
         #endregion Event Handlers
@@ -81,6 +86,7 @@ namespace SACS.Scheduler.Service
         /// <param name="executionStep">The step to perform on execution.</param>
         public void AddJob(string name, Func<DateTime, DateTime> schedule, Action executionStep)
         {
+            this._log.Debug(string.Format("SchedulingService.AddJob({0})", name));
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException("name", "Job Name cannot be null");
@@ -145,8 +151,9 @@ namespace SACS.Scheduler.Service
         /// </summary>
         public void Stop()
         {
+            this._log.Debug("SchedulingService.Stop()");
             this.IsRunning = false;
-            foreach (var job in this._jobs)
+            foreach (var job in this._jobs.Where(j => j.Value != null))
             {
                 job.Value.Stop();
             }
@@ -158,6 +165,7 @@ namespace SACS.Scheduler.Service
         /// <param name="name">The job name.</param>
         public void RunJob(string name)
         {
+            this._log.Debug(string.Format("SchedulingService.RunJob({0})", name));
             var job = this.GetJob(name);
             job.Execute();
         }
@@ -168,17 +176,17 @@ namespace SACS.Scheduler.Service
         /// <param name="name">The job name.</param>
         public void RemoveJob(string name)
         {
+            this._log.Debug(string.Format("SchedulingService.RemoveJob({0})", name));
             if (this.HasJob(name))
             {
                 var entry = this._jobs.FirstOrDefault(i => JobComparison(i.Key, name));
+
                 try
                 {
-                    entry.Value.Stop();
-                }
-                catch (NullReferenceException e)
-                {
-                    // There is a potential problem of the timer not existing. this attempts to catch the problem.
-                    this._log.Error(string.Format("The timer for job {0} no longer exists!", name), e);
+                    if (entry.Value != null)
+                    {
+                        entry.Value.Stop();
+                    }
                 }
                 finally
                 {
@@ -193,9 +201,10 @@ namespace SACS.Scheduler.Service
         /// <param name="job">The job.</param>
         internal void ScheduleNextExecution(IServiceJob job)
         {
+            this._log.Debug(string.Format("SchedulingService.ScheduleNextExecution({0})", job.Name));
             var currentTime = SystemTime.Now;
             var nextTime = job.NextOccurence(currentTime);
-            Timer timer = new Timer((nextTime - currentTime).TotalMilliseconds);
+            PersistentTimer timer = new PersistentTimer((nextTime - currentTime).TotalMilliseconds, job.Name);
             timer.AutoReset = false;
             timer.Enabled = true;
             timer.Elapsed += (source, e) =>
@@ -232,5 +241,39 @@ namespace SACS.Scheduler.Service
         }
 
         #endregion Methods
+
+        private class PersistentTimer : Timer
+        {
+            /// <summary>
+            /// Gets the name of the timer
+            /// </summary>
+            public string Name { get; private set; }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="PersistentTimer"/> class.
+            /// </summary>
+            /// <param name="interval">The time, in milliseconds, between events. The value
+            /// must be greater than zero and less than or equal to System.Int32.MaxValue.</param>
+            /// <param name="name">The name associated with the timer.</param>
+            public PersistentTimer(double interval, string name)
+                : base(interval)
+            {
+                this.Name = name;
+            }
+
+            /// <summary>
+            /// Obtains a lifetime service object to control the lifetime policy for this instance.
+            /// </summary>
+            /// <returns>
+            /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease" /> used to control the lifetime policy
+            /// for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a
+            /// new lifetime service object initialized to the value of the
+            /// <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime" /> property.
+            /// </returns>
+            public override object InitializeLifetimeService()
+            {
+                return null;
+            }
+        }
     }
 }

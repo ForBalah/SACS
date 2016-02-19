@@ -201,8 +201,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             }
             catch
             {
-                // TODO: dos something about performance logging failing.
-                throw;
+                // TODO: do something about performance logging failing.
+                // throw;
             }
         }
 
