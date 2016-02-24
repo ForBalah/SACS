@@ -47,7 +47,7 @@ namespace SACS.Windows.Controls
             if (this.IsVisible)
             {
                 var dispatcher = Application.Current.Dispatcher;
-                dispatcher.BeginInvoke((Action)this.LoadGraphs);
+                dispatcher.BeginInvoke((Action)this.RefreshGraphs);
             }
         }
 
@@ -106,11 +106,20 @@ namespace SACS.Windows.Controls
         }
 
         /// <summary>
+        /// Tells the server to refresh the graphs and load the results
+        /// </summary>
+        private void RefreshGraphs()
+        {
+            WaitWindow.SingleInstance.ShowDrawn();
+            this._presenter.SendGraphRefresh();
+            this.LoadGraphs();
+        }
+
+        /// <summary>
         /// Loads the graphs.
         /// </summary>
         private void LoadGraphs()
         {
-            WaitWindow.SingleInstance.ShowDrawn();
             double lookBackDays;
             if (double.TryParse(ConfigurationManager.AppSettings["Performance.LookBackDays"], out lookBackDays))
             {

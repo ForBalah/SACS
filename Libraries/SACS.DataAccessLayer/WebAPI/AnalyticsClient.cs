@@ -79,5 +79,15 @@ namespace SACS.DataAccessLayer.WebAPI
 
             return this.Get<IList<SystemPerformance>>("Performance/Memory", parameters);
         }
+
+        /// <summary>
+        /// Sends a performance refresh request. Usually involves adding new values to the database.
+        /// </summary>
+        /// <returns></returns>
+        public bool RequestPerformanceRefresh()
+        {
+            this.Post<string>("Performance/Refresh", null);
+            return true;
+        }
     }
 }

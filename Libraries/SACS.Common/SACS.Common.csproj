@@ -66,6 +66,8 @@
     <Compile Include="Enums\ServerStatus.cs" />
     <Compile Include="Enums\ServiceAppState.cs" />
     <Compile Include="Enums\StartupType.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Helpers\UserUtilities.cs" />

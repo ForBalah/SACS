@@ -28,6 +28,21 @@ namespace SACS.BusinessLayer.Presenters
         }
 
         /// <summary>
+        /// Calls the server to immediately refresh the performance graphs
+        /// </summary>
+        public void SendGraphRefresh()
+        {
+            this.TryExecute(
+                () =>
+                {
+                    IAnalyticsClient client = this.factory.Create<IAnalyticsClient>();
+                    client.RequestPerformanceRefresh();
+                },
+                null,
+                true);
+        }
+
+        /// <summary>
         /// Loads the data.
         /// </summary>
         /// <param name="fromDate">From date.</param>

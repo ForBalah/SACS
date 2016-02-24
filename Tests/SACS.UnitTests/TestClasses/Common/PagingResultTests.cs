@@ -8,6 +8,7 @@ namespace SACS.UnitTests.TestClasses.Common
     [TestFixture]
     public class PagingResultTests
     {
+        [Category("PagingResultTests")]
         [Test]
         public void Constructor_CanInitializeEmptyList()
         {
@@ -19,6 +20,7 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(0, emptyResult.PageSize, "struct PageSize must be zero");
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void Constructor_CannotInitializeNullList()
         {
@@ -29,32 +31,36 @@ namespace SACS.UnitTests.TestClasses.Common
             }
             catch (ArgumentNullException)
             {
-                // test passes if there is an argument exception
+                Assert.Pass();
+            }
+            catch
+            {
+                throw;
             }
         }
 
+        [Category("PagingResultTests")]
         [Test]
-        public void Constructor_CannotInitializeWithAnyNegativeValues()
+        [TestCase(-1, 0, "Total incorrectly assigned negative")]
+        [TestCase(0, -1, "PageSize incorrectly assigned negative")]
+        public void Constructor_CannotInitializeWithAnyNegativeValues(int total, int pageSize, string failMessage)
         {
             try
             {
-                PagingResult<string> negative1 = new PagingResult<string>(new List<string>(), -1, 0);
-                Assert.Fail("Total incorrectly assigned negative");
+                PagingResult<string> negative1 = new PagingResult<string>(new List<string>(), total, pageSize);
+                Assert.Fail(failMessage);
             }
             catch (ArgumentException)
             {
+                Assert.Pass();
             }
-
-            try
+            catch
             {
-                PagingResult<string> negative2 = new PagingResult<string>(new List<string>(), 0, -1);
-                Assert.Fail("PageSize incorrectly assigned negative");
-            }
-            catch (ArgumentException)
-            {
+                throw;
             }
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void Constructor_TotalCannotBeLessThanCollectionSize()
         {
@@ -65,9 +71,15 @@ namespace SACS.UnitTests.TestClasses.Common
             }
             catch (ArgumentException)
             {
+                Assert.Pass();
+            }
+            catch
+            {
+                throw;
             }
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void NumberOfPages_ZeroTotalCountResultsInZeroNumberOfPages()
         {
@@ -75,6 +87,7 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(0, zeroTotal.NumberOfPages);
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void NumberOfPages_ZeroPageSizeAlwaysEqualsOne()
         {
@@ -82,6 +95,7 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(1, zeroPageSize.NumberOfPages);
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void NumberOfPages_PageSizeOfOneAlwaysReturnsTotal()
         {
@@ -89,6 +103,7 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(10, onePageSize.NumberOfPages);
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void NumberOfPages_PageSizeOf5_OneLessThanTheEdgeCaseShouldReturnOnePage()
         {
@@ -96,6 +111,7 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(1, fivePager.NumberOfPages);
         }
 
+        [Category("PagingResultTests")]
         [Test]
         public void NumberOfPages_PageSizeOf5_OnFiveTotalShouldReturnOnePage()
         {
@@ -103,8 +119,9 @@ namespace SACS.UnitTests.TestClasses.Common
             Assert.AreEqual(1, fivePager.NumberOfPages);
         }
 
+        [Category("PagingResultTests")]
         [Test]
-        public void NumberOfPages_PageSizeOf5_OneOneMoreTheEdgeShouldReturn2Pages()
+        public void NumberOfPages_PageSizeOf5_OnOneMoreTheEdgeShouldReturn2Pages()
         {
             PagingResult<string> fivePager = new PagingResult<string>(new List<string> { "a", "b" }, 6, 5);
             Assert.AreEqual(2, fivePager.NumberOfPages);

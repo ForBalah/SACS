@@ -1,12 +1,13 @@
 ﻿using System;
 using NUnit.Framework;
-using SACS.BusinessLayer.Extensions;
+using SACS.Common.Extensions;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
     [TestFixture]
     public class StringExtensionTests
     {
+        [Category("StringExtensionTests")]
         [Test]
         public void Truncate_DoesNotBreakWhenGivenNull()
         {
@@ -20,8 +21,11 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             {
                 Assert.Fail("Truncate failed on NULL string");
             }
+
+            Assert.Pass();
         }
 
+        [Category("StringExtensionTests")]
         [Test]
         public void Truncate_NoTruncationIfStringIsJustTooShort()
         {
@@ -29,6 +33,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
             Assert.AreEqual("hello", result);
         }
 
+        [Category("StringExtensionTests")]
         [Test]
         public void Truncate_TruncatesStringIfItIsTooLong()
         {

@@ -11,6 +11,7 @@ using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
 using SACS.DataAccessLayer.Models;
 using SACS.WindowsService.Common;
+using SACS.WindowsService.Components;
 
 namespace SACS.WindowsService.WebAPI.Controllers
 {
@@ -134,6 +135,19 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 _log.Error("REST API Error", e);
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
+        }
+
+        /// <summary>
+        /// Posts a request to the server to refresh the CPU and memory data
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ActionName("Refresh")]
+        public bool RequestPerformanceRefresh()
+        {
+            _log.Debug("(API) Performance -> RequestPerformanceRefresh");
+            SystemMonitor.SnapshotPerformance();
+            return true;
         }
     }
 }

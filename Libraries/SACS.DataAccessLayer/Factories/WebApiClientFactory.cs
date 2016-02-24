@@ -15,7 +15,7 @@ using SACS.DataAccessLayer.WebAPI.Interfaces;
 namespace SACS.DataAccessLayer.Factories
 {
     /// <summary>
-    /// The factory used to create WebAPI clients
+    /// The factory used to create WebAPI clients. To be replaced by an IoC.
     /// </summary>
     public class WebApiClientFactory : IRestClientFactory
     {

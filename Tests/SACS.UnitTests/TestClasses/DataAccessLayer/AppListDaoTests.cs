@@ -48,6 +48,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
          username=""username""
          password=""password""></serviceApp>";
 
+        [Category("AppListDaoTests")]
         [Test]
         public void FindAll_CanReturnAllServiceApps()
         {
@@ -57,6 +58,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             Assert.AreEqual(2, apps.Count());
         }
 
+        [Category("AppListDaoTests")]
         [Test]
         public void FindAll_CanReturnServiceAppByName()
         {
@@ -73,6 +75,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             Assert.AreEqual("", app.Password);
         }
 
+        [Category("AppListDaoTests")]
         [Test]
         public void CastToServiceApp_CanCastWithoutIdentity()
         {
@@ -87,8 +90,11 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             {
                 Assert.Fail("Failed to cast XML without identity");
             }
+
+            Assert.Pass();
         }
 
+        [Category("AppListDaoTests")]
         [Test]
         public void CastToServiceApp_CanCastWithIdentity()
         {
@@ -103,8 +109,11 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             {
                 Assert.Fail("Failed to cast XML with identity");
             }
+
+            Assert.Pass();
         }
 
+        [Category("AppListDaoTests")]
         [Test]
         public void PersistServiceApp_CanAddUserNameAndPassword()
         {

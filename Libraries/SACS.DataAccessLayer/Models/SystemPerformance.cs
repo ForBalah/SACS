@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SACS.Common.Extensions;
 
 namespace SACS.DataAccessLayer.Models
 {
@@ -93,7 +94,7 @@ namespace SACS.DataAccessLayer.Models
             Debug.Assert(maxPoints >= 0, "maxPoints cannot be less than zero");
             Debug.Assert(threshold >= 0, "maxPoints threshold be less than zero");
 
-            var intervals = GetIntervals(data.Count, maxPoints);
+            var intervals = data.GetIntervals(maxPoints).ToList();
 
             for (var i = 0; i < data.Count; i++)
             {
@@ -103,11 +104,7 @@ namespace SACS.DataAccessLayer.Models
                 decimal currentValue = data[i].Value;
                 decimal nextValue = i < data.Count - 1 ? data[i + 1].Value : 0;
 
-                // keeping points that are either on the interval or outside of the threshold
-                // will ensure that we keep seeing accurate data.
-                bool isResolutionPoint = i == 0 || i == data.Count - 1 || isIntervalPoint;
-
-                if (!isResolutionPoint)
+                if (!isIntervalPoint)
                 {
                     decimal prevDelta = SafeDivide(Math.Abs(currentValue - prevValue), currentValue);
                     decimal nextDelta = SafeDivide(Math.Abs(currentValue - nextValue), currentValue);
@@ -168,37 +165,6 @@ namespace SACS.DataAccessLayer.Models
         public override int GetHashCode()
         {
             return this.AuditTime.GetHashCode() ^ this.Value.GetHashCode();
-        }
-
-        /// <summary>
-        /// Returns a list of indices where the data points must be retained.
-        /// </summary>
-        /// <param name="count">The list count.</param>
-        /// <param name="maxPoints">The max points parameter</param>
-        /// <returns></returns>
-        private static IList<int> GetIntervals(int count, int maxPoints)
-        {
-            if (count == 0)
-            {
-                return new List<int>();
-            }
-
-            if (maxPoints == 0)
-            {
-                return Enumerable.Range(0, count).ToList();
-            }
-
-            var intervals = new List<int>();
-            int lastPoint = 0;
-
-            while (maxPoints > intervals.Count)
-            {
-                lastPoint = ((count - lastPoint) / (maxPoints + 1)) + lastPoint;
-                intervals.Add(lastPoint);
-                lastPoint++;
-            }
-
-            return intervals;
         }
 
         /// <summary>

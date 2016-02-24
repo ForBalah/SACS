@@ -35,5 +35,11 @@ namespace SACS.DataAccessLayer.WebAPI.Interfaces
         /// <param name="toDate">To date.</param>
         /// <returns></returns>
         IList<SystemPerformance> GetSystemMemoryPerformance(DateTime fromDate, DateTime toDate);
+
+        /// <summary>
+        /// Sends a performance refresh request. Usually involves adding new values to the database.
+        /// </summary>
+        /// <returns></returns>
+        bool RequestPerformanceRefresh();
     }
 }

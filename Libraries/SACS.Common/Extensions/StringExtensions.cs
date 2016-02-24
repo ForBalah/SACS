@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SACS.BusinessLayer.Extensions
+namespace SACS.Common.Extensions
 {
     /// <summary>
     /// String extension methods

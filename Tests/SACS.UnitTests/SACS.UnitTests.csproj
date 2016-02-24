@@ -46,6 +46,7 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NSubstitute">
       <HintPath>..\..\packages\NSubstitute.1.7.2.0\lib\NET45\NSubstitute.dll</HintPath>
     </Reference>
@@ -93,6 +94,7 @@
     <Compile Include="TestClasses\BusinessLayer\ServiceAppValidatorTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppListExporterTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\StringExtensionTests.cs" />
+    <Compile Include="TestClasses\BusinessLayer\EnumerableExtensionsTests.cs" />
     <Compile Include="TestClasses\Common\PagingResultTests.cs" />
     <Compile Include="TestClasses\DataAccessLayer\AppListDaoTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

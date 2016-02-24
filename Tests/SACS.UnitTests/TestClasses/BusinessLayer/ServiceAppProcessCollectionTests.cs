@@ -50,7 +50,11 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
                 collection.Add(saDomain2);
                 Assert.Fail("Able to add duplicate domain.");
             }
-            catch (Exception)
+            catch (AssertionException)
+            {
+                throw;
+            }
+            catch
             {
                 Assert.AreEqual(1, collection.Count);
             }

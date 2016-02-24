@@ -20,7 +20,9 @@ namespace SACS.WindowsService.Components
     /// </summary>
     internal class SystemMonitor
     {
+        // TODO: add this to IoC
         private static SystemMonitor monitor = new SystemMonitor();
+
         private static ILog _log = LogManager.GetLogger(typeof(SystemMonitor));
         private static DateTime? _startServiceTime;
 
@@ -48,6 +50,16 @@ namespace SACS.WindowsService.Components
                 typeof(SystemMonitor).Name,
                 ConfigurationManager.AppSettings[Constants.MonitorSchedule],
                 () => { monitor.RecordPerformance(); });
+        }
+
+        /// <summary>
+        /// The publicly available method to perform the recording of performance.
+        /// </summary>
+        /// <remarks>This calls the instance <c>RecordPerformance</c> method. This is temporary
+        /// until the System monitor is served using an IoC. at which point, the instance is only required.</remarks>
+        public static void SnapshotPerformance()
+        {
+            monitor.RecordPerformance();
         }
 
         /// <summary>

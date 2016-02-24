@@ -13,6 +13,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
 
         #region Compact Data
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompactData_WorksWithEmptyList()
         {
@@ -21,6 +22,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             CollectionAssert.AreEqual(new List<SystemPerformance>(), data.ToList());
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompatData_WorksWithSingleEntry()
         {
@@ -36,6 +38,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompactData_WorksWithTwoEntriesThatAreTheSameValue()
         {
@@ -53,6 +56,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompactData_WorksWithTwoEntriesThatAreDifferent()
         {
@@ -70,6 +74,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompactData_WorksWithTwoEntriesThatAreFarApart()
         {
@@ -90,6 +95,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList(), string.Format("Different number of elements: {0}", data.Count));
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompactData_WorksWithThreeEntriesThatAreDifferent()
         {
@@ -109,6 +115,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }, data.ToList());
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void CompactData_WorksWithThreeEntriesThatAreTheSame()
         {
@@ -131,6 +138,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
 
         #region Lower Resolution
 
+        [Category("SystemPerformanceTests")]
         [Test]
         public void LowerResolution_WorksWithEmptyList()
         {
@@ -139,6 +147,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             CollectionAssert.AreEqual(new List<SystemPerformance>(), data.ToList());
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         [TestCase(0, 0)]
         [TestCase(1, 0)]
@@ -158,6 +167,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             AssertPerformanceEquality(10m, new DateTime(2015, 1, 1, 6, 0, 0), data[0]);
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         [TestCase(0, 0)]
         [TestCase(1, 1)]
@@ -177,14 +187,13 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             AssertPerformanceEquality(10m, new DateTime(2015, 1, 1, 6, 1, 0), data[1]);
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         [TestCase(1, 0, 0)] // with zero threshold, all points should be returned
-        [TestCase(1, 1, 1)] // with 100% threshold, 1 point + ends should be returned
-        [TestCase(2, 1, 2)] // with 100% threshold, 2 point + ends should be returned
-        [TestCase(3, 1, 3)] // with 100% threshold, 3 point + ends should be returned
-        [TestCase(4, 1, 0)] // with zero threshold, all points should be returned
-        [TestCase(5, 1, 0)] // with zero threshold, all points should be returned
-        [TestCase(6, 1, 0)] // with zero threshold, all points should be returned
+        [TestCase(1, 1, 1)] // with 100% threshold, 2 points should be returned
+        [TestCase(2, 0.2, 2)] // with 50% threshold, 3 points should be returned
+        [TestCase(4, 1, 3)] // with 100% threshold, 3 points should be returned
+        [TestCase(5, 1, 4)] // with zero threshold, all points should be returned
         public void LowerResolution_MaxPointsWorksWithSixItemsInTheList(int maxPoints, decimal threshold, int expectedValuesIndex)
         {
             var expectedValues = new List<List<TimeValue>>
@@ -201,7 +210,17 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
                 },
                 new List<TimeValue>
                 {
-                    // 3 records (1 + ends)
+                    // 2 records (0 + ends)
+                    new TimeValue(new DateTime(2015, 1, 1, 6, 0, 0), 10m),
+                    //new TimeValue(new DateTime(2015, 1, 1, 6, 1, 0), 10.5m),
+                    //new TimeValue(new DateTime(2015, 1, 1, 6, 2, 0), 11.55m),
+                    //new TimeValue(new DateTime(2015, 1, 1, 6, 3, 0), 13.286m),
+                    //new TimeValue(new DateTime(2015, 1, 1, 6, 4, 0), 14.611m),
+                    new TimeValue(new DateTime(2015, 1, 1, 6, 5, 0), 15.341m)
+                },
+                new List<TimeValue>
+                {
+                    // 3 records returned (1 + ends)
                     new TimeValue(new DateTime(2015, 1, 1, 6, 0, 0), 10m),
                     //new TimeValue(new DateTime(2015, 1, 1, 6, 1, 0), 10.5m),
                     //new TimeValue(new DateTime(2015, 1, 1, 6, 2, 0), 11.55m),
@@ -251,6 +270,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             }
         }
 
+        [Category("SystemPerformanceTests")]
         [Test]
         // Tests with max 1 item to make sure values are included correctly around the point
         [TestCase(1, 0.025, 0)] // 2.5% threshold
