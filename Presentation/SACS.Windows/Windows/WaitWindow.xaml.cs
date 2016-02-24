@@ -48,7 +48,7 @@ namespace SACS.Windows.Windows
             {
                 lock (syncLock)
                 {
-                    if (_singletonWindow == null || _singletonWindow._isClosed)
+                    if (_singletonWindow == null || (_singletonWindow._isClosed && Application.Current != null))
                     {
                         _singletonWindow = new WaitWindow();
                     }

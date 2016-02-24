@@ -99,7 +99,10 @@
                         <TextBlock Name="ServiceAppDescriptionLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
                         <TextBox Name="DescriptionTextBox" Visibility="Collapsed" TextWrapping="Wrap" MinLines="3" Margin="0,0,0,5" />
                         <Label Content="App File:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The file that will be executed as a service app." />
-                        <TextBlock Name="AppFilePathLabel" Margin="0,0,0,10" />
+                        <DockPanel Name="AppFilePathReadOnlyDockPanel" LastChildFill="True" Margin="0,0,0,5">
+                            <Button Name="AppFilePathViewButton" IsEnabled="False" Content="Explore" Width="50" DockPanel.Dock="Right"  Style="{StaticResource ButtonStyle}" Click="AppFilePathViewButton_Click" />
+                            <TextBlock Name="AppFilePathLabel" Margin="0,5,0,10" />
+                        </DockPanel>
                         <DockPanel Name="AppFilePathDockPanel" LastChildFill="True" Visibility="Collapsed" Margin="0,0,0,5">
                             <Button Name="AppFilePathSelectButton" Content="Browse..." Width="65" DockPanel.Dock="Right" Click="AppFilePathSelectButton_Click" />
                             <TextBox Name="AppFilePathTextBox" />
@@ -111,7 +114,7 @@
                         <Label Content="Identity:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The name of the assembly with the service app." />
                         <DockPanel Name="IdentityDockPanel" LastChildFill="True" Margin="0,0,0,10">
                             <Button DockPanel.Dock="Right" Name="IdentitySelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="IdentitySelectButton_Click" />
-                            <TextBlock Name="IdentityLabel" />
+                            <TextBlock Name="IdentityLabel" Margin="0,5,0,5" />
                             <TextBlock Name="PasswordHiddenLabel" Visibility="Collapsed" />
                         </DockPanel>
                         <Label Content="Schedule:" BorderThickness="0,0,0,1" BorderBrush="Black" />
@@ -120,7 +123,7 @@
                                 <Button Name="ScheduleSelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="ScheduleSelectButton_Click" />
                             </StackPanel>
                             <TextBlock Name="ScheduleHiddenLabel" Visibility="Collapsed" />
-                            <TextBlock Name="ScheduleLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
+                            <TextBlock Name="ScheduleLabel" Margin="0,5,0,10" TextWrapping="Wrap" />
                         </DockPanel>
                         <Label Content="Configure:" BorderThickness="0,0,0,1" BorderBrush="Black" />
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">

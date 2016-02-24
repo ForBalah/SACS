@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -91,6 +92,19 @@ namespace SACS.Windows.Controls
             if (openFileDialog.ShowDialog() == true)
             {
                 this.AppFilePathTextBox.Text = openFileDialog.FileName;
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the AppFilePathViewButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
+        private void AppFilePathViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(this.AppFilePathLabel.Text))
+            {
+                Process.Start(Path.GetDirectoryName(this.AppFilePathLabel.Text));
             }
         }
 
@@ -273,7 +287,7 @@ namespace SACS.Windows.Controls
             {
                 this._presenter.UpdateServiceApp(serviceApp);
                 this._inEditMode = false;
-                this.ToggleEditFieldVisibility(false);
+                this.UpdateInputFieldsVisibility(false);
             }
         }
 
@@ -288,7 +302,7 @@ namespace SACS.Windows.Controls
             {
                 this._presenter.RemoveServiceApp(this.ServiceAppNameTextBox.Text ?? (string)this.ServiceAppNameLabel.Content);
                 this._inEditMode = false;
-                this.ToggleEditFieldVisibility(false);
+                this.UpdateInputFieldsVisibility(false);
             }
         }
 
@@ -371,7 +385,7 @@ namespace SACS.Windows.Controls
         public void SelectServiceApp(ServiceApp serviceApp, bool isReadOnly = true)
         {
             this._inEditMode = !isReadOnly;
-            this.ToggleEditFieldVisibility(!isReadOnly);
+            this.UpdateInputFieldsVisibility(!isReadOnly);
             this._selectedServiceApp = serviceApp;
             this.ShowServiceAppDetails(this._selectedServiceApp, isReadOnly);
         }
@@ -468,6 +482,7 @@ namespace SACS.Windows.Controls
             this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = serviceApp.Description;
             this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = serviceApp.Environment;
             this.AppFilePathLabel.Text = this.AppFilePathTextBox.Text = serviceApp.AppFilePath;
+            this.AppFilePathViewButton.IsEnabled = !string.IsNullOrWhiteSpace(serviceApp.AppFilePath);
             this.SendSuccessCheckBox.IsChecked = serviceApp.SendSuccessNotification;
             this.IdentityLabel.Text = this.IdentityLabel.Text = serviceApp.Username;
             this.PasswordHiddenLabel.Text = serviceApp.Password;
@@ -479,10 +494,10 @@ namespace SACS.Windows.Controls
         }
 
         /// <summary>
-        /// Toggles the edit field visibility.
+        /// Updates the visibility of the input fields.
         /// </summary>
         /// <param name="isEdit">If set to <c>true</c> [is edit].</param>
-        private void ToggleEditFieldVisibility(bool isEdit)
+        private void UpdateInputFieldsVisibility(bool isEdit)
         {
             this.ServiceAppListView.IsEnabled = !isEdit;
             this.StartServiceAppButton.IsEnabled = false;
@@ -497,7 +512,7 @@ namespace SACS.Windows.Controls
             this.ServiceAppEnvironmentTextBox.Visibility = MapVisibility(isEdit);
             this.ServiceAppDescriptionLabel.Visibility = MapVisibility(!isEdit);
             this.DescriptionTextBox.Visibility = MapVisibility(isEdit);
-            this.AppFilePathLabel.Visibility = MapVisibility(!isEdit);
+            this.AppFilePathReadOnlyDockPanel.Visibility = MapVisibility(!isEdit);
             this.AppFilePathDockPanel.Visibility = MapVisibility(isEdit);
             this.SendSuccessCheckBox.IsEnabled = isEdit;
             this.IdentitySelectButton.Visibility = MapVisibility(isEdit);
