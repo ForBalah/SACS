@@ -56,6 +56,7 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void OpenLogButton_Click(object sender, RoutedEventArgs e)
         {
+            WaitWindow.SuppressDialog = true;
             if (this.LogsNameListBox.SelectedValue != null)
             {
                 this.OpenLog((string)this.LogsNameListBox.SelectedValue);
@@ -73,9 +74,9 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            WaitWindow.SingleInstance.ShowDrawn();
+            WaitWindow.SingleInstance.ShowDrawn(true);
             this._presenter.LoadControl();
-            WaitWindow.SingleInstance.Close();
+            WaitWindow.SingleInstance.TryClose();
         }
 
         /// <summary>
@@ -85,9 +86,9 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            WaitWindow.SingleInstance.ShowDrawn();
+            WaitWindow.SingleInstance.ShowDrawn(true);
             this._presenter.LoadControl();
-            WaitWindow.SingleInstance.Close();
+            WaitWindow.SingleInstance.TryClose();
         }
 
         #endregion Event Handlers

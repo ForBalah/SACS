@@ -24,6 +24,8 @@ namespace SACS.Windows.Windows
         private static object syncLock = new object();
         private bool _isClosed = false;
 
+        #region Constructors and Destructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WaitWindow"/> class.
         /// </summary>
@@ -32,6 +34,10 @@ namespace SACS.Windows.Windows
             this.InitializeComponent();
             this.Closed += this.WaitWindow_Closed;
         }
+
+        #endregion Constructors and Destructors
+
+        #region Properties
 
         /// <summary>
         /// Gets the single instance of this window for use throughout the app.
@@ -53,6 +59,15 @@ namespace SACS.Windows.Windows
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to suppress the showing of the dialog
+        /// </summary>
+        public static bool SuppressDialog { get; set; }
+
+        #endregion Properties
+
+        #region Event Handlers
+
+        /// <summary>
         /// Handles the closed event of the wait window control.
         /// </summary>
         /// <param name="sender">The sender.</param>
@@ -62,12 +77,59 @@ namespace SACS.Windows.Windows
             this._isClosed = true;
         }
 
+        #endregion Event Handlers
+
+        #region Methods
+
         /// <summary>
-        /// Shows the form, forcing it to draw while doing so.
+        /// Shows the window, forcing it to draw while doing so.
         /// </summary>
-        public void ShowDrawn()
+        /// <param name="overrideDialogSuppression">If set to <c>true</c>, will show the dialog regardless of if
+        /// it has been requested to suppress it.</param>
+        public void ShowDrawn(bool overrideDialogSuppression)
         {
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() => this.Show()));
+            if (!SuppressDialog || overrideDialogSuppression)
+            {
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, (Action)this.TryShowWindow);
+            }
         }
+
+        /// <summary>
+        /// Attempts to show the window... if the application will allow it
+        /// </summary>
+        private void TryShowWindow()
+        {
+            try
+            {
+                if (!this._isClosed)
+                {
+                    this.Show();
+                }
+            }
+            catch
+            {
+                // TODO: log that the window cannot be shown
+            }
+        }
+
+        /// <summary>
+        /// Attempts to close the window
+        /// </summary>
+        public void TryClose()
+        {
+            try
+            {
+                if (!this._isClosed)
+                {
+                    this.Close();
+                }
+            }
+            catch
+            {
+                // TODO: log that the close failed.
+            }
+        }
+
+        #endregion Methods
     }
 }

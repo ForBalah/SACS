@@ -110,9 +110,10 @@ namespace SACS.Windows.Controls
         /// </summary>
         private void RefreshGraphs()
         {
-            WaitWindow.SingleInstance.ShowDrawn();
+            WaitWindow.SingleInstance.ShowDrawn(true);
             this._presenter.SendGraphRefresh();
             this.LoadGraphs();
+            WaitWindow.SingleInstance.TryClose();
         }
 
         /// <summary>
@@ -120,6 +121,7 @@ namespace SACS.Windows.Controls
         /// </summary>
         private void LoadGraphs()
         {
+            WaitWindow.SingleInstance.ShowDrawn(false);
             double lookBackDays;
             if (double.TryParse(ConfigurationManager.AppSettings["Performance.LookBackDays"], out lookBackDays))
             {
@@ -127,7 +129,8 @@ namespace SACS.Windows.Controls
                 this._presenter.LoadData(toDate.AddDays(-lookBackDays), toDate);
             }
 
-            WaitWindow.SingleInstance.Close();
+            WaitWindow.SingleInstance.TryClose();
+            WaitWindow.SuppressDialog = true;
         }
 
         /// <summary>
