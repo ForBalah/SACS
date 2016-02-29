@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -29,9 +30,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         private Process _process;
         private ILog _log;
         private Task _runTask;
-        private bool _executeFlag = false;
-        private bool _stopFlag = false;
         private List<Tuple<string, ServiceAppState>> _Messages;
+        private const string WarningMessage = "{0} performance warning: Process could not be found for service app {1}. Check that it started correctly.";
 
         #endregion Fields
 
@@ -199,6 +199,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             this._runTask = Task.Run(() =>
             {
                 bool exitCheck = false;
+                int exitCode = 0;
 
                 try
                 {
@@ -207,7 +208,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     this.ServiceApp.AppVersion = assemblyName.Version;
 
                     this.AddMessage("Starting service app", ServiceAppState.Unknown);
-                    this._process.Start();
+                    bool result = this._process.Start();
                 }
                 catch (Exception e)
                 {
@@ -221,6 +222,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     string message = this._process.StandardOutput.ReadLine();
                     exitCheck = this.ProcessMessage(message);
                 }
+
+                exitCode = this._process.ExitCode;
+
+                if (exitCode != 0)
+                {
+                    this._log.Warn(string.Format("{0} service app exited unusually. Exit code: {2}", this.ServiceApp.Name, exitCode));
+                }
             });
         }
 
@@ -229,10 +237,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public virtual void Stop()
         {
-            this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
-
             try
             {
+                this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
+
                 // we will need to be doubly sure that the process has ended
                 if (this.IsProcessRunning)
                 {
@@ -299,6 +307,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 // the process is not running.
                 return 0;
             }
+            catch (KeyNotFoundException)
+            {
+                // process could not be found
+                this._log.Warn(string.Format(WarningMessage, "Memory", this.ServiceApp.Name));
+                return 0;
+            }
         }
 
         /// <summary>
@@ -316,6 +330,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             catch (InvalidOperationException)
             {
                 // the process is not running.
+                return 0;
+            }
+            catch (KeyNotFoundException)
+            {
+                // process could not be found
+                this._log.Warn(string.Format(WarningMessage, "CPU", this.ServiceApp.Name));
                 return 0;
             }
         }
@@ -374,6 +394,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 // this must be just a normal info message. process it as such
                 this.ProcessInfo(message);
                 return false;
+            }
+            catch (ArgumentNullException)
+            {
+                // problem with the message received. opt to exit
+                return true;
             }
 
             throw new NotImplementedException("Unrecognized message to process.");
@@ -544,11 +569,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         private void CreateProcess()
         {
+            int sacsProcessId = Process.GetCurrentProcess().Id;
             ProcessStartInfo startInfo = new ProcessStartInfo(this.ServiceApp.AppFilePath);
-            startInfo.Arguments = JsonConvert.SerializeObject(new { name = this.ServiceApp.Name, action = "hide" });
+            startInfo.WorkingDirectory = Path.GetDirectoryName(this.ServiceApp.AppFilePath);
+            startInfo.Arguments = JsonConvert.SerializeObject(new { name = this.ServiceApp.Name, action = "hide", owner = sacsProcessId });
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.ErrorDialog = false;
             startInfo.RedirectStandardError = true;
             startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;

@@ -32,12 +32,16 @@ namespace SACS.Implementation
         /// </summary>
         private const int CleanUpInterval = 60;
 
+        // Create a new Mutex. The creating thread does not own the mutex.
+        private static Mutex mutex = new Mutex();
+
         private readonly CommandLineProcessor _commandProcessor;
         private readonly Timer _executionTimer;
         private readonly IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
         private static object _syncRoot = new object();
         private static object _syncExecution = new object();
         private static int cleanUpTimer = 0;
+        private int? _parentProcessId;
 
         #endregion Fields
 
@@ -48,6 +52,7 @@ namespace SACS.Implementation
         /// </summary>
         public ServiceAppBase()
         {
+            FileDumper.Dump("Created service app base");
             AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
 
             // TODO: move this into it's own composition method.
@@ -60,6 +65,9 @@ namespace SACS.Implementation
             this._commandProcessor.HoistWith<DirectiveHandler>("info")
                 .For("appVersion", () => this.EmitAppVersion())
                 .For("sacsVersion", () => this.EmitSacsVersion());
+
+            this._commandProcessor.HoistWith<DirectiveHandler>("owner")
+                .ForArgs<int>(this.SetParentProcessId);
 
             this._commandProcessor.HoistWith<ArgsHandler>()
                 .For("exit", () => this.Stop());
@@ -181,6 +189,12 @@ namespace SACS.Implementation
         /// <param name="state">The state.</param>
         private void ExecutionTimer_Tick(object state)
         {
+            if (this.IsStopped)
+            {
+                // don't want random processes floating around
+                Process.GetCurrentProcess().Kill();
+            }
+
             ServiceAppContext currentContext = null;
 
             switch (this.ExecutionMode)
@@ -326,6 +340,7 @@ namespace SACS.Implementation
                 if (!this.IsLoaded)
                 {
                     var startupArgs = Environment.CommandLine;
+                    FileDumper.Dump("Startup args: " + startupArgs);
                     this.StartupCommands = this._commandProcessor.Parse(startupArgs);
                     this.ExecutionMode = mode;
 
@@ -426,23 +441,32 @@ namespace SACS.Implementation
         /// </summary>
         private void CheckParentProcessAlive()
         {
+            if (!this._parentProcessId.HasValue)
+            {
+                return;
+            }
+
             bool canStop = false;
 
-            try
+            if (mutex.WaitOne(5000))
             {
-                ManagementObject mo = new ManagementObject("win32_process.handle='" + Process.GetCurrentProcess().Id + "'");
-                mo.Get();
-                Process.GetProcessById(Convert.ToInt32(mo["ParentProcessId"]));
-            }
-            catch (ArgumentException)
-            {
-                // the argument exception (from Process.GetProcessById) means that the parent process is no longer running.
-                canStop = true;
-            }
+                try
+                {
+                    var parentProcess = Process.GetProcessById(this._parentProcessId.Value);
+                    canStop = parentProcess.HasExited;
+                }
+                catch (ArgumentException)
+                {
+                    // any issues accessing the state of the process means it's disappeared.
+                    canStop = true;
+                }
 
-            if (canStop)
-            {
-                this.Stop();
+                if (canStop && !this.IsStopped)
+                {
+                    this.Stop();
+                }
+
+                mutex.ReleaseMutex();
             }
         }
 
@@ -500,12 +524,24 @@ namespace SACS.Implementation
         /// <param name="clearContexts">If set to <c>true</c> [clear contexts].</param>
         private void HandleException(Exception e, bool clearContexts)
         {
+            FileDumper.Dump(e);
             Messages.WriteError(e);
 
             if (clearContexts)
             {
                 this._executionContexts.Clear();
             }
+        }
+
+        /// <summary>
+        /// Sets the parent process id.
+        /// </summary>
+        /// <param name="processId">The process id to set on the parent</param>
+        /// <remarks>This is not a property because it is used in the command processor,
+        /// which requires methods, not properties.</remarks>
+        private void SetParentProcessId(int processId)
+        {
+            this._parentProcessId = processId;
         }
 
         #endregion Methods

@@ -40,6 +40,12 @@
     <CodeAnalysisRuleSet>..\..\Standards\CodeAnalysis\SACSCustomRules.ruleset</CodeAnalysisRuleSet>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>SACS.Security.Certificate.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -77,8 +83,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="SACS.Security.Certificate.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Security\" />
     <Folder Include="Structs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

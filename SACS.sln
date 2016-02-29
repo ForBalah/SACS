@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{6FC514A2-1448-4D88-B42D-56C9C00AF0C5}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\NCrontab.dll = Dependencies\NCrontab.dll
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E209AD22-A7F9-43D8-9CCD-97F555663FC2}"
 EndProject
@@ -20,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		SolutionItems\SACS Help.hhp = SolutionItems\SACS Help.hhp
 		SolutionItems\SACS Help.mht = SolutionItems\SACS Help.mht
 		SolutionItems\sacs.implementation.shfbproj = SolutionItems\sacs.implementation.shfbproj
+		SolutionItems\SACS.Security.Certificate.pfx = SolutionItems\SACS.Security.Certificate.pfx
 		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject

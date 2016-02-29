@@ -297,7 +297,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                 var e = new IndexOutOfRangeException(string.Format("appName '{0}' could not be found to stop.", appName));
                 this._log.Error("Error in StopServiceApp", e);
             }
-            else if (process.IsProcessRunning)
+            else
             {
                 process.Stop();
                 this.SchedulingService.RemoveJob(appName);

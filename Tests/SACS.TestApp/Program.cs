@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SACS.Implementation;
 using SACS.Implementation.Execution;
+using SACS.Implementation.Utils;
 
 namespace SACS.TestApp
 {
@@ -49,11 +52,9 @@ namespace SACS.TestApp
             {
                 Random rand = new Random();
                 StringBuilder builder = new StringBuilder();
-                //string s = "";
 
                 for (long i = 0; i < 250 * 1000L * 1000L; i++)
                 {
-                    //s += (char)rand.Next(32, 127);
                     builder.Append((char)rand.Next(32, 127));
                 }
             }

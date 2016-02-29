@@ -11,3 +11,6 @@ v1.0.0.1
 --------
 - Improved performance logging.
 - Fixed issue of service apps sometimes causing an error while stopping.
+- Signed all dlls with a strong-name.
+- Added an "Explore" button to the service app's "App File"
+- Various stability improvements to the server and service app implementation.

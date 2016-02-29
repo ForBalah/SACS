@@ -49,6 +49,17 @@ namespace SACS.Implementation.Commands
         }
 
         /// <summary>
+        /// Instructs the command handler to perform the action when the argument matches the type.
+        /// </summary>
+        /// <typeparam name="T">The argument type</typeparam>
+        /// <param name="action">The action to perform on that argument.</param>
+        /// <returns></returns>
+        public ICommandHandler ForArgs<T>(Action<T> action)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Processes the specified command object.
         /// </summary>
         /// <param name="commandObject">The command object.</param>

@@ -38,12 +38,22 @@
     <CodeAnalysisRuleSet>..\..\Standards\CodeAnalysis\SACSCustomRules.ruleset</CodeAnalysisRuleSet>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>SACS.Security.Certificate.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="NCrontab">
-      <HintPath>..\..\packages\ncrontab.2.0.0\lib\net20\NCrontab.dll</HintPath>
+    <Reference Include="NCrontab, Version=2.0.16709.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\NCrontab.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -124,8 +134,11 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\DataSources\SACS.DataAccessLayer.Models.ServiceApp.datasource" />
+    <None Include="SACS.Security.Certificate.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SACS.Common\SACS.Common.csproj">

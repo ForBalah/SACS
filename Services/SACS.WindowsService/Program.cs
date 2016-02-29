@@ -107,7 +107,6 @@ namespace SACS.WindowsService
                     s.WhenStarted(sc => sc.Start());
                     s.WhenStopped(sc => sc.Stop());
                 });
-                x.RunAsLocalSystem();
 
                 x.SetDescription(ConfigurationManager.AppSettings[Constants.ServiceDescription]);
                 x.SetDisplayName(ConfigurationManager.AppSettings[Constants.ServiceDisplayName]);

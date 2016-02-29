@@ -13,6 +13,50 @@ namespace SACS.Implementation.Utils
     /// </summary>
     public class Settings
     {
+        private static bool? _DumpToFile;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether activity in the service app should be dumped to a
+        /// file.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If set to <c>true</c> key service app activity will be dumped in a file, called dump.txt.
+        /// This value can also be sourced from AppSettings as SACS:DumpToFile. The default is <c>false</c>.
+        /// </para>
+        /// <para>
+        /// Set this property either in the app.config or before the service app is started to catch all app
+        /// activity. The file will contain all activity that failed to be sent back to the SAC for logging.
+        /// </para>
+        /// </remarks>
+        public static bool DumpToFile
+        {
+            get
+            {
+                if (!_DumpToFile.HasValue)
+                {
+                    string setting = ConfigurationManager.AppSettings["SACS:DumpToFile"];
+                    bool value = false;
+
+                    if (bool.TryParse(setting ?? "false", out value))
+                    {
+                        _DumpToFile = value;
+                    }
+                    else
+                    {
+                        throw new ConfigurationErrorsException("SACS:DumpToFile is not in the correct format. Must be \"true\" or \"false\"");
+                    }
+                }
+
+                return _DumpToFile ?? false;
+            }
+
+            set
+            {
+                _DumpToFile = value;
+            }
+        }
+
         /// <summary>
         /// Gets the maximum allowed concurrent exections.
         /// </summary>

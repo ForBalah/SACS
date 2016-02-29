@@ -40,6 +40,13 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Release\SACS.Implementation.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>SACS.Security.Certificate.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -71,13 +78,16 @@
     <Compile Include="Execution\ServiceAppContext.cs" />
     <Compile Include="Utils\DateTimeResolver.cs" />
     <Compile Include="Utils\ExceptionExtensions.cs" />
+    <Compile Include="Utils\FileDumper.cs" />
     <Compile Include="Utils\JsonMessageProvider.cs" />
     <Compile Include="Utils\MessageProvider.cs" />
     <Compile Include="Utils\Messages.cs" />
     <Compile Include="Utils\ProcessExtensions.cs" />
     <Compile Include="Utils\Settings.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="SACS.Security.Certificate.pfx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

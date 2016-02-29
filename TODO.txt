@@ -19,22 +19,16 @@ ISSUES
 
 General Issues
 --------------
-I think the scheduler is killing timers and not renewing them when it should. 
-Might be related to services crashing during execution, and then the timer is null, therefore the server crashes on stop.
-Check the SchedulingService timers to see under what situations it could be possible that the timers don't reinitialize.
 
 Presentation Layer - Windows:
 -----------------------------
-Add Help
 Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (Elmah maybe?)
 Log detail - Update the column headers
 Redirect metrics to different analytics app
 Fix SACS version column
 Implmement IoC
-Disable the stop server button when it has been clicked (at least for 10 seconds or until the service has stopped)
 Disable the start service app button when it has been clicked
-Add button to open app location
 Add an About section
 Add Last Run column
 Make hitting "refresh" on any button in the server will just refresh everything
@@ -71,12 +65,8 @@ Create Wizard:
 - (optional) Install web (or use a different installer)
 
 Issues to address:
--
+- allow going back to the select install type screen.
 
 Configuration:
 --------------
 Set the username in log4net if an exception occurs within a service
-
-Implementation
---------------
-specify that command is invalid if nothing processes it.

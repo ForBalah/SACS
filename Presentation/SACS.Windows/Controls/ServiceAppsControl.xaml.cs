@@ -88,6 +88,11 @@ namespace SACS.Windows.Controls
         private void AppFilePathSelectButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (!string.IsNullOrWhiteSpace(this.AppFilePathTextBox.Text))
+            {
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(this.AppFilePathTextBox.Text);
+            }
+
             openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All files (*.*)|*.*"; // "Assemblies (*.exe;*.dll)|*.exe;*.dll|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {

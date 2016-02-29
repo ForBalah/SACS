@@ -60,6 +60,12 @@
   <PropertyGroup>
     <ApplicationIcon>icon-service-l-m.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>SACS.Security.Certificate.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework">
       <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
@@ -79,6 +85,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit">
       <HintPath>..\..\packages\WPFToolkit.DataVisualization.3.5.50211.1\lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
@@ -266,6 +273,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="SACS.Security.Certificate.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -397,9 +405,9 @@
       <CopySourceFiles Include="$(OutDir)\**\*.*" Exclude="$(OutDir)\**\*.pdb;$(OutDir)\*.mdf;$(OutDir)\*.ldf;$(OutDir)\*.vshost.*" />
     </ItemGroup>
     <!-- <MakeDir Directories="$(OutDir)\..\zip_working" /> -->
-	<!-- first copy the source files specified in the CorySourceFiles ItemGroup above. -->
+    <!-- first copy the source files specified in the CorySourceFiles ItemGroup above. -->
     <Copy SourceFiles="@(CopySourceFiles)" DestinationFiles="@(CopySourceFiles->'$(OutDir)\..\zip_working\%(RecursiveDir)%(Filename)%(Extension)')" />
-	<!-- Perform the zip by calling the UsingTask. Make sure the DestinationFiles and the SourceDirectory are pointing to the same place -->
+    <!-- Perform the zip by calling the UsingTask. Make sure the DestinationFiles and the SourceDirectory are pointing to the same place -->
     <Zip SourceDirectory="$(OutDir)\..\zip_working" OutputFilename="$(OutDir)\..\zip\$(ProjectName).zip" />
     <!-- Clean up. NB! Double-check that the correct zip workings directory is deleted -->
     <!-- <RemoveDir Directories="$(OutDir)\..\zip_working" /> -->

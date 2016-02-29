@@ -9,6 +9,7 @@ namespace SACS.Implementation.Commands
     internal class DirectiveHandler : ICommandHandler
     {
         private Dictionary<string, Action> _actions = new Dictionary<string, Action>();
+        private Dictionary<Type, Action<object>> _actionsWithArg = new Dictionary<Type, Action<object>>();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="DirectiveHandler"/> class from being created.
@@ -55,6 +56,18 @@ namespace SACS.Implementation.Commands
         }
 
         /// <summary>
+        /// Instructs the command handler to perform the action when the argument matches the type.
+        /// </summary>
+        /// <typeparam name="T">The argument type</typeparam>
+        /// <param name="action">The action to perform on that argument.</param>
+        /// <returns></returns>
+        public ICommandHandler ForArgs<T>(Action<T> action)
+        {
+            this._actionsWithArg.Add(typeof(T), (o) => action((T)o));
+            return this;
+        }
+
+        /// <summary>
         /// Processes the specified command object.
         /// </summary>
         /// <param name="commandObject">The command object.</param>
@@ -66,9 +79,20 @@ namespace SACS.Implementation.Commands
             {
                 this.HandleSingleDirective(actionCommand);
                 this.HandleDirectiveList(actionCommand);
+                this.HandleDirectiveWithArgs(actionCommand);
 
                 // we are done processing it
                 commandObject.Remove(this.Command);
+            }
+        }
+
+        private void HandleDirectiveWithArgs(object actionCommand)
+        {
+            Type actionType = actionCommand.GetType();
+
+            if (this._actionsWithArg.ContainsKey(actionType))
+            {
+                this._actionsWithArg[actionType](actionCommand);
             }
         }
 
