@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Pipes;
 using System.Linq;
-using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SACS.Implementation.Commands;
@@ -32,16 +32,17 @@ namespace SACS.Implementation
         /// </summary>
         private const int CleanUpInterval = 60;
 
-        // Create a new Mutex. The creating thread does not own the mutex.
         private static Mutex mutex = new Mutex();
-
-        private readonly CommandLineProcessor _commandProcessor;
-        private readonly Timer _executionTimer;
-        private readonly IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
         private static object _syncRoot = new object();
         private static object _syncExecution = new object();
         private static int cleanUpTimer = 0;
+        private readonly CommandLineProcessor _commandProcessor;
+        private readonly Timer _executionTimer;
+        private readonly IList<ServiceAppContext> _executionContexts = new List<ServiceAppContext>();
         private int? _parentProcessId;
+        private PipeStream pipeClientIn;
+        private PipeStream pipeClientOut;
+        private PipeStream pipeClientErr;
 
         #endregion Fields
 
@@ -52,7 +53,7 @@ namespace SACS.Implementation
         /// </summary>
         public ServiceAppBase()
         {
-            FileDumper.Dump("Created service app base");
+            FileLogger.Log("Created service app base");
             AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
 
             // TODO: move this into it's own composition method.
@@ -68,6 +69,15 @@ namespace SACS.Implementation
 
             this._commandProcessor.HoistWith<DirectiveHandler>("owner")
                 .ForArgs<int>(this.SetParentProcessId);
+
+            this._commandProcessor.HoistWith<DirectiveHandler>("pipeIn")
+                .ForArgs<string>(this.RedirectConsoleIn);
+
+            this._commandProcessor.HoistWith<DirectiveHandler>("pipeOut")
+                .ForArgs<string>(this.RedirectConsoleOut);
+
+            this._commandProcessor.HoistWith<DirectiveHandler>("pipeErr")
+                .ForArgs<string>(this.RedirectConsoleError);
 
             this._commandProcessor.HoistWith<ArgsHandler>()
                 .For("exit", () => this.Stop());
@@ -191,8 +201,8 @@ namespace SACS.Implementation
         {
             if (this.IsStopped)
             {
-                // don't want random processes floating around
-                Process.GetCurrentProcess().Kill();
+                _executionTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                return;
             }
 
             ServiceAppContext currentContext = null;
@@ -328,8 +338,9 @@ namespace SACS.Implementation
         /// The main method to start the program as a service app.
         /// </summary>
         /// <param name="mode">The execution mode to start this service app as.</param>
-        protected internal void Start(ExecutionMode mode = Execution.ExecutionMode.Default)
+        protected internal void Start(ExecutionMode mode = ExecutionMode.Default)
         {
+            // TODO: rather use a mutex, but if this method gets called more than once, there a bigger problems
             lock (_syncRoot)
             {
                 if (this.IsStopped)
@@ -340,17 +351,26 @@ namespace SACS.Implementation
                 if (!this.IsLoaded)
                 {
                     var startupArgs = Environment.CommandLine;
-                    FileDumper.Dump("Startup args: " + startupArgs);
                     this.StartupCommands = this._commandProcessor.Parse(startupArgs);
+                    this._commandProcessor.ProcessNonActions(this.StartupCommands);
+
+                    FileLogger.Log("Startup args: " + startupArgs);
                     this.ExecutionMode = mode;
 
                     Messages.WriteDebug("Starting {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
                     this.Initialize();
                     this.IsLoaded = true;
                     Messages.WriteState(Enums.State.Started);
-
-                    this._commandProcessor.Process(this.StartupCommands);
+                    this._commandProcessor.ProcessActions(this.StartupCommands);
                     this.AwaitCommand();
+
+                    // We will get here after a "stop" command is processed as that will unblock the thread in
+                    // AwaitCommand().
+                    FinalizeServiceApp();
+                }
+                else
+                {
+                    throw new InvalidOperationException("ServiceApp has already started");
                 }
             }
         }
@@ -362,16 +382,9 @@ namespace SACS.Implementation
         {
             if (this.IsLoaded)
             {
-                this.IsLoaded = false;
+                FileLogger.Log("Stopping service app");
                 Messages.WriteDebug("Stopping {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
-                this._executionTimer.Change(Timeout.Infinite, Timeout.Infinite);
-
-                this.CleanUp();
-                Messages.WriteState(Enums.State.Stopped);
-
-                IntPtr stdin = GetStdHandle(StdHandle.Stdin);
-                CloseHandle(stdin);
-                this.IsStopped = true;
+                this.IsLoaded = false;
             }
         }
 
@@ -437,36 +450,58 @@ namespace SACS.Implementation
         }
 
         /// <summary>
+        /// Aborts the process that is running the service app.
+        /// </summary>
+        private void AbortProcess()
+        {
+            try
+            {
+                FileLogger.Log("Force aborting service app");
+
+                // Give the application a little bit of time to end gracefully afterwhich, commit suicide.
+                mutex.WaitOne();
+                Task t = Task.Run((Action)FinalizeServiceApp);
+                t.Wait(ExecutionInterval * 5);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+                Process.GetCurrentProcess().Kill();
+            }
+        }
+
+        /// <summary>
         /// Checks if the parent process is still alive.
         /// </summary>
         private void CheckParentProcessAlive()
         {
             if (!this._parentProcessId.HasValue)
             {
+                // process was started stand-alone so nothing to check
                 return;
             }
 
-            bool canStop = false;
+            bool abortProcess = false;
 
-            if (mutex.WaitOne(5000))
+            try
             {
-                try
+                var parentProcess = Process.GetProcessById(this._parentProcessId.Value);
+                abortProcess = parentProcess.HasExited;
+            }
+            catch
+            {
+                // any issues accessing the state of the process means it's disappeared.
+                abortProcess = true;
+            }
+            finally
+            {
+                if (abortProcess)
                 {
-                    var parentProcess = Process.GetProcessById(this._parentProcessId.Value);
-                    canStop = parentProcess.HasExited;
+                    AbortProcess();
                 }
-                catch (ArgumentException)
-                {
-                    // any issues accessing the state of the process means it's disappeared.
-                    canStop = true;
-                }
-
-                if (canStop && !this.IsStopped)
-                {
-                    this.Stop();
-                }
-
-                mutex.ReleaseMutex();
             }
         }
 
@@ -524,13 +559,38 @@ namespace SACS.Implementation
         /// <param name="clearContexts">If set to <c>true</c> [clear contexts].</param>
         private void HandleException(Exception e, bool clearContexts)
         {
-            FileDumper.Dump(e);
+            FileLogger.Log(e);
             Messages.WriteError(e);
 
             if (clearContexts)
             {
                 this._executionContexts.Clear();
             }
+        }
+
+        private void RedirectConsoleIn(string pipeHandle)
+        {
+            FileLogger.Log("Redirecting Console In to handle: " + pipeHandle);
+            this.pipeClientIn = new AnonymousPipeClientStream(PipeDirection.In, pipeHandle);
+            Console.SetIn(new StreamReader(this.pipeClientIn));
+        }
+
+        private void RedirectConsoleOut(string pipeHandle)
+        {
+            FileLogger.Log("Redirecting Console Out to handle: " + pipeHandle);
+            this.pipeClientOut = new AnonymousPipeClientStream(PipeDirection.Out, pipeHandle);
+            StreamWriter writer = new StreamWriter(this.pipeClientOut);
+            writer.AutoFlush = true;
+            Console.SetOut(writer);
+        }
+
+        private void RedirectConsoleError(string pipeHandle)
+        {
+            FileLogger.Log("Redirecting Console Error to handle: " + pipeHandle);
+            this.pipeClientErr = new AnonymousPipeClientStream(PipeDirection.Out, pipeHandle);
+            StreamWriter writer = new StreamWriter(this.pipeClientErr);
+            writer.AutoFlush = true;
+            Console.SetError(writer);
         }
 
         /// <summary>
@@ -544,41 +604,26 @@ namespace SACS.Implementation
             this._parentProcessId = processId;
         }
 
+        /// <summary>
+        /// Cleans up the service app so that it can close.
+        /// </summary>
+        private void FinalizeServiceApp()
+        {
+            if (!IsStopped)
+            {
+                FileLogger.Log("Cleaning up service app");
+                CleanUp();
+                Messages.WriteState(Enums.State.Stopped);
+                IsStopped = true;
+            }
+        }
+
         #endregion Methods
 
         #region P/Invoke
 
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 5;
-
-        /// <summary>
-        /// The standard stream handles.
-        /// </summary>
-        private enum StdHandle
-        {
-            /// <summary>
-            /// Standard input stream.
-            /// </summary>
-            Stdin = -10,
-
-            /// <summary>
-            /// Standard output stream.
-            /// </summary>
-            Stdout = -11,
-
-            /// <summary>
-            /// Standard error stream.
-            /// </summary>
-            Stderr = -12
-        }
-
-        /// <summary>
-        /// Gets the standard handle.
-        /// </summary>
-        /// <param name="stdHandle">The standard.</param>
-        /// <returns></returns>
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetStdHandle(StdHandle stdHandle);
 
         /// <summary>
         /// Closes the handle.

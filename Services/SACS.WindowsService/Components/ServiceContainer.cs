@@ -20,11 +20,12 @@ namespace SACS.WindowsService.Components
     {
         #region fields
 
-        private static EmailProvider _emailer = new EmailProvider();
+        private static EmailProvider Emailer = new SmtpEmailProvider(LogManager.GetLogger(typeof(EmailProvider))); // TODO: maybe move to DI?
         private readonly ILog _log = LogManager.GetLogger(typeof(ServiceContainer));
         private readonly IServiceAppSchedulingService _schedulingService;
         private readonly WebAPIComponent _webApiComponent;
-        private readonly IAppManager _appManager = AppManager.Current;
+        private readonly IAppManager _appManager;
+        private readonly SystemMonitor _systemMonitor;
         private bool _isStarted = false; // for debugging
 
         #endregion fields
@@ -32,14 +33,18 @@ namespace SACS.WindowsService.Components
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SACS.WindowsService.Components.ServiceContainer" /> class.
+        /// Initializes a new instance of the <see cref="ServiceContainer" /> class.
         /// </summary>
-        /// <param name="schedulingService">The custom built scheduling service.</param>
-        /// <param name="webApiComponent">The Communication component.</param>
-        public ServiceContainer(IServiceAppSchedulingService schedulingService, WebAPIComponent webApiComponent)
+        /// <param name="appManager">The service application manager component.</param>
+        /// <param name="schedulingService">The scheduling service component.</param>
+        /// <param name="webApiComponent">The communication component.</param>
+        /// <param name="systemMonitor">The system monitor component.</param>
+        public ServiceContainer(IAppManager appManager, IServiceAppSchedulingService schedulingService, WebAPIComponent webApiComponent, SystemMonitor systemMonitor)
         {
-            this._schedulingService = schedulingService;
-            this._webApiComponent = webApiComponent;
+            _appManager = appManager;
+            _schedulingService = schedulingService;
+            _webApiComponent = webApiComponent;
+            _systemMonitor = systemMonitor;
         }
 
         #endregion Constructors and Destructors
@@ -75,7 +80,7 @@ namespace SACS.WindowsService.Components
                 try
                 {
                     this._log.Fatal("Fatal exception stopping SACS", ex);
-                    EmailHelper.SendSupportEmail(_emailer, ex, null);
+                    EmailHelper.SendSupportEmail(Emailer, ex, null);
                 }
                 finally
                 {
@@ -100,6 +105,7 @@ namespace SACS.WindowsService.Components
             // load all the services into the container
             IList<string> errors = new List<string>();
 
+            // TODO: inject via abstract factory
             using (IServiceAppDao serviceAppDao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>())
             {
                 IAppListDao appListDao = DaoFactory.Create<IAppListDao, AppListDao>();
@@ -117,11 +123,8 @@ namespace SACS.WindowsService.Components
         /// </summary>
         private void StartScheduleMonitor()
         {
-            SystemMonitor.AddToScheduler(this._schedulingService);
+            this._systemMonitor.AddToScheduler(this._schedulingService);
             this._schedulingService.Start();
-
-            // TODO: Not comfortable having this here. Can it be moved out?
-            this._appManager.SchedulingService = this._schedulingService;
             this._log.Info(string.Format("The schedule monitor, and scheduling service have successfully started. Monitor schedule set at: {0}", ConfigurationManager.AppSettings[Constants.MonitorSchedule]));
         }
 
@@ -151,7 +154,7 @@ namespace SACS.WindowsService.Components
         {
             using (IServiceAppDao serviceAppDao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>())
             {
-                AppManager.Current.StopAllServiceApps(serviceAppDao);
+                _appManager.StopAllServiceApps(serviceAppDao, true);
             }
         }
 

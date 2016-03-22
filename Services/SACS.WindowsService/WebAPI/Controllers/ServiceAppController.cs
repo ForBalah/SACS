@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Application;
@@ -19,9 +16,15 @@ namespace SACS.WindowsService.WebAPI.Controllers
     /// </summary>
     public class ServiceAppController : ApiController
     {
-        private static ILog _log = LogManager.GetLogger(typeof(ServiceAppController));
-        private IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
-        private IAppListDao _appListDao = DaoFactory.Create<IAppListDao, AppListDao>();
+        private static ILog log = LogManager.GetLogger(typeof(ServiceAppController));
+        private readonly IAppManager _appManager;
+        private IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>(); // TODO: move to DI
+        private IAppListDao _appListDao = DaoFactory.Create<IAppListDao, AppListDao>(); // TODO: move to DI
+
+        public ServiceAppController(IAppManager appManager)
+        {
+            _appManager = appManager;
+        }
 
         /// <summary>
         /// Retrieve all the installed ServiceApps
@@ -29,7 +32,7 @@ namespace SACS.WindowsService.WebAPI.Controllers
         /// <returns></returns>
         public IEnumerable<ServiceApp> GetCurrentServiceApps()
         {
-            return AppManager.Current.ServiceApps;
+            return _appManager.ServiceApps;
         }
 
         /// <summary>
@@ -53,11 +56,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
         public IHttpActionResult StartServiceApp(string id)
         {
             string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
-            _log.Debug("(API) Calling StartServiceApp - " + id);
+            log.Debug("(API) Calling StartServiceApp - " + id);
             try
             {
-                _log.Info(string.Format("REQUEST ({0}) - START service app: {1}", user, id));
-                string error = AppManager.Current.InitializeServiceApp(id, this._dao);
+                log.Info(string.Format("REQUEST ({0}) - START service app: {1}", user, id));
+                string error = _appManager.InitializeServiceApp(id, this._dao);
                 if (string.IsNullOrWhiteSpace(error))
                 {
                     return Ok();
@@ -83,11 +86,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
         public IHttpActionResult StopServiceApp(string id)
         {
             string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
-            _log.Debug("(API) Calling StopServiceApp - " + id);
+            log.Debug("(API) Calling StopServiceApp - " + id);
             try
             {
-                _log.Info(string.Format("REQUEST ({0}) - STOP service app immediately: {1}", user, id));
-                AppManager.Current.StopServiceApp(id, this._dao);
+                log.Info(string.Format("REQUEST ({0}) - STOP service app immediately: {1}", user, id));
+                _appManager.StopServiceApp(id, this._dao, false);
                 return Ok();
             }
             catch (Exception e)
@@ -106,13 +109,13 @@ namespace SACS.WindowsService.WebAPI.Controllers
         public IHttpActionResult RunServiceApp(string id)
         {
             string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
-            _log.Debug(string.Format("(API) Calling RunServiceApp ({0}) - {1}", user, id));
+            log.Debug(string.Format("(API) Calling RunServiceApp ({0}) - {1}", user, id));
             try
             {
-                if (AppManager.Current.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
+                if (_appManager.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    _log.Info(string.Format("REQUEST ({0}) - RUN service app immediately: {1}", user, id));
-                    AppManager.Current.RunServiceApp(id, this._dao);
+                    log.Info(string.Format("REQUEST ({0}) - RUN service app immediately: {1}", user, id));
+                    _appManager.RunServiceApp(id);
                     return Ok();
                 }
                 else
@@ -136,11 +139,11 @@ namespace SACS.WindowsService.WebAPI.Controllers
         public IHttpActionResult UpdateServiceApp([FromBody] ServiceApp serviceApp)
         {
             string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
-            _log.Debug("(API) Calling UpdateServiceApp - " + (serviceApp ?? new ServiceApp()).Name);
+            log.Debug("(API) Calling UpdateServiceApp - " + (serviceApp ?? new ServiceApp()).Name);
             try
             {
-                _log.Info(string.Format("REQUEST ({0}) - UPDATE service app: {1}", user, serviceApp.Name));
-                string result = AppManager.Current.UpdateServiceApp(serviceApp, this._dao, this._appListDao);
+                log.Info(string.Format("REQUEST ({0}) - UPDATE service app: {1}", user, serviceApp.Name));
+                string result = _appManager.UpdateServiceApp(serviceApp, this._dao, this._appListDao);
                 if (!string.IsNullOrWhiteSpace(result))
                 {
                     return BadRequest(result);
@@ -164,13 +167,13 @@ namespace SACS.WindowsService.WebAPI.Controllers
         public IHttpActionResult RemoveServiceApp(string id)
         {
             string user = User != null && User.Identity != null ? User.Identity.Name : string.Empty;
-            _log.Debug("(API) Calling RemoveServiceApp - " + id);
+            log.Debug("(API) Calling RemoveServiceApp - " + id);
             try
             {
-                if (AppManager.Current.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
+                if (_appManager.ServiceApps.Any(sa => sa.Name.Equals(id, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    _log.Info(string.Format("REQUEST ({0}) - DELETE service app: {1}", user, id));
-                    AppManager.Current.RemoveServiceApp(id, this._dao, this._appListDao);
+                    log.Info(string.Format("REQUEST ({0}) - DELETE service app: {1}", user, id));
+                    _appManager.RemoveServiceApp(id, this._dao, this._appListDao);
                     return Ok();
                 }
                 else

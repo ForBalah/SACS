@@ -78,7 +78,7 @@
     <Compile Include="Execution\ServiceAppContext.cs" />
     <Compile Include="Utils\DateTimeResolver.cs" />
     <Compile Include="Utils\ExceptionExtensions.cs" />
-    <Compile Include="Utils\FileDumper.cs" />
+    <Compile Include="Utils\FileLogger.cs" />
     <Compile Include="Utils\JsonMessageProvider.cs" />
     <Compile Include="Utils\MessageProvider.cs" />
     <Compile Include="Utils\Messages.cs" />

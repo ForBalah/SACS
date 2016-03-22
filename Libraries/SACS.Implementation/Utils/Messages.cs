@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SACS.Implementation.Enums;
 using SACS.Implementation.Execution;
 
@@ -46,6 +42,7 @@ namespace SACS.Implementation.Utils
         {
             string cleanString = format ?? string.Empty;
             Console.WriteLine(Provider.SerializeAsDebug(string.Format(cleanString, args)));
+            FileLogger.Log("Sent debug data: " + cleanString);
         }
 
         /// <summary>
@@ -57,6 +54,7 @@ namespace SACS.Implementation.Utils
         {
             string cleanString = format ?? string.Empty;
             Console.WriteLine(Provider.SerializeAsInfo(string.Format(cleanString, args)));
+            FileLogger.Log("Sent information: " + cleanString);
         }
 
         /// <summary>
@@ -66,6 +64,7 @@ namespace SACS.Implementation.Utils
         public static void WriteError(Exception exception)
         {
             Console.WriteLine(Provider.SerializeAsError(exception));
+            FileLogger.Log("Sent exception");
         }
 
         /// <summary>
@@ -75,6 +74,7 @@ namespace SACS.Implementation.Utils
         internal static void WritePerformance(ServiceAppContext context)
         {
             Console.WriteLine(Provider.SerializeAsPerformance(context));
+            FileLogger.Log("Sent performance information");
         }
 
         /// <summary>
@@ -84,6 +84,7 @@ namespace SACS.Implementation.Utils
         internal static void WriteState(State state)
         {
             Console.WriteLine(Provider.SerializeAsState(state));
+            FileLogger.Log("Sent state: " + Enum.GetName(typeof(State), state));
         }
 
         /// <summary>
@@ -95,6 +96,7 @@ namespace SACS.Implementation.Utils
         {
             string cleanString = format ?? string.Empty;
             Console.WriteLine(Provider.SerializeAsResult(string.Format(cleanString, args)));
+            FileLogger.Log("Sent result: " + cleanString);
         }
     }
 }

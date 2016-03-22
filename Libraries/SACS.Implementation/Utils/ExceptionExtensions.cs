@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SACS.Implementation.Utils
 {
@@ -14,7 +10,7 @@ namespace SACS.Implementation.Utils
     internal static class ExceptionExtensions
     {
         /// <summary>
-        /// Converts the exception to it's base64 representation.
+        /// Converts the exception to its base64 representation.
         /// </summary>
         /// <param name="exception">The exception.</param>
         /// <returns></returns>

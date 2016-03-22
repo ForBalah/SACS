@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using Autofac.Integration.WebApi;
 using Owin;
 
 namespace SACS.WindowsService.WebAPI
@@ -27,6 +28,9 @@ namespace SACS.WindowsService.WebAPI
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+
+            // be sure to link up DI (do confirm that the controllers are registered in the container)
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(Program.Container);
 
             appBuilder.UseWebApi(config);
         }

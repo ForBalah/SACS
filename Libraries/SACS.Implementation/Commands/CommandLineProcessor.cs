@@ -19,26 +19,18 @@ namespace SACS.Implementation.Commands
         /// <param name="command">The command.</param>
         internal virtual void Process(string command)
         {
-            this.Process(this.Parse(command));
+            this.Process(this.Parse(command), false);
+            this.Process(this.Parse(command), true);
         }
 
-        /// <summary>
-        /// Processes the specified command object.
-        /// </summary>
-        /// <param name="commandObject">The command object.</param>
-        internal virtual void Process(CommandObject commandObject)
+        internal virtual void ProcessNonActions(CommandObject commandObject)
         {
-            var commands = commandObject.GetCommands();
-            foreach (var processor in this._commandHandlers.Where(c => c.Type == CommandHandlerType.Command))
-            {
-                processor.Handle(commands);
-            }
+            this.Process(commandObject, false);
+        }
 
-            var args = commandObject.GetArgs();
-            foreach (var processor in this._commandHandlers.Where(c => c.Type == CommandHandlerType.Args))
-            {
-                processor.Handle(args);
-            }
+        internal virtual void ProcessActions(CommandObject commandObject)
+        {
+            this.Process(commandObject, true);
         }
 
         /// <summary>
@@ -51,7 +43,7 @@ namespace SACS.Implementation.Commands
         /// <summary>
         /// Creates a new command processor that will be associated with this <see cref="CommandLineProcessor"/>.
         /// </summary>
-        /// <typeparam name="ICommandProcessor">The command processor to create.</typeparam>
+        /// <typeparam name="T">The command processor to create.</typeparam>
         /// <param name="args">The constructor args.</param>
         /// <returns>A new instance of a <see cref="ICommandHandler"/>.</returns>
         /// <remarks>This should really go into a builder pattern. However, this works given
@@ -89,6 +81,26 @@ namespace SACS.Implementation.Commands
                 .SelectMany(element => element).ToList();
 
             commandTree["args"] = splitCommand;
+        }
+
+        /// <summary>
+        /// Processes the specified command object.
+        /// </summary>
+        /// <param name="commandObject">The command object.</param>
+        /// <param name="processActionCommands">Indicates whether to process "action" commands or other commands.</param>
+        private void Process(CommandObject commandObject, bool processActionCommands)
+        {
+            var commands = commandObject.GetCommands();
+            foreach (var processor in this._commandHandlers.Where(c => c.Type == CommandHandlerType.Command && (!processActionCommands || c.Command == "action")))
+            {
+                processor.Handle(commands);
+            }
+
+            var args = commandObject.GetArgs();
+            foreach (var processor in this._commandHandlers.Where(c => c.Type == CommandHandlerType.Args && (!processActionCommands || c.Command == "action")))
+            {
+                processor.Handle(args);
+            }
         }
     }
 }

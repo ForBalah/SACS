@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using log4net;
+﻿using System.Collections.Generic;
 using SACS.BusinessLayer.BusinessLogic.Domain;
-using SACS.BusinessLayer.BusinessLogic.Loader.Interfaces;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Models;
 
@@ -18,14 +12,6 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
     public interface IAppManager
     {
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the scheduling service.
-        /// </summary>
-        /// <value>
-        /// The scheduling service.
-        /// </value>
-        IServiceAppSchedulingService SchedulingService { get; set; }
 
         /// <summary>
         /// Gets all service apps.
@@ -67,15 +53,17 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// Stops all running service apps.
         /// </summary>
         /// <param name="dao">The ServiceApp DAO</param>
-        void StopAllServiceApps(IServiceAppDao dao);
+        /// <param name="isExiting">Set to <c>true</c> if the service is in the middle of exiting.</param>
+        void StopAllServiceApps(IServiceAppDao dao, bool isExiting);
 
         /// <summary>
         /// Stops the specified service app.
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         /// <param name="dao">The DAO.</param>
+        /// <param name="isExiting">Set to <c>true</c> if the service is in the middle of exiting.</param>
         /// <exception cref="System.IndexOutOfRangeException">The app name could not be found.</exception>
-        void StopServiceApp(string appName, IServiceAppDao dao);
+        void StopServiceApp(string appName, IServiceAppDao dao, bool isExiting);
 
         /// <summary>
         /// Adds the service app to the container or updates it if it already exists and saves it to the AppList configuration.
@@ -109,8 +97,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// Runs the service application immediately.
         /// </summary>
         /// <param name="appName">Name of the application.</param>
-        /// <param name="dao">The DAO.</param>
-        void RunServiceApp(string appName, IServiceAppDao dao);
+        void RunServiceApp(string appName);
 
         /// <summary>
         /// Updates the service app in the container or adds a new one to it if it does not exist.

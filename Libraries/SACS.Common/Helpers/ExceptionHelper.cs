@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SACS.Common.Helpers
 {
@@ -13,6 +10,32 @@ namespace SACS.Common.Helpers
     /// </summary>
     public static class ExceptionHelper
     {
+        /// <summary>
+        /// Converts the exception to its base64 representation.
+        /// </summary>
+        /// <param name="e">The exception.</param>
+        /// <returns></returns>
+        public static string ConvertToBase64(Exception e)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+
+                try
+                {
+                    formatter.Serialize(ms, e);
+                    ms.Position = 0;
+
+                    return Convert.ToBase64String(ms.ToArray());
+                }
+                catch
+                {
+                    // Not a good idea, but the container will handle the rest.
+                    return string.Empty;
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the formatted exception details.
         /// </summary>

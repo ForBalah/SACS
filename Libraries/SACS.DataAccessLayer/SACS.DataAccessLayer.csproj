@@ -148,6 +148,7 @@
     </Compile>
     <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Factories\DaoFactory.cs" />
+    <Compile Include="Factories\Interfaces\IDaoFactory.cs" />
     <Compile Include="Factories\Interfaces\IRestClientFactory.cs" />
     <Compile Include="Factories\WebApiClientFactory.cs" />
     <Compile Include="Models\AppMetrics.cs" />

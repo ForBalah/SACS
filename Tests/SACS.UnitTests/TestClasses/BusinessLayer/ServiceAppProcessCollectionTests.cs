@@ -2,52 +2,57 @@
 using NSubstitute;
 using NUnit.Framework;
 using SACS.BusinessLayer.BusinessLogic.Domain;
-using SACS.DataAccessLayer.Models;
+using SACS.BusinessLayer.Factories.Interfaces;
 
 namespace SACS.UnitTests.TestClasses.BusinessLayer
 {
     [TestFixture]
     public class ServiceAppProcessCollectionTests
     {
-        private log4net.ILog _log;
+        private IServiceAppProcessFactory _serviceAppProcessFactory;
 
         [SetUp]
         public void InitializeTests()
         {
-            _log = Substitute.For<log4net.ILog>();
+            var mockServiceApp = (ServiceAppProcess)Activator.CreateInstance(typeof(ServiceAppProcess), true);
+            _serviceAppProcessFactory = Substitute.For<IServiceAppProcessFactory>();
+            _serviceAppProcessFactory.CreateServiceAppProcess(null, null).ReturnsForAnyArgs(mockServiceApp);
         }
 
         [Test]
+        [Category("ServiceAppProcessCollectionTests")]
         public void GetIndex_CanReturnServiceAppProcessFromCollectionUsingString()
         {
             ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
-            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
-            collection.Add(saDomain);
+            ServiceAppProcess saProc = _serviceAppProcessFactory.CreateServiceAppProcess(null, null);
+            collection.Add(saProc);
 
-            Assert.AreEqual(saDomain, collection["Test"]);
+            Assert.AreEqual(saProc, collection["__Test"]);
         }
 
         [Test]
+        [Category("ServiceAppProcessCollectionTests")]
         public void Add_CanInsertUniqueDomainToCollection()
         {
             ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
-            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
-            collection.Add(saDomain);
+            ServiceAppProcess saProc = _serviceAppProcessFactory.CreateServiceAppProcess(null, null);
+            collection.Add(saProc);
 
             Assert.AreEqual(1, collection.Count);
         }
 
         [Test]
+        [Category("ServiceAppProcessCollectionTests")]
         public void Add_CannotAddDuplicateDomainToCollection()
         {
             ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
-            ServiceAppProcess saDomain1 = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
-            ServiceAppProcess saDomain2 = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
-            collection.Add(saDomain1);
+            ServiceAppProcess saProc1 = _serviceAppProcessFactory.CreateServiceAppProcess(null, null);
+            ServiceAppProcess saProc2 = _serviceAppProcessFactory.CreateServiceAppProcess(null, null);
+            collection.Add(saProc1);
 
             try
             {
-                collection.Add(saDomain2);
+                collection.Add(saProc2);
                 Assert.Fail("Able to add duplicate domain.");
             }
             catch (AssertionException)
@@ -61,24 +66,26 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppProcessCollectionTests")]
         public void Remove_CanRemoveInstalledDomainFromCollection()
         {
             ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
-            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
-            collection.Add(saDomain);
+            ServiceAppProcess saProc = _serviceAppProcessFactory.CreateServiceAppProcess(null, null);
+            collection.Add(saProc);
 
-            bool success = collection.Remove(saDomain);
+            bool success = collection.Remove(saProc);
 
             Assert.IsTrue(success);
         }
 
         [Test]
+        [Category("ServiceAppProcessCollectionTests")]
         public void Remove_CannotRemoveDomainFromEmptyCollection()
         {
             ServiceAppProcessCollection collection = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
-            ServiceAppProcess saDomain = new ServiceAppProcess(new ServiceApp() { Name = "Test" }, _log);
+            ServiceAppProcess saProc = _serviceAppProcessFactory.CreateServiceAppProcess(null, null);
 
-            bool success = collection.Remove(saDomain);
+            bool success = collection.Remove(saProc);
 
             Assert.IsFalse(success);
         }

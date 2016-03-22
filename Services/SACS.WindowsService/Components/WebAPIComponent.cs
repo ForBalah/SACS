@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 using SACS.Common.Configuration;
 using SACS.WindowsService.WebAPI;
@@ -27,7 +22,7 @@ namespace SACS.WindowsService.Components
                 this._webApp.Dispose();
             }
 
-            this._webApp = WebApp.Start<Startup>(url: ApplicationSettings.Current.WebApiBaseAddress);
+            this._webApp = WebApp.Start<Startup>(ApplicationSettings.Current.WebApiBaseAddress);
         }
 
         /// <summary>

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SACS.Implementation.Execution
@@ -22,7 +18,6 @@ namespace SACS.Implementation.Execution
         /// <summary>
         /// Gets a value indicating whether the execution context can actually be executed on.
         /// </summary>
-        /// <param name="context">The service app execution context to test.</param>
         /// <returns></returns>
         public bool CanExecute
         {

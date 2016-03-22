@@ -6,11 +6,10 @@ using SACS.BusinessLayer.BusinessLogic.Domain;
 using SACS.BusinessLayer.BusinessLogic.Email;
 using SACS.BusinessLayer.BusinessLogic.Loader.Interfaces;
 using SACS.BusinessLayer.BusinessLogic.Validation;
-using SACS.Common.Configuration;
+using SACS.BusinessLayer.Factories.Interfaces;
 using SACS.Common.Enums;
-using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
-using SACS.DataAccessLayer.Factories;
+using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.BusinessLayer.BusinessLogic.Application
@@ -21,80 +20,37 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
     public class AppManager : IAppManager
     {
         #region Fields
-
-        private readonly ILog _log = LogManager.GetLogger(typeof(AppManager));
-
-        // TODO: THESE ARE BAD! CHANGE TO IoC ASAP
-        private static IServiceAppDao _dao = DaoFactory.Create<IServiceAppDao, ServiceAppDao>();
-
-        private static EmailProvider _emailer = new EmailProvider();
-
-        private static object _syncRoot = new object();
-        private static IAppManager _Current;
-
-        private ServiceAppProcessCollection _ServiceAppProcess;
-        private IServiceAppSchedulingService _SchedulingService;
+        
+        private readonly ILog _log = LogManager.GetLogger(typeof(AppManager)); // TODO: inject
+        private IDaoFactory _daoFactory;
+        private EmailProvider _emailer;
+        private ServiceAppProcessCollection _ServiceAppProcesses;
+        private IServiceAppSchedulingService _schedulingService;
+        private IServiceAppProcessFactory _serviceAppFactory;
 
         #endregion Fields
 
         #region Constructors and Destructors
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="AppManager"/> class from being created.
+        /// Initializes a new instance of the <see cref="AppManager"/> class.
         /// </summary>
-        private AppManager()
+        /// <param name="serviceAppFactory">The factory that creates <see cref="ServiceAppProcess"/>.</param>
+        /// <param name="schedulingService">The scheduling service.</param>
+        /// <param name="emailer">The email provider.</param>
+        /// <param name="daoFactory">The DAO factory.</param>
+        public AppManager(IServiceAppProcessFactory serviceAppFactory, IServiceAppSchedulingService schedulingService, EmailProvider emailer, IDaoFactory daoFactory)
         {
+            _ServiceAppProcesses = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
+            _serviceAppFactory = serviceAppFactory;
+            _schedulingService = schedulingService;
+            _emailer = emailer;
+            _daoFactory = daoFactory;
         }
 
         #endregion Constructors and Destructors
 
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the current AppManager
-        /// </summary>
-        /// <value>
-        /// The current.
-        /// </value>
-        public static IAppManager Current
-        {
-            get
-            {
-                lock (_syncRoot)
-                {
-                    if (_Current == null)
-                    {
-                        _Current = new AppManager();
-                    }
-
-                    return _Current;
-                }
-            }
-
-            set
-            {
-                _Current = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the scheduling service.
-        /// </summary>
-        /// <value>
-        /// The scheduling service.
-        /// </value>
-        public IServiceAppSchedulingService SchedulingService
-        {
-            get
-            {
-                return this._SchedulingService;
-            }
-
-            set
-            {
-                this._SchedulingService = value;
-            }
-        }
 
         /// <summary>
         /// Gets the loaded service apps.
@@ -106,7 +62,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         {
             get
             {
-                return this.ServiceAppProcesses.Select(dom => dom.ServiceApp).ToList();
+                return ServiceAppProcesses.Select(dom => dom.ServiceApp).ToList();
             }
         }
 
@@ -120,12 +76,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         {
             get
             {
-                if (this._ServiceAppProcess == null)
-                {
-                    this._ServiceAppProcess = new ServiceAppProcessCollection(new ServiceAppProcessComparer());
-                }
-
-                return this._ServiceAppProcess;
+                return _ServiceAppProcesses;
             }
         }
 
@@ -170,10 +121,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             {
                 if (process.IsProcessRunning)
                 {
-                    _dao.RecordServiceAppStart(process.ServiceApp.Name);
-                    if (process.ServiceApp.StartupTypeEnum == Common.Enums.StartupType.Automatic)
+                    using (var dao = _daoFactory.Create<IServiceAppDao>())
                     {
-                        errorMessage = this.SchedulingService.ScheduleServiceApp(process);
+                        dao.RecordServiceAppStart(process.ServiceApp.Name);
+                    }
+
+                    if (process.ServiceApp.StartupTypeEnum == StartupType.Automatic)
+                    {
+                        errorMessage = _schedulingService.ScheduleServiceApp(process);
                     }
                 }
                 else
@@ -197,12 +152,30 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         {
             try
             {
-                _dao.RecordPerfromance(e.Name, e.AppPerformance);
+                using (var dao = _daoFactory.Create<IServiceAppDao>())
+                {
+                    dao.RecordPerfromance(e.Name, e.AppPerformance);
+                }
             }
             catch
             {
                 // TODO: do something about performance logging failing.
                 // throw;
+            }
+        }
+
+        /// <summary>
+        /// Handles the Stopped event of the ServiceAppProcess control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ServiceAppStopEventArgs"/> instance containing the event data.</param>
+        private void ServiceAppProcess_Stopped(object sender, ServiceAppStopEventArgs e)
+        {
+            _schedulingService.RemoveJob(e.Name);
+
+            if (e.HasError)
+            {
+                EmailHelper.SendSupportEmail(_emailer, null, e.Name);
             }
         }
 
@@ -274,11 +247,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// Stops all running service apps.
         /// </summary>
         /// <param name="dao">The ServiceApp DAO</param>
-        public void StopAllServiceApps(IServiceAppDao dao)
+        /// <param name="isExiting">Set to <c>true</c> if the service is in the middle of exiting.</param>
+        public void StopAllServiceApps(IServiceAppDao dao, bool isExiting)
         {
             foreach (var dom in this.ServiceAppProcesses.Where(d => d.IsProcessRunning))
             {
-                this.StopServiceApp(dom.ServiceApp.Name, dao);
+                this.StopServiceApp(dom.ServiceApp.Name, dao, isExiting);
             }
         }
 
@@ -287,8 +261,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// </summary>
         /// <param name="appName">Name of the application.</param>
         /// <param name="dao">The DAO.</param>
+        /// <param name="isExiting">Set to <c>true</c> if the service is in the middle of exiting.</param>
         /// <exception cref="System.IndexOutOfRangeException">The app name could not be found.</exception>
-        public void StopServiceApp(string appName, IServiceAppDao dao)
+        public void StopServiceApp(string appName, IServiceAppDao dao, bool isExiting)
         {
             ServiceAppProcess process = this.ServiceAppProcesses[appName];
 
@@ -299,8 +274,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             }
             else
             {
-                process.Stop();
-                this.SchedulingService.RemoveJob(appName);
+                process.Stop(isExiting);
+                _schedulingService.RemoveJob(appName);
                 dao.RecordServiceAppStop(appName);
             }
         }
@@ -317,7 +292,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             string errorMessage = string.Empty;
             this.RemoveServiceApp(app.Name, dao);
 
-            ServiceAppProcess process = new ServiceAppProcess(app, this._log);
+            ServiceAppProcess process = _serviceAppFactory.CreateServiceAppProcess(app, this._log);
             try
             {
                 this.ServiceAppProcesses.Add(process);
@@ -336,10 +311,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                     }
                 }
 
-                process.Started += this.ServiceAppProcess_Started;
-                process.Error += this.ServiceAppProcess_Error;
-                process.Executed += this.ServiceAppProcess_Executed;
-                process.Performance += this.ServiceAppProcess_Performance;
+                process.Started += ServiceAppProcess_Started;
+                process.Error += ServiceAppProcess_Error;
+                process.Executed += ServiceAppProcess_Executed;
+                process.Performance += ServiceAppProcess_Performance;
+                process.Stopped += ServiceAppProcess_Stopped;
             }
             catch (ArgumentException)
             {
@@ -371,7 +347,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <exception cref="System.InvalidOperationException">The ServiceApp was not stopped first.</exception>
         public void RemoveServiceApp(string appName, IServiceAppDao dao, IAppListDao appListDao)
         {
-            ServiceAppProcess process = this.ServiceAppProcesses[appName];
+            ServiceAppProcess process = ServiceAppProcesses[appName];
 
             if (process != null)
             {
@@ -380,13 +356,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
                     throw new InvalidOperationException(string.Format("ServiceApp '{0}' must be stopped before it can be updated or removed.", appName));
                 }
 
-                this.ServiceAppProcesses.Remove(process);
+                ServiceAppProcesses.Remove(process);
 
                 // This will prevent leaks
-                process.Started -= this.ServiceAppProcess_Started;
-                process.Error -= this.ServiceAppProcess_Error;
-                process.Executed -= this.ServiceAppProcess_Executed;
-                process.Performance -= this.ServiceAppProcess_Performance;
+                process.Started -= ServiceAppProcess_Started;
+                process.Error -= ServiceAppProcess_Error;
+                process.Executed -= ServiceAppProcess_Executed;
+                process.Performance -= ServiceAppProcess_Performance;
+                process.Stopped -= ServiceAppProcess_Stopped;
             }
 
             if (appListDao != null)
@@ -404,8 +381,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// Runs the service application immediately.
         /// </summary>
         /// <param name="appName">Name of the application.</param>
-        /// <param name="dao">The DAO.</param>
-        public void RunServiceApp(string appName, IServiceAppDao dao)
+        public void RunServiceApp(string appName)
         {
             string errorMessage = string.Empty;
             ServiceAppProcess process = this.ServiceAppProcesses[appName];
@@ -434,6 +410,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// </returns>
         public string UpdateServiceApp(ServiceApp serviceApp, IServiceAppDao dao, IAppListDao appListDao)
         {
+            // TODO: move validation outside of here (breaks SRP)
             ServiceAppValidator validator = new ServiceAppValidator();
 
             if (serviceApp == null)

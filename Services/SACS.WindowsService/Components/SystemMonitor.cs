@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Application;
 using SACS.DataAccessLayer.DataAccess;
@@ -18,13 +14,11 @@ namespace SACS.WindowsService.Components
     /// <summary>
     /// Class that monitors the status of the windows service
     /// </summary>
-    internal class SystemMonitor
+    public class SystemMonitor
     {
-        // TODO: add this to IoC
-        private static SystemMonitor monitor = new SystemMonitor();
-
-        private static ILog _log = LogManager.GetLogger(typeof(SystemMonitor));
-        private static DateTime? _startServiceTime;
+        private static ILog log = LogManager.GetLogger(typeof(SystemMonitor));
+        private static DateTime? loggingStartTime;
+        private readonly IAppManager _appManager;
 
         private static PerformanceCounter ramCounter = new PerformanceCounter
             {
@@ -40,26 +34,25 @@ namespace SACS.WindowsService.Components
                 InstanceName = Process.GetCurrentProcess().ProcessName
             };
 
+        public SystemMonitor(IAppManager appManager)
+        {
+            _appManager = appManager;
+        }
+
         /// <summary>
         /// Kicks off the running of the schedule monitor.
         /// </summary>
         /// <param name="service">The schedulign service to use.</param>
-        public static void AddToScheduler(ISchedulingService service)
+        public void AddToScheduler(ISchedulingService service)
         {
-            service.AddJob(
-                typeof(SystemMonitor).Name,
-                ConfigurationManager.AppSettings[Constants.MonitorSchedule],
-                () => { monitor.RecordPerformance(); });
-        }
-
-        /// <summary>
-        /// The publicly available method to perform the recording of performance.
-        /// </summary>
-        /// <remarks>This calls the instance <c>RecordPerformance</c> method. This is temporary
-        /// until the System monitor is served using an IoC. at which point, the instance is only required.</remarks>
-        public static void SnapshotPerformance()
-        {
-            monitor.RecordPerformance();
+            var jobName = typeof(SystemMonitor).Name;
+            if (!service.HasJob(jobName))
+            {
+                service.AddJob(
+                    typeof(SystemMonitor).Name,
+                    ConfigurationManager.AppSettings[Constants.MonitorSchedule],
+                    () => { RecordPerformance(); });
+            }
         }
 
         /// <summary>
@@ -68,18 +61,18 @@ namespace SACS.WindowsService.Components
         public void RecordPerformance()
         {
             TimeSpan monitorDifference = new TimeSpan(0);
-            if (_startServiceTime == null)
+            if (loggingStartTime == null)
             {
-                _startServiceTime = DateTime.Now;
+                loggingStartTime = DateTime.Now;
             }
 
-            monitorDifference = DateTime.Now - (_startServiceTime ?? DateTime.Now);
+            monitorDifference = DateTime.Now - (loggingStartTime ?? DateTime.Now);
 
             decimal? cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
             decimal ramValue = ((decimal)ramCounter.NextValue() / 1024m) / 1024m;
 
             // Add on each service app
-            foreach (var process in AppManager.Current.ServiceAppProcesses)
+            foreach (var process in _appManager.ServiceAppProcesses)
             {
                 cpuValue += process.GetCurrentCpuValue() / (decimal)Environment.ProcessorCount;
                 ramValue += (process.GetCurrentRamValue() / 1024m) / 1024m;
@@ -87,7 +80,7 @@ namespace SACS.WindowsService.Components
 
             string message = "Monitor reports as running";
 
-            _log.Debug(
+            log.Debug(
                 string.Format(
                     "{0:F} {1}: CPU - {2}%, RAM - {3}MB Remaining, Up-Time: {4}",
                     DateTime.Now,

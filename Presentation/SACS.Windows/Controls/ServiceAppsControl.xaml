@@ -111,11 +111,12 @@
                         <CheckBox Name="SendSuccessCheckBox" Margin="5,5,5,5">
                             <TextBlock>Send Success notification</TextBlock>
                         </CheckBox>
-                        <StackPanel Background="#FFEA9999">
-                            <Label Content="Not available in this version" Foreground="#FFB40000" Padding="1,1,1,0" FontSize="9" ToolTip="Service apps can only run as the built-in user."></Label>
+                        <StackPanel>
+                            <!--<StackPanel Background="#FFEA9999">
+                            <Label Content="Not available in this version" Foreground="#FFB40000" Padding="1,1,1,0" FontSize="9" ToolTip="Service apps can only run as the built-in user."></Label>-->
                             <Label Content="Identity:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="The name of the assembly with the service app." />
                             <DockPanel Name="IdentityDockPanel" LastChildFill="True" Margin="0,0,0,10">
-                                <Button DockPanel.Dock="Right" Name="IdentitySelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="IdentitySelectButton_Click" IsEnabled="False" />
+                                <Button DockPanel.Dock="Right" Name="IdentitySelectButton" Content="Choose..." Width="65" Visibility="Collapsed" Click="IdentitySelectButton_Click" IsEnabled="True" />
                                 <TextBlock Name="IdentityLabel" Margin="0,5,0,5" />
                                 <TextBlock Name="PasswordHiddenLabel" Visibility="Collapsed" />
                             </DockPanel>

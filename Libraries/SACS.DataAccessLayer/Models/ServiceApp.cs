@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Runtime.Serialization;
-using System.Security;
+using System.Reflection;
 using NCrontab;
 using SACS.DataAccessLayer.Providers;
 using Enums = SACS.Common.Enums;
@@ -306,6 +305,18 @@ namespace SACS.DataAccessLayer.Models
                 (this.Schedule ?? string.Empty).GetHashCode() ^
                 (this.Username ?? string.Empty).GetHashCode() ^
                 (this.Password ?? string.Empty).GetHashCode();
+        }
+
+        /// <summary>
+        /// Refreshes the AppVersion if it is not set.
+        /// </summary>
+        public void RefreshAppVersion()
+        {
+            if (this.AppVersion == null)
+            {
+                var assemblyName = AssemblyName.GetAssemblyName(this.AppFilePath);
+                this.AppVersion = assemblyName.Version;
+            }
         }
 
         #endregion Methods

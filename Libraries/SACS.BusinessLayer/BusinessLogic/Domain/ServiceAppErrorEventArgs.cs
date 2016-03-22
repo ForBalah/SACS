@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SACS.BusinessLayer.BusinessLogic.Domain
 {
@@ -14,20 +10,17 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceAppErrorEventArgs"/> class.
         /// </summary>
-        /// <param name="ex">The ex.</param>
-        /// <param name="name">The name.</param>
+        /// <param name="ex">The exception associated with the event.</param>
+        /// <param name="name">The name of the service app.</param>
         public ServiceAppErrorEventArgs(Exception ex, string name)
         {
-            this.Exception = ex;
-            this.Name = name;
+            Exception = ex;
+            Name = name;
         }
 
         /// <summary>
         /// Gets the exception.
         /// </summary>
-        /// <value>
-        /// The exception.
-        /// </value>
         public Exception Exception
         {
             get;

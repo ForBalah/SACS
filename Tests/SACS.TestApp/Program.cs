@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Principal;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using SACS.Implementation;
 using SACS.Implementation.Execution;
-using SACS.Implementation.Utils;
 
 namespace SACS.TestApp
 {
@@ -39,7 +32,7 @@ namespace SACS.TestApp
         public override void Execute(ref ServiceAppContext context)
         {
             // Will write to the console when in debug mode, and will write to the SAC that it is hosted in.
-            Console.WriteLine(ConfigurationManager.AppSettings["Message"]);
+            Console.WriteLine(string.Format("User {0}. Message: {1}", Environment.UserName, ConfigurationManager.AppSettings["Message"]));
 
             bool throwEx;
             if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwEx) && throwEx)

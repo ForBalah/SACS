@@ -29,13 +29,13 @@ namespace SACS.Implementation.Utils
         /// activity. The file will contain all activity that failed to be sent back to the SAC for logging.
         /// </para>
         /// </remarks>
-        public static bool DumpToFile
+        public static bool LogToFile
         {
             get
             {
                 if (!_DumpToFile.HasValue)
                 {
-                    string setting = ConfigurationManager.AppSettings["SACS:DumpToFile"];
+                    string setting = ConfigurationManager.AppSettings["SACS:LogToFile"];
                     bool value = false;
 
                     if (bool.TryParse(setting ?? "false", out value))

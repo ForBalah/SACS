@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using log4net;
 using Newtonsoft.Json;
+using SACS.BusinessLayer.BusinessLogic.Errors;
 using SACS.BusinessLayer.Extensions;
+using SACS.Common.Configuration;
 using SACS.Common.Enums;
+using SACS.Common.Factories.Interfaces;
 using SACS.Common.Helpers;
-using SACS.Common.Lock;
-using SACS.DataAccessLayer.DataAccess.Interfaces;
+using SACS.Common.Runtime;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.BusinessLayer.BusinessLogic.Domain
@@ -27,24 +25,40 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
     {
         #region Fields
 
-        private Process _process;
+        private ProcessWrapper _process;
         private ILog _log;
         private Task _runTask;
         private List<Tuple<string, ServiceAppState>> _Messages;
+        private IProcessWrapperFactory _processFactory;
+        private Action _MonitorProcessCallback;
         private const string WarningMessage = "{0} performance warning: Process could not be found for service app {1}. Check that it started correctly.";
+        private const int ProcessWaitLimit = 10000;
+        private bool _canRecreateProcess = true;
 
         #endregion Fields
 
         #region Constructors and Destructors
 
         /// <summary>
+        /// Prevents a default instance of the <see cref="ServiceAppProcess"/> class from being created.
+        /// </summary>
+        private ServiceAppProcess()
+        {
+            // For use by tests. I'm sure there's a better way, but at the time I didn't
+            // want to be concerned with the workings of the process wrapper in the tests that relied
+            // on this (and was too lazy to create an abstraction and change usage all over)
+            this.ServiceApp = new ServiceApp { Name = "__Test" };
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceAppProcess"/> class.
         /// </summary>
         /// <param name="app">The application.</param>
         /// <param name="log">The log.</param>
+        /// <param name="processFactory">The factory that creates <see cref="ProcessWrapper"/> instances.</param>
         /// <exception cref="System.ArgumentNullException">app;Cannot create ServiceAppProcess with null ServiceApp</exception>
         /// <exception cref="System.ArgumentException">Cannot create ServiceAppProcess with null or empty ServiceApp name</exception>
-        internal ServiceAppProcess(ServiceApp app, ILog log)
+        internal ServiceAppProcess(ServiceApp app, ILog log, IProcessWrapperFactory processFactory)
         {
             if (app == null)
             {
@@ -56,11 +70,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 throw new ArgumentException("Cannot create ServiceAppProcess with null or empty ServiceApp name");
             }
 
-            this.ServiceApp = app;
-            this._log = log;
-            this._Messages = new List<Tuple<string, ServiceAppState>>();
+            ServiceApp = app;
+            _log = log;
+            _processFactory = processFactory;
+            _Messages = new List<Tuple<string, ServiceAppState>>();
 
-            this.CreateProcess();
+            CreateProcess();
         }
 
         #endregion Constructors and Destructors
@@ -90,7 +105,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <summary>
         /// Occurs when the service app has successfully stopped.
         /// </summary>
-        public event EventHandler Stopped;
+        public event EventHandler<ServiceAppStopEventArgs> Stopped;
 
         /// <summary>
         /// Occurs when the service app failed.
@@ -156,15 +171,37 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         }
 
         /// <summary>
-        /// Gets the service app.
+        /// Gets or sets the service app.
         /// </summary>
         /// <value>
         /// The service app.
         /// </value>
-        public ServiceApp ServiceApp
+        public virtual ServiceApp ServiceApp
         {
             get;
-            private set;
+            protected set;
+        }
+
+        /// <summary>
+        /// Gets or sets the callback that is invoked after the underlying process is started.
+        /// This usually involves monitoring said process.
+        /// </summary>
+        internal Action MonitorProcessCallback
+        {
+            get
+            {
+                if (_MonitorProcessCallback != null)
+                {
+                    return _MonitorProcessCallback;
+                }
+
+                return MonitorProcess;
+            }
+
+            set
+            {
+                _MonitorProcessCallback = value;
+            }
         }
 
         #endregion Properties
@@ -194,99 +231,90 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <summary>
         /// Starts the associated service app.
         /// </summary>
-        public virtual void Start()
+        public virtual Task Start()
         {
-            this._runTask = Task.Run(() =>
-            {
-                bool exitCheck = false;
-                int exitCode = 0;
-
-                try
-                {
-                    // we get the version info here so that any issues with the app start are grouped together
-                    var assemblyName = AssemblyName.GetAssemblyName(this.ServiceApp.AppFilePath);
-                    this.ServiceApp.AppVersion = assemblyName.Version;
-
-                    this.AddMessage("Starting service app", ServiceAppState.Unknown);
-                    bool result = this._process.Start();
-                }
-                catch (Exception e)
-                {
-                    this._log.Error(string.Format("Error starting service app {0}", this.ServiceApp.Name), e);
-                    this.AddMessage(e.Message, ServiceAppState.NotLoaded);
-                    exitCheck = true;
-                }
-
-                while (!exitCheck)
-                {
-                    string message = this._process.StandardOutput.ReadLine();
-                    exitCheck = this.ProcessMessage(message);
-                }
-
-                exitCode = this._process.ExitCode;
-
-                if (exitCode != 0)
-                {
-                    this._log.Warn(string.Format("{0} service app exited unusually. Exit code: {2}", this.ServiceApp.Name, exitCode));
-                }
-            });
+            _runTask = Task.Run((Action)StartProcess);
+            return _runTask;
         }
 
         /// <summary>
         /// Stops the associated service app.
         /// </summary>
-        public virtual void Stop()
+        /// <param name="isApplicationExiting">Set to true to prevent the service app from recovering from a dirty 
+        /// state on stop since the application will be exiting.</param>
+        public virtual void Stop(bool isApplicationExiting)
         {
+            _canRecreateProcess = !isApplicationExiting;
+
             try
             {
-                this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
+                _process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "stop" }));
 
-                // we will need to be doubly sure that the process has ended
-                if (this.IsProcessRunning)
+                // we will need to be doubly sure that the process has ended.
+                // ---
+                // Would have preferred Process.WaitForExit but we also need to synchronize with the other thread 
+                // to process the "I have stopped" state change from the process. There probably is a better way 
+                // of doing this...
+                int attempts = 5;
+                while (attempts > 0)
                 {
-                    int attempts = 5;
-                    while (attempts > 0)
+                    if (IsProcessRunning || ServiceApp.CurrentState != ServiceAppState.NotLoaded)
                     {
-                        if (this.IsProcessRunning)
-                        {
-                            Thread.Sleep(2000);
-                            attempts--;
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        Thread.Sleep(ProcessWaitLimit / attempts);
+                        attempts--;
                     }
-
-                    if (attempts <= 0)
+                    else
                     {
-                        this._process.Kill();
-                        this.AddMessage("Service app forced stopped.", ServiceAppState.NotLoaded);
+                        break;
                     }
                 }
+
+                if (attempts <= 0)
+                {
+                    try
+                    {
+                        _process.Kill();
+                    }
+                    finally
+                    {
+                        AddMessage("Service app forced stopped.", ServiceAppState.NotLoaded);
+                    }
+                }
+
+                // stop listening on the client out stream
+                _process.StandardOutput.Close();
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException ioe)
             {
                 // the process must have died already but the state of this probably did not update correctly
+                _log.Debug(ioe);
+            }
+            catch (IOException ioex)
+            {
+                // this means that the "pipes are broken"
+                _log.Debug(ioex);
             }
 
-            if (!this.IsProcessRunning)
+            if (_canRecreateProcess)
             {
-                if (this.ServiceApp.CurrentState != ServiceAppState.NotLoaded)
+                if (!IsProcessRunning)
                 {
-                    // getting to this point usually means that the app was stopped before the "stop"
-                    // state was emitted.
-                    this.AddMessage("Process exited unexpectedly.", ServiceAppState.NotLoaded);
-                }
+                    if (ServiceApp.CurrentState != ServiceAppState.NotLoaded)
+                    {
+                        // getting to this point usually means that the app was stopped before the "stop"
+                        // state was emitted and processed.
+                        this.AddMessage("Process exited unexpectedly.", ServiceAppState.NotLoaded);
+                    }
 
-                // This is done in here to ensure that the object is never left in a dirty state.
-                // This is fine because the process is not running yet and just exists as a .NET object
-                // so as to prevent null reference exceptions.
-                this.CreateProcess();
-            }
-            else
-            {
-                throw new ApplicationException("Cannot re-create the service app's process");
+                    // This is done in here to ensure that the object is never left in a dirty state.
+                    // This is fine because the process is not running yet and just exists as a .NET object
+                    // so as to prevent null reference exceptions.
+                    this.CreateProcess();
+                }
+                else
+                {
+                    throw new ApplicationException("Cannot re-create the service app's process as it failed to exit.");
+                }
             }
         }
 
@@ -294,7 +322,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Gets the current Memory performance
         /// </summary>
         /// <returns></returns>
-        internal decimal GetCurrentRamValue()
+        internal virtual decimal GetCurrentRamValue()
         {
             try
             {
@@ -319,7 +347,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Gets the current CPU performance
         /// </summary>
         /// <returns></returns>
-        internal decimal GetCurrentCpuValue()
+        internal virtual decimal GetCurrentCpuValue()
         {
             try
             {
@@ -345,9 +373,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns><c>true</c> if the process should exit after processing the message.</returns>
-        /// <exception cref="System.NotImplementedException">The provided message has not handler.</exception>
-        internal bool ProcessMessage(string message)
+        /// <exception cref="System.NotImplementedException">Nothing was able to process the provided message.</exception>
+        internal virtual bool ProcessMessage(string message)
         {
+            bool stopProcessingMessages = false;
             try
             {
                 dynamic messageObject = JsonConvert.DeserializeObject(message);
@@ -355,60 +384,67 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 {
                     if (messageObject.debug != null)
                     {
-                        return false;
+                        ProcessDebug(messageObject.debug.Value as string);
                     }
                     else if (messageObject.info != null)
                     {
-                        this.ProcessInfo(messageObject.info.Value as string);
-                        return false;
+                        ProcessInfo(messageObject.info.Value as string);
                     }
                     else if (messageObject.error != null)
                     {
-                        this.ProcessError(
+                        ProcessError(
                             ExceptionHelper.DeserializeException(messageObject.error.exception.Value as string),
                             messageObject.error.details.type.Value as string,
                             messageObject.error.details.message.Value as string,
                             messageObject.error.details.source.Value as string,
                             messageObject.error.details.stackTrace.Value as string);
-
-                        return false;
                     }
                     else if (messageObject.performance != null)
                     {
                         this.ProcessPerformance(messageObject.performance);
-                        return false;
                     }
                     else if (messageObject.state != null)
                     {
-                        return this.ProcessState(messageObject.state.Value as string);
+                        stopProcessingMessages = ProcessState(messageObject.state.Value as string);
                     }
                     else if (messageObject.result != null)
                     {
-                        this.ProcessResult(messageObject.result.Value as string);
-                        return false;
+                        ProcessResult(messageObject.result.Value as string);
                     }
                 }
+                else
+                {
+                    throw new NotImplementedException("Unrecognized message to process.");
+                }
             }
-            catch (Newtonsoft.Json.JsonReaderException)
+            catch (JsonReaderException)
             {
                 // this must be just a normal info message. process it as such
-                this.ProcessInfo(message);
-                return false;
+                ProcessInfo(message);
             }
             catch (ArgumentNullException)
             {
-                // problem with the message received. opt to exit
-                return true;
+                // A null message means that communication with the process has been severed.
+                // Opt to stop as it means the process might have been killed.
+                // TODO: possibly not the best place for this?
+                Stop(_canRecreateProcess);
+                stopProcessingMessages = true;
+                if (Stopped != null)
+                {
+                    // If the process cannot be recreated, we don't care about an error.
+                    bool isError = _canRecreateProcess;
+                    Stopped(this, new ServiceAppStopEventArgs(ServiceApp.Name, isError));
+                }
             }
 
-            throw new NotImplementedException("Unrecognized message to process.");
+            return stopProcessingMessages;
         }
 
         /// <summary>
         /// Gets the true instance name for the process which is running this service app.
         /// </summary>
         /// <returns></returns>
-        internal string GetProcessInstanceName()
+        internal virtual string GetProcessInstanceName()
         {
             PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
 
@@ -465,22 +501,31 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </remarks>
         private void ProcessError(Exception exception, string type, string message, string source, string stackTrace)
         {
-            Exception finalException = exception ?? new Exception(string.Format("Message:{0} Source:{1}", message, source));
-            this._log.Warn(string.Format("Uncaught error in {0}. Type: {1}", this.ServiceApp.Name, type), finalException);
+            Exception finalException = exception ?? new CustomException(string.Format("Type:{0} Message:\"{0}\" Source:{1}", type, message, source), stackTrace);
+            _log.Warn(string.Format("Uncaught error in {0}", this.ServiceApp.Name), finalException);
 
-            if (this.Error != null)
+            if (Error != null)
             {
-                this.Error(this, new ServiceAppErrorEventArgs(finalException, this.ServiceApp.Name));
+                Error(this, new ServiceAppErrorEventArgs(finalException, ServiceApp.Name));
             }
         }
 
         /// <summary>
-        /// Processes the information.
+        /// Processes the debug message.
         /// </summary>
-        /// <param name="info">The information.</param>
-        private void ProcessInfo(string info)
+        /// <param name="message">The message to process.</param>
+        private void ProcessDebug(string message)
         {
-            this._log.Info(info);
+            _log.Debug(string.Format("From {0}: {1}", ServiceApp.Name, message));
+        }
+
+        /// <summary>
+        /// Processes the info message.
+        /// </summary>
+        /// <param name="message">The message to process.</param>
+        private void ProcessInfo(string message)
+        {
+            _log.Info(message);
         }
 
         /// <summary>
@@ -535,7 +580,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
                     if (this.Stopped != null)
                     {
-                        this.Stopped(this, new EventArgs());
+                        this.Stopped(this, new ServiceAppStopEventArgs(ServiceApp.Name, false));
                     }
 
                     forceExit = true;
@@ -569,27 +614,82 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         private void CreateProcess()
         {
+            _process = _processFactory.CreateProcess();
             int sacsProcessId = Process.GetCurrentProcess().Id;
-            ProcessStartInfo startInfo = new ProcessStartInfo(this.ServiceApp.AppFilePath);
-            startInfo.WorkingDirectory = Path.GetDirectoryName(this.ServiceApp.AppFilePath);
-            startInfo.Arguments = JsonConvert.SerializeObject(new { name = this.ServiceApp.Name, action = "hide", owner = sacsProcessId });
+            ProcessStartInfo startInfo = new ProcessStartInfo(ServiceApp.AppFilePath);
+            startInfo.WorkingDirectory = Path.GetDirectoryName(ServiceApp.AppFilePath);
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.ErrorDialog = false;
-            startInfo.RedirectStandardError = true;
             startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardError = true;
 
-            if (!string.IsNullOrWhiteSpace(this.ServiceApp.Username))
+            if (ApplicationSettings.Current.EnableCustomUserLogins)
             {
-                startInfo.Domain = UserUtilities.GetDomain(this.ServiceApp.Username);
-                startInfo.UserName = UserUtilities.GetUserName(this.ServiceApp.Username);
-                startInfo.Password = this.ServiceApp.Password.DecryptString();
+                _process.ArgumentObject["name"] = this.ServiceApp.Name;
+                _process.ArgumentObject["owner"] = sacsProcessId;
+            }
+            else
+            {
+                // keeping this older feature until testing is complete.
+                startInfo.Arguments = JsonConvert.SerializeObject(new { name = ServiceApp.Name, action = "hide", owner = sacsProcessId });
             }
 
-            this._process = new Process();
+            if (!string.IsNullOrWhiteSpace(ServiceApp.Username))
+            {
+                startInfo.Domain = UserUtilities.GetDomain(ServiceApp.Username);
+                startInfo.UserName = UserUtilities.GetUserName(ServiceApp.Username);
+                startInfo.Password = ServiceApp.Password.DecryptString();
+            }
+
             this._process.StartInfo = startInfo;
+        }
+
+        private void StartProcess()
+        {
+            bool hasError = false;
+
+            try
+            {
+                // Update the version info here so that any issues with the app start are grouped together
+                ServiceApp.RefreshAppVersion();
+                AddMessage("Starting service app", ServiceAppState.Unknown);
+                _process.Start();
+            }
+            catch (Exception e)
+            {
+                _log.Error(string.Format("Error starting service app {0}", ServiceApp.Name), e);
+                AddMessage(e.Message, ServiceAppState.NotLoaded);
+                hasError = true;
+            }
+
+            if (!hasError)
+            {
+                MonitorProcessCallback();
+            }
+        }
+
+        /// <summary>
+        /// Performs monitoring of the process (via the StandardOutput)
+        /// </summary>
+        private void MonitorProcess()
+        {
+            bool exitCheck = false;
+            while (!exitCheck)
+            {
+                try
+                {
+                    string message = _process.StandardOutput.ReadLine();
+                    exitCheck = ProcessMessage(message);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // the stdout stream has been closed so we can leave this method
+                    exitCheck = true;
+                }
+            }
         }
 
         #endregion Methods

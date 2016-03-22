@@ -88,12 +88,15 @@
     <Compile Include="BusinessLogic\Domain\ServiceAppProcessCollection.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppMessages.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppProcess.cs" />
+    <Compile Include="BusinessLogic\Domain\ServiceAppStopEventArgs.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppSuccessEventArgs.cs" />
     <Compile Include="BusinessLogic\Email\EmailHelper.cs" />
     <Compile Include="BusinessLogic\Email\EmailMessage.cs" />
     <Compile Include="BusinessLogic\Email\EmailProvider.cs" />
     <Compile Include="BusinessLogic\Email\EmailTemplateProvider.cs" />
     <Compile Include="BusinessLogic\Email\HtmlEmailTemplateProvider.cs" />
+    <Compile Include="BusinessLogic\Email\SmtpEmailProvider.cs" />
+    <Compile Include="BusinessLogic\Errors\CustomException.cs" />
     <Compile Include="BusinessLogic\Export\ServiceAppListExporter.cs" />
     <Compile Include="BusinessLogic\Loader\Interfaces\IServiceAppSchedulingService.cs" />
     <Compile Include="BusinessLogic\Loader\ServiceAppSchedulingService.cs" />
@@ -112,6 +115,8 @@
     <Compile Include="BusinessLogic\Validation\ServiceAppValidator.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\SecureStringExtensions.cs" />
+    <Compile Include="Factories\Interfaces\IServiceAppProcessFactory.cs" />
+    <Compile Include="Factories\ServiceAppProcessWrapperFactory.cs" />
     <Compile Include="Presenters\AnalyticsPresenter.cs" />
     <Compile Include="Presenters\LogDetailPresenter.cs" />
     <Compile Include="Presenters\LogOverviewPresenter.cs" />

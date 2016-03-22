@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Diagnostics;
+using Autofac;
 using log4net;
 using log4net.Config;
 using SACS.BusinessLayer.BusinessLogic.Email;
-using SACS.BusinessLayer.BusinessLogic.Loader;
+using SACS.WindowsService.AppStart;
 using SACS.WindowsService.Common;
 using SACS.WindowsService.Components;
 using SACS.WindowsService.Enums;
@@ -19,11 +20,25 @@ namespace SACS.WindowsService
     {
         #region Fields
 
-        private static ILog _log = LogManager.GetLogger(typeof(Program));
-        private static ServiceState _serviceState = ServiceState.Unknown;
-        private static EmailProvider _emailer = new EmailProvider();
+        private static ILog Log = LogManager.GetLogger(typeof(Program));
+        private static ServiceState CurrentServiceState = ServiceState.Unknown;
 
         #endregion Fields
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the DI container
+        /// </summary>
+        /// <remarks>
+        /// This should be private, but the OWIN setup needs work. Until then, there is no
+        /// way of getting the container within the OWIN start up without it being set elsewhere.
+        /// It is kept in <see cref="Program"/> since this is where it is used. Hopefully this
+        /// can be changed back to private in a later release.
+        /// </remarks>
+        internal static IContainer Container { get; set; }
+
+        #endregion
 
         #region Event Handlers
 
@@ -38,8 +53,8 @@ namespace SACS.WindowsService
             try
             {
                 Exception ex = e.ExceptionObject as Exception;
-                _log.Error("Unhandled Exception occured in SACS service", ex);
-                EmailHelper.SendSupportEmail(_emailer, ex, null);
+                Log.Error("Unhandled Exception occured in SACS service", ex);
+                EmailHelper.SendSupportEmail(Container.Resolve<EmailProvider>(), ex, null);
             }
             catch (Exception finalEx)
             {
@@ -47,7 +62,7 @@ namespace SACS.WindowsService
                 {
                     // At this point there is nothing more we can do but let the app die
                     Console.WriteLine("goodbye--^v--^v-----^v------------");
-                    _log.Fatal("SACS has crashed.", finalEx);
+                    Log.Fatal("SACS has crashed.", finalEx);
                 }
                 finally
                 {
@@ -69,15 +84,15 @@ namespace SACS.WindowsService
             Initialize();
             var exitCode = StartWindowsService();
 
-            _serviceState = ServiceState.Unknown;
+            CurrentServiceState = ServiceState.Unknown;
             switch (exitCode)
             {
                 case TopshelfExitCode.Ok:
-                    _log.Info("SACS stopped successfully.");
+                    Log.Info("SACS stopped successfully.");
                     break;
 
                 default:
-                    _log.Error("Problem stopping SACS. " + exitCode.ToString());
+                    Log.Error("Problem stopping SACS. " + exitCode.ToString());
                     break;
             }
         }
@@ -87,10 +102,11 @@ namespace SACS.WindowsService
         /// </summary>
         internal static void Initialize()
         {
-            _log.Info("Starting SACS...");
+            Log.Info("Starting SACS...");
+            Container = DependencyConfig.RegisterComponents();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             BasicConfigurator.Configure();
-            _serviceState = ServiceState.Running;
+            CurrentServiceState = ServiceState.Running;
         }
 
         /// <summary>
@@ -99,23 +115,30 @@ namespace SACS.WindowsService
         /// <returns></returns>
         private static TopshelfExitCode StartWindowsService()
         {
-            var exitCode = HostFactory.Run(x =>
+            using (var scope = Container.BeginLifetimeScope())
             {
-                x.Service<ServiceContainer>(s =>
+                // this must be outside the HostFactory.Run since it risks failing silently
+                var serviceContainer = Container.Resolve<ServiceContainer>();
+
+                var exitCode = HostFactory.Run(x =>
                 {
-                    s.ConstructUsing(name => new ServiceContainer(new ServiceAppSchedulingService(), new WebAPIComponent()));
-                    s.WhenStarted(sc => sc.Start());
-                    s.WhenStopped(sc => sc.Stop());
+                    x.Service<ServiceContainer>(s =>
+                    {
+                        s.ConstructUsing(name => serviceContainer);
+                        s.WhenStarted(sc => sc.Start());
+                        s.WhenStopped(sc => sc.Stop());
+                    });
+
+                    x.SetDescription(ConfigurationManager.AppSettings[Constants.ServiceDescription]);
+                    x.SetDisplayName(ConfigurationManager.AppSettings[Constants.ServiceDisplayName]);
+                    x.SetServiceName(ConfigurationManager.AppSettings[Constants.ServiceName]);
+                    x.UseLog4Net();
+
+                    CurrentServiceState |= ServiceState.StartedWindowsComponent;
                 });
 
-                x.SetDescription(ConfigurationManager.AppSettings[Constants.ServiceDescription]);
-                x.SetDisplayName(ConfigurationManager.AppSettings[Constants.ServiceDisplayName]);
-                x.SetServiceName(ConfigurationManager.AppSettings[Constants.ServiceName]);
-                x.UseLog4Net();
-
-                _serviceState |= ServiceState.StartedWindowsComponent;
-            });
-            return exitCode;
+                return exitCode;
+            }
         }
 
         #endregion Methods

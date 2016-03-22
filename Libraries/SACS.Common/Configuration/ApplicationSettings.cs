@@ -219,6 +219,17 @@ namespace SACS.Common.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether separate user logins are enabled in this version.
+        /// </summary>
+        public bool EnableCustomUserLogins
+        {
+            get
+            {
+                return bool.Parse(IfNullOrEmpty(ConfigurationManager.AppSettings["Runtime.EnableCustomUserLogins"], "true"));
+            }
+        }
+
         #endregion Properties
 
         #region Methods

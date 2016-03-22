@@ -25,8 +25,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
             string source = !string.IsNullOrWhiteSpace(serviceAppName) ? string.Format("Service App: {0}", serviceAppName) : "SACS Server";
             EmailTemplateProvider templater = new HtmlEmailTemplateProvider(ApplicationSettings.Current.SupportEmailTemplatePath);
             templater.AddValue("MachineName", Environment.MachineName);
-            templater.AddValue("Message", ex.Message);
-            templater.AddValue("StackTrace", ex.StackTrace);
+            templater.AddValue("Message", ex != null ? ex.Message : "Unknown exception. See the logs for more details.");
+            templater.AddValue("StackTrace", ex != null ? ex.StackTrace : string.Empty);
             templater.AddValue("Time", SystemTime.Now.ToString());
             templater.AddValue("Source", source);
 

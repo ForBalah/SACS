@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SACS.Common.Configuration
+﻿namespace SACS.Common.Configuration
 {
     /// <summary>
     /// The Application configuration interface
@@ -94,5 +88,10 @@ namespace SACS.Common.Configuration
         /// Gets the timeout (in seconds) to use for Web API requests
         /// </summary>
         int WebApiTimeout { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether separate user logins are enabled in this version.
+        /// </summary>
+        bool EnableCustomUserLogins { get; }
     }
 }

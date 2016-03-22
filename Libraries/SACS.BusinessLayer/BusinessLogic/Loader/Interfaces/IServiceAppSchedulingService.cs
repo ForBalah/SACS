@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SACS.BusinessLayer.BusinessLogic.Domain;
-using SACS.DataAccessLayer.DataAccess.Interfaces;
+﻿using SACS.BusinessLayer.BusinessLogic.Domain;
 using SACS.Scheduler.Service;
 
 namespace SACS.BusinessLayer.BusinessLogic.Loader.Interfaces

@@ -109,7 +109,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             // make sure to unload because we are going to lose all references to the processes in this call.
             foreach (var process in this._collection)
             {
-                process.Stop();
+                process.Stop(true);
             }
 
             this._collection.Clear();

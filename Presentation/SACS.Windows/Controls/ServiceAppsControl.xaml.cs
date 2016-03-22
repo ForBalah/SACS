@@ -88,15 +88,15 @@ namespace SACS.Windows.Controls
         private void AppFilePathSelectButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (!string.IsNullOrWhiteSpace(this.AppFilePathTextBox.Text))
+            if (Directory.Exists(AppFilePathTextBox.Text))
             {
-                openFileDialog.InitialDirectory = Path.GetDirectoryName(this.AppFilePathTextBox.Text);
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(AppFilePathTextBox.Text);
             }
 
             openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All files (*.*)|*.*"; // "Assemblies (*.exe;*.dll)|*.exe;*.dll|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                this.AppFilePathTextBox.Text = openFileDialog.FileName;
+                AppFilePathTextBox.Text = openFileDialog.FileName;
             }
         }
 
@@ -107,10 +107,8 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void AppFilePathViewButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(this.AppFilePathLabel.Text))
-            {
-                Process.Start(Path.GetDirectoryName(this.AppFilePathLabel.Text));
-            }
+            string directory = Directory.Exists(AppFilePathLabel.Text) ? Path.GetDirectoryName(AppFilePathLabel.Text) : "C:\\";
+            Process.Start(directory);
         }
 
         /// <summary>
