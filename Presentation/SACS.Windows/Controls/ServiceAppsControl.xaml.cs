@@ -39,6 +39,7 @@ namespace SACS.Windows.Controls
         private ServiceApp _selectedServiceApp;
         private ServiceAppPresenter _presenter;
         private AnalyticsWindow _analytics;
+        private string _currentEntropyValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceAppsControl"/> class.
@@ -107,7 +108,7 @@ namespace SACS.Windows.Controls
         /// <param name="e">The <see cref="RoutedEventArgs" /> instance containing the event data.</param>
         private void AppFilePathViewButton_Click(object sender, RoutedEventArgs e)
         {
-            string directory = Directory.Exists(AppFilePathLabel.Text) ? Path.GetDirectoryName(AppFilePathLabel.Text) : "C:\\";
+            string directory = Directory.Exists(Path.GetDirectoryName(AppFilePathLabel.Text)) ? Path.GetDirectoryName(AppFilePathLabel.Text) : "C:\\";
             Process.Start(directory);
         }
 
@@ -208,19 +209,22 @@ namespace SACS.Windows.Controls
         private void IdentitySelectButton_Click(object sender, RoutedEventArgs e)
         {
             AccountSelectWindow accountWindow = new AccountSelectWindow();
-            accountWindow.IsCustomAccount = !string.IsNullOrWhiteSpace(this.IdentityLabel.Text);
-            accountWindow.Username = this.IdentityLabel.Text;
+            accountWindow.IsCustomAccount = !string.IsNullOrWhiteSpace(IdentityLabel.Text);
+            accountWindow.Username = IdentityLabel.Text;
+            accountWindow.EntropyValue = _presenter.GenerateEntropyValue();
             if (accountWindow.ShowDialog() == true)
             {
                 if (accountWindow.IsCustomAccount)
                 {
-                    this.IdentityLabel.Text = accountWindow.Username;
-                    this.PasswordHiddenLabel.Text = accountWindow.EncryptedPassword;
+                    IdentityLabel.Text = accountWindow.Username;
+                    PasswordHiddenLabel.Text = accountWindow.EncryptedPassword;
+                    _currentEntropyValue = accountWindow.EntropyValue;
                 }
                 else
                 {
-                    this.IdentityLabel.Text = null;
-                    this.PasswordHiddenLabel.Text = null;
+                    IdentityLabel.Text = null;
+                    PasswordHiddenLabel.Text = null;
+                    _currentEntropyValue = null;
                 }
             }
         }
@@ -391,6 +395,7 @@ namespace SACS.Windows.Controls
             this.UpdateInputFieldsVisibility(!isReadOnly);
             this._selectedServiceApp = serviceApp;
             this.ShowServiceAppDetails(this._selectedServiceApp, isReadOnly);
+            _currentEntropyValue = null; // Important to reset this when selecting any service app.
         }
 
         /// <summary>
@@ -411,6 +416,7 @@ namespace SACS.Windows.Controls
                     SendSuccessNotification = this.SendSuccessCheckBox.IsChecked ?? false,
                     Username = this.IdentityLabel.Text,
                     Password = this.PasswordHiddenLabel.Text,
+                    EntropyValue2 = _currentEntropyValue,
                     Schedule = this.ScheduleHiddenLabel.Text
                 };
 

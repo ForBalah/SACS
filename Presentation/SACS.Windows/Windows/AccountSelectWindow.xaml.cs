@@ -1,19 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using SACS.BusinessLayer.Extensions;
-using SACS.Common.Configuration;
 
 namespace SACS.Windows.Windows
 {
@@ -82,8 +68,16 @@ namespace SACS.Windows.Windows
         {
             get
             {
-                return this.PasswordTextBox.SecurePassword.EncryptString();
+                return this.PasswordTextBox.SecurePassword.EncryptString(EntropyValue);
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the entropy value
+        /// </summary>
+        public string EntropyValue
+        {
+            get; set;
         }
 
         #endregion Properties

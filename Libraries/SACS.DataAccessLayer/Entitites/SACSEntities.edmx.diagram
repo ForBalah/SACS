@@ -13,6 +13,7 @@
         <AssociationConnector Association="SACSEntities.ServiceApplicationServiceApplicationPerfomance" />
         <EntityTypeShape EntityType="SACSEntities.ServiceApplicationHistory" Width="1.875" PointX="0.875" PointY="3.375" />
         <AssociationConnector Association="SACSEntities.ServiceApplicationHistoryServiceApplication" />
+        <EntityTypeShape EntityType="SACSEntities.SacsVersion" Width="1.5" PointX="10.625" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

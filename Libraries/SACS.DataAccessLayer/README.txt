@@ -7,7 +7,8 @@ The database file is a single access database file, designed to work in SQL expr
 Connecting to the database file:
 --------------------------------
 - Under Tools, click "Connect to Database"
-- click "Change" and select "Microsoft SQL Database File"
+	- If the "Choose Data Source" dialog shows, select "Microsoft SQL Server Database File"
+	- otherwise, click "Change" and select "Microsoft SQL Server Database File"
 - Browse for the file in the solution. Make sure it's first checked out.
 - Use Windows Authentication.
 - Click Connect and the it should now appear in the Server Explorer view.

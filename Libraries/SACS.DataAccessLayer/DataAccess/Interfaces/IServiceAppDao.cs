@@ -16,7 +16,8 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// Saves the service app, updating the existing record, if found, or creating a new record.
         /// </summary>
         /// <param name="app">The service app.</param>
-        void SaveServiceApp(Models.ServiceApp app);
+        /// <returns>The entropy value for the service app.</returns>
+        string SaveServiceApp(Models.ServiceApp app);
 
         /// <summary>
         /// Records the service application start.

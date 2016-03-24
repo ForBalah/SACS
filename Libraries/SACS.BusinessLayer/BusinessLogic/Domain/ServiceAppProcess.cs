@@ -122,6 +122,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         #region Properties
 
         /// <summary>
+        /// Gets or sets the entropy value.
+        /// </summary>
+        /// <remarks>This is kept here and not on the ServiceApp to make sure that if any information
+        /// other than password is changed, then the entropy won't be altered.</remarks>
+        public string EntropyValue
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the process is running, but has an error.
         /// </summary>
         public bool HasError
@@ -277,7 +287,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     }
                     finally
                     {
-                        AddMessage("Service app forced stopped.", ServiceAppState.NotLoaded);
+                        AddMessage("Service app force stopped.", ServiceAppState.NotLoaded);
                     }
                 }
 
@@ -303,13 +313,13 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     {
                         // getting to this point usually means that the app was stopped before the "stop"
                         // state was emitted and processed.
-                        this.AddMessage("Process exited unexpectedly.", ServiceAppState.NotLoaded);
+                        AddMessage("Process exited unexpectedly.", ServiceAppState.NotLoaded);
                     }
 
                     // This is done in here to ensure that the object is never left in a dirty state.
                     // This is fine because the process is not running yet and just exists as a .NET object
                     // so as to prevent null reference exceptions.
-                    this.CreateProcess();
+                    CreateProcess();
                 }
                 else
                 {
@@ -337,8 +347,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
             catch (KeyNotFoundException)
             {
-                // process could not be found
-                this._log.Warn(string.Format(WarningMessage, "Memory", this.ServiceApp.Name));
+                // process could not be found - it might have been killed.
+                _log.Error(string.Format("Process for service app {0} has been removed.", ServiceApp.Name));
+                AbortProcess();
                 return 0;
             }
         }
@@ -362,8 +373,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
             catch (KeyNotFoundException)
             {
-                // process could not be found
-                this._log.Warn(string.Format(WarningMessage, "CPU", this.ServiceApp.Name));
+                // process could not be found - it might have been killed.
+                _log.Error(string.Format("Process for service app {0} has been removed.", ServiceApp.Name));
+                AbortProcess();
                 return 0;
             }
         }
@@ -426,15 +438,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             {
                 // A null message means that communication with the process has been severed.
                 // Opt to stop as it means the process might have been killed.
-                // TODO: possibly not the best place for this?
-                Stop(_canRecreateProcess);
-                stopProcessingMessages = true;
-                if (Stopped != null)
-                {
-                    // If the process cannot be recreated, we don't care about an error.
-                    bool isError = _canRecreateProcess;
-                    Stopped(this, new ServiceAppStopEventArgs(ServiceApp.Name, isError));
-                }
+                stopProcessingMessages = AbortProcess();
             }
 
             return stopProcessingMessages;
@@ -502,7 +506,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         private void ProcessError(Exception exception, string type, string message, string source, string stackTrace)
         {
             Exception finalException = exception ?? new CustomException(string.Format("Type:{0} Message:\"{0}\" Source:{1}", type, message, source), stackTrace);
-            _log.Warn(string.Format("Uncaught error in {0}", this.ServiceApp.Name), finalException);
+
+            // Somehow we are not getting the stack trace from the exception, so it had to be printed manually
+            _log.Warn(string.Format("Uncaught error in {0}{1}{1}{2}{1}{3}", this.ServiceApp.Name, Environment.NewLine, finalException.Message, finalException.StackTrace));
 
             if (Error != null)
             {
@@ -641,14 +647,18 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             {
                 startInfo.Domain = UserUtilities.GetDomain(ServiceApp.Username);
                 startInfo.UserName = UserUtilities.GetUserName(ServiceApp.Username);
-                startInfo.Password = ServiceApp.Password.DecryptString();
             }
 
             this._process.StartInfo = startInfo;
         }
 
+        /// <summary>
+        /// Starts the underlying process for the service app.
+        /// </summary>
         private void StartProcess()
         {
+            // only add the password when it's time to start the process.
+            _process.StartInfo.Password = ServiceApp.Password.DecryptString(EntropyValue);
             bool hasError = false;
 
             try
@@ -690,6 +700,25 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     exitCheck = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// Aborts the process in the service app.
+        /// </summary>
+        /// <returns></returns>
+        private bool AbortProcess()
+        {
+            bool stopProcessingMessages;
+            Stop(_canRecreateProcess);
+            stopProcessingMessages = true;
+            if (Stopped != null)
+            {
+                // If the process cannot be recreated, we don't care about an error.
+                bool isError = _canRecreateProcess;
+                Stopped(this, new ServiceAppStopEventArgs(ServiceApp.Name, isError));
+            }
+
+            return stopProcessingMessages;
         }
 
         #endregion Methods

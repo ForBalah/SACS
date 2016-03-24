@@ -11,6 +11,7 @@
     <EntitySet Name="SystemAudit" EntityType="SACSEntities.Store.SystemAudit" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ServiceApplicationPerfomance" EntityType="SACSEntities.Store.ServiceApplicationPerfomance" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ServiceApplicationHistory" EntityType="SACSEntities.Store.ServiceApplicationHistory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SacsVersion" EntityType="SACSEntities.Store.SacsVersion" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="ServiceApplicationServiceApplicationAudit" Association="SACSEntities.Store.ServiceApplicationServiceApplicationAudit">
       <End Role="ServiceApplication" EntitySet="ServiceApplication" />
       <End Role="ServiceApplicationAudit" EntitySet="ServiceApplicationAudit" />
@@ -41,6 +42,8 @@
     <Property Name="ModifiedDate" Type="datetime" Nullable="true" />
     <Property Name="StartupType" Type="int" Nullable="false" />
     <Property Name="SendSuccessNotification" Type="bit" Nullable="false" />
+    <Property Name="EntropyValue2" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Parameters" Type="nvarchar(max)" Nullable="true" />
   </EntityType>
   <EntityType Name="ServiceApplicationAudit">
     <Key>
@@ -91,6 +94,15 @@
     <Property Name="CreatedByUserId" Type="nvarchar(max)" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="ServiceApplicationId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="SacsVersion">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VersionNumber" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="InstallationDate" Type="datetime" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <Association Name="ServiceApplicationServiceApplicationAudit">
     <End Role="ServiceApplication" Type="SACSEntities.Store.ServiceApplication" Multiplicity="1" />
@@ -150,6 +162,7 @@
             <End Role="ServiceApplicationHistory" EntitySet="ServiceApplicationHistory" />
             <End Role="ServiceApplication" EntitySet="ServiceApplication" />
           </AssociationSet>
+          <EntitySet Name="SacsVersion" EntityType="SACSEntities.SacsVersion" />
         </EntityContainer>
         <EntityType Name="ServiceApplication">
           <Key>
@@ -171,6 +184,8 @@
           <NavigationProperty Name="ServiceApplicationHistories" Relationship="SACSEntities.ServiceApplicationHistoryServiceApplication" FromRole="ServiceApplication" ToRole="ServiceApplicationHistory" />
           <Property Name="StartupType" Type="SACSEntities.StartupType" Nullable="false" />
           <Property Name="SendSuccessNotification" Type="Boolean" Nullable="false" />
+          <Property Name="EntropyValue2" Type="String" Nullable="true" />
+          <Property Name="Parameters" Type="String" Nullable="true" />
         </EntityType>
         <EntityType Name="ServiceApplicationAudit">
           <Key>
@@ -275,6 +290,15 @@
           <Member Name="Automatic" Value="2" />
           <Member Name="Disabled" Value="3" />
         </EnumType>
+        <EntityType Name="SacsVersion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VersionNumber" Type="String" Nullable="false" />
+          <Property Name="InstallationDate" Type="DateTime" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -297,6 +321,8 @@
           <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
           <ScalarProperty Name="StartupType" ColumnName="StartupType" />
           <ScalarProperty Name="SendSuccessNotification" ColumnName="SendSuccessNotification" />
+          <ScalarProperty Name="EntropyValue2" ColumnName="EntropyValue2" />
+          <ScalarProperty Name="Parameters" ColumnName="Parameters" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -351,6 +377,16 @@
           <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
           <ScalarProperty Name="ServiceApplicationId" ColumnName="ServiceApplicationId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SacsVersion">
+      <EntityTypeMapping TypeName="IsTypeOf(SACSEntities.SacsVersion)">
+        <MappingFragment StoreEntitySet="SacsVersion">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="VersionNumber" ColumnName="VersionNumber" />
+          <ScalarProperty Name="InstallationDate" ColumnName="InstallationDate" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

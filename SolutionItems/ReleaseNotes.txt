@@ -12,5 +12,12 @@ v1.0.0.1
 - Improved performance logging.
 - Fixed issue of service apps sometimes causing an error while stopping.
 - Signed all dlls with a strong-name.
-- Added an "Explore" button to the service app's "App File"
+- SACS.Implementation dll can now be added to the GAC without issue.
+- Added an "Explore" button to the service app's "App File".
+- Various stability improvements to the server and service app implementation.
+
+v1.1.0.0
+--------
+- Fixed issue of service apps not working when trying to start them as a different user.
+- Emails will get sent if SACS detects that a service app has exited unexpectedly.
 - Various stability improvements to the server and service app implementation.

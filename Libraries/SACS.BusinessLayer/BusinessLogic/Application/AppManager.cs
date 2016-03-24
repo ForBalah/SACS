@@ -296,7 +296,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             try
             {
                 this.ServiceAppProcesses.Add(process);
-                dao.SaveServiceApp(app);
+                process.EntropyValue = dao.SaveServiceApp(app);
 
                 if (appListDao != null)
                 {

@@ -79,6 +79,9 @@ namespace SACS.Implementation
             this._commandProcessor.HoistWith<DirectiveHandler>("pipeErr")
                 .ForArgs<string>(this.RedirectConsoleError);
 
+            this._commandProcessor.HoistWith<DirectiveHandler>("parameters")
+                .ForArgs<string>(this.SetSettingsParameters);
+
             this._commandProcessor.HoistWith<ArgsHandler>()
                 .For("exit", () => this.Stop());
 
@@ -175,6 +178,17 @@ namespace SACS.Implementation
         }
 
         /// <summary>
+        /// Gets the custom service app parameters
+        /// </summary>
+        public string ServiceParameters
+        {
+            get
+            {
+                return Settings.Parameters;
+            }
+        }
+
+        /// <summary>
         /// Gets the startup commands.
         /// </summary>
         protected CommandObject StartupCommands { get; private set; }
@@ -239,6 +253,7 @@ namespace SACS.Implementation
                     catch (Exception e)
                     {
                         currentContext.Failed = true;
+                        currentContext.CustomMessage = e.Message;
                         this.HandleException(e, false);
                         Messages.WriteState(Enums.State.Failed);
                     }
@@ -546,6 +561,7 @@ namespace SACS.Implementation
         /// <summary>
         /// Hides the console window.
         /// </summary>
+        [Obsolete("This will be taken out in a future version")]
         private void HideWindow()
         {
             var handle = GetConsoleWindow();
@@ -591,6 +607,15 @@ namespace SACS.Implementation
             StreamWriter writer = new StreamWriter(this.pipeClientErr);
             writer.AutoFlush = true;
             Console.SetError(writer);
+        }
+
+        /// <summary>
+        /// Sets the parameters in the Settings class.
+        /// </summary>
+        /// <param name="value">The parameters to set.</param>
+        private void SetSettingsParameters(string value)
+        {
+            Settings.SetParameters(value);
         }
 
         /// <summary>

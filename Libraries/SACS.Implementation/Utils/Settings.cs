@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
+﻿using System.Configuration;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SACS.Implementation.Utils
 {
@@ -13,7 +8,8 @@ namespace SACS.Implementation.Utils
     /// </summary>
     public class Settings
     {
-        private static bool? _DumpToFile;
+        private static bool? logToFile;
+        private static string customParameters;
 
         /// <summary>
         /// Gets or sets a value indicating whether activity in the service app should be dumped to a
@@ -33,14 +29,14 @@ namespace SACS.Implementation.Utils
         {
             get
             {
-                if (!_DumpToFile.HasValue)
+                if (!logToFile.HasValue)
                 {
                     string setting = ConfigurationManager.AppSettings["SACS:LogToFile"];
                     bool value = false;
 
                     if (bool.TryParse(setting ?? "false", out value))
                     {
-                        _DumpToFile = value;
+                        logToFile = value;
                     }
                     else
                     {
@@ -48,12 +44,12 @@ namespace SACS.Implementation.Utils
                     }
                 }
 
-                return _DumpToFile ?? false;
+                return logToFile ?? false;
             }
 
             set
             {
-                _DumpToFile = value;
+                logToFile = value;
             }
         }
 
@@ -94,6 +90,42 @@ namespace SACS.Implementation.Utils
                 string setting = ConfigurationManager.AppSettings["SACS:AlternateName"];
                 return setting ?? (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).FullName;
             }
+        }
+
+        /// <summary>
+        /// Gets the custom parameters passed into the service app.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Parameters can be any string and can contain any information that the service app implementation needs.
+        /// For example a list of key=value pairs can go in here, and they can be interpreted and used to modify
+        /// behaviour of different service app instances.
+        /// </para>
+        /// <para>
+        /// These parameters can especially come in handy when the same service app is loaded into SACS multiple
+        /// times - typically for different schedules - and each service app needs to perform slightly different
+        /// tasks on the same data
+        /// </para>
+        /// <para>
+        /// This value is set either from AppSettings as SACS:Parameters, or can be passed in as a command parameter:
+        /// { parameters: "[data]" }
+        /// </para>
+        /// </remarks>
+        public static string Parameters
+        {
+            get
+            {
+                return customParameters ?? ConfigurationManager.AppSettings["SACS:Parameters"];
+            }
+        }
+
+        /// <summary>
+        /// Sets the parameters value
+        /// </summary>
+        /// <param name="value">The value to set.</param>
+        internal static void SetParameters(string value)
+        {
+            customParameters = value;
         }
     }
 }

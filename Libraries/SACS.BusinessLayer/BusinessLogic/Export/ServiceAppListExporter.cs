@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using SACS.DataAccessLayer.Models;
 
 namespace SACS.BusinessLayer.BusinessLogic.Export
@@ -21,7 +18,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Export
             "IsRunning",
             "ImagePath",
             "Comparer",
-            "CanRun"
+            "CanRun",
+            "EntropyValue2",
+            "CurrentState"
         };
 
         /// <summary>

@@ -174,6 +174,11 @@ namespace SACS.DataAccessLayer.Models
         public string Password { get; set; }
 
         /// <summary>
+        /// Gets or sets the entropy value
+        /// </summary>
+        public string EntropyValue2 { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether notifications should be sent when
         /// the service app successfully completes execution.
         /// </summary>

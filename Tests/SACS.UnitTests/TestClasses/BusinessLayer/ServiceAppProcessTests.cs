@@ -151,7 +151,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
 
             bool shouldExit = appProcToTest.ProcessMessage(exceptionMessage);
 
-            log.Received().Warn(Arg.Any<string>(), Arg.Any<InvalidOperationException>());
+            log.Received().Warn(Arg.Any<string>());
             Assert.IsFalse(shouldExit, "Process message was not meant to return true");
         }
 
@@ -182,7 +182,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
 
             bool shouldExit = appProcToTest.ProcessMessage(exceptionMessage);
 
-            log.Received().Warn(Arg.Any<string>(), Arg.Any<CustomException>());
+            log.Received().Warn(Arg.Any<string>());
             Assert.IsFalse(shouldExit, "Process message was not meant to return true");
         }
 

@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 11/21/2015 12:39:35
--- Generated from EDMX file: E:\Development\SACS\Head\Libraries\SACS.DataAccessLayer\Entitites\SACSEntities.edmx
+-- Date Created: 03/23/2016 12:00:04
+-- Generated from EDMX file: C:\Development\Projects\Open Box\SACS\Libraries\SACS.DataAccessLayer\Entitites\SACSEntities.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -44,6 +44,9 @@ GO
 IF OBJECT_ID(N'[dbo].[ServiceApplicationHistory]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ServiceApplicationHistory];
 GO
+IF OBJECT_ID(N'[dbo].[SacsVersionSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SacsVersionSet];
+GO
 
 -- --------------------------------------------------
 -- Creating all tables
@@ -63,7 +66,9 @@ CREATE TABLE [dbo].[ServiceApplication] (
     [ModifiedByUserId] nvarchar(max)  NULL,
     [ModifiedDate] datetime  NULL,
     [StartupType] int  NOT NULL,
-    [SendSuccessNotification] bit  NOT NULL
+    [SendSuccessNotification] bit  NOT NULL,
+    [EntropyValue2] nvarchar(max)  NULL,
+    [Parameters] nvarchar(max)  NULL
 );
 GO
 
@@ -117,6 +122,15 @@ CREATE TABLE [dbo].[ServiceApplicationHistory] (
 );
 GO
 
+-- Creating table 'SacsVersion'
+CREATE TABLE [dbo].[SacsVersion] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [VersionNumber] nvarchar(max)  NOT NULL,
+    [InstallationDate] datetime  NOT NULL,
+    [Description] nvarchar(max)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -151,6 +165,12 @@ ADD CONSTRAINT [PK_ServiceApplicationHistory]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'SacsVersion'
+ALTER TABLE [dbo].[SacsVersion]
+ADD CONSTRAINT [PK_SacsVersion]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- --------------------------------------------------
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
@@ -162,6 +182,7 @@ ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationAudit]
     REFERENCES [dbo].[ServiceApplication]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationServiceApplicationAudit'
 CREATE INDEX [IX_FK_ServiceApplicationServiceApplicationAudit]
@@ -176,6 +197,7 @@ ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationPerfomance]
     REFERENCES [dbo].[ServiceApplication]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationServiceApplicationPerfomance'
 CREATE INDEX [IX_FK_ServiceApplicationServiceApplicationPerfomance]
@@ -190,11 +212,16 @@ ADD CONSTRAINT [FK_ServiceApplicationHistoryServiceApplication]
     REFERENCES [dbo].[ServiceApplication]
         ([Id])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationHistoryServiceApplication'
 CREATE INDEX [IX_FK_ServiceApplicationHistoryServiceApplication]
 ON [dbo].[ServiceApplicationHistory]
     ([ServiceApplicationId]);
+GO
+
+INSERT INTO [dbo].[SacsVersion] ([VersionNumber], [InstallationDate], [Description])
+VALUES ('1.1.0.0', GETDATE(), 'Adds version table and upgrades security.')
 GO
 
 -- --------------------------------------------------

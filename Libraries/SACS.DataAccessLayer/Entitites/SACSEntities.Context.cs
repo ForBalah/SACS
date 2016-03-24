@@ -30,5 +30,6 @@ namespace SACS.DataAccessLayer.Entitites
         public virtual DbSet<SystemAudit> SystemAudit { get; set; }
         public virtual DbSet<ServiceApplicationPerfomance> ServiceApplicationPerfomance { get; set; }
         public virtual DbSet<ServiceApplicationHistory> ServiceApplicationHistory { get; set; }
+        public virtual DbSet<SacsVersion> SacsVersion { get; set; }
     }
 }

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.ServiceModel;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using log4net;
+using System.Web.Security;
 using SACS.BusinessLayer.BusinessLogic.Export;
 using SACS.BusinessLayer.Views;
-using SACS.DataAccessLayer.Factories;
 using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.Models;
 using SACS.DataAccessLayer.WebAPI.Interfaces;
@@ -195,6 +189,15 @@ namespace SACS.BusinessLayer.Presenters
                     this.View.SelectServiceApp(client.GetServiceApp(appName));
                 },
                 true);
+        }
+
+        /// <summary>
+        /// Generates an extra entropy value to encrypt passwords with.
+        /// </summary>
+        /// <returns></returns>
+        public string GenerateEntropyValue()
+        {
+            return Membership.GeneratePassword(31, 13);
         }
 
         /// <summary>

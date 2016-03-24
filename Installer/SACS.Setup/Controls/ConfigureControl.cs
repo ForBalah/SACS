@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoIt;
 using SACS.Setup.Classes;
@@ -231,8 +226,8 @@ namespace SACS.Setup.Controls
             // Would prefer to read these off a property on each control, but I'm not phased enough to change it.
             if (sender == ServiceAccountLabel || sender == ServiceAccountTextBox)
             {
-                this.TooltipLabel.Text = "Use a service account that is granted admin rights on the machine and can access the SQL database that will have SACS. " +
-                    "LOCALSYSTEM cannot access remote SQL instances. LOCALSERVICE has too limited rights on the machine.";
+                this.TooltipLabel.Text = "LOCALSYSTEM is the default, but will require manual SQL server configuring. If using a system account, assign it the following privileges: " +
+                    "Log on as a batch job; Log on as a service; Adjust memory quotas for a process; Replace a process level token";
             }
             else if (sender == ServiceAccountChangeButton)
             {

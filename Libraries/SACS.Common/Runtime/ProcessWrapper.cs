@@ -339,6 +339,7 @@ namespace SACS.Common.Runtime
                 using (Impersonator imp = new Impersonator())
                 {
                     imp.Impersonate(StartInfo.UserName, StartInfo.Domain, StartInfo.Password, StartWithCreateProcessAsUser);
+                    successfulStart = true;
                 }
             }
             else

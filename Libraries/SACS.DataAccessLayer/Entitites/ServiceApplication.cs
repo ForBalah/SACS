@@ -34,6 +34,8 @@ namespace SACS.DataAccessLayer.Entitites
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public StartupType StartupType { get; set; }
         public bool SendSuccessNotification { get; set; }
+        public string EntropyValue2 { get; set; }
+        public string Parameters { get; set; }
     
         public virtual ICollection<ServiceApplicationAudit> ServiceApplicationAudits { get; set; }
         public virtual ICollection<ServiceApplicationPerfomance> ServiceApplicationPerfomances { get; set; }

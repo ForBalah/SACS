@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Entitites;
 using SACS.DataAccessLayer.Models;
@@ -27,7 +24,8 @@ namespace SACS.DataAccessLayer.DataAccess
         /// Saves the service app, updating the existing record, if found, or creating a new record.
         /// </summary>
         /// <param name="app">The service app.</param>
-        public void SaveServiceApp(Models.ServiceApp app)
+        /// <returns>The entropy value for the service app.</returns>
+        public string SaveServiceApp(Models.ServiceApp app)
         {
             ServiceApplication appEntity = this.GetServiceApplication(app);
 
@@ -54,6 +52,7 @@ namespace SACS.DataAccessLayer.DataAccess
             appEntity.ModifiedDate = DateTime.Now;
             appEntity.AppFilePath = app.AppFilePath;
             appEntity.SendSuccessNotification = app.SendSuccessNotification;
+            appEntity.EntropyValue2 = app.EntropyValue2 ?? appEntity.EntropyValue2; // update entropy value only if it exists on the model
 
             AuditType appAuditType = created ? AuditType.Create : AuditType.Update;
             appEntity.ServiceApplicationAudits.Add(new ServiceApplicationAudit
@@ -64,7 +63,9 @@ namespace SACS.DataAccessLayer.DataAccess
                 Message = app.LastMessage
             });
 
-            this.SubmitChanges();
+            SubmitChanges();
+
+            return appEntity.EntropyValue2;
         }
 
         /// <summary>

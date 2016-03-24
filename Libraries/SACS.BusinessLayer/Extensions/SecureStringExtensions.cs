@@ -19,8 +19,9 @@ namespace SACS.BusinessLayer.Extensions
         /// Encrypts the provided SecureString.
         /// </summary>
         /// <param name="input">The SecureString to encrypt.</param>
+        /// <param name="entropyValue">The entropy value for encrypting the string with.</param>
         /// <returns></returns>
-        public static string EncryptString(this SecureString input)
+        public static string EncryptString(this SecureString input, string entropyValue)
         {
             if (input == null)
             {
@@ -29,7 +30,7 @@ namespace SACS.BusinessLayer.Extensions
 
             var encryptedData = ProtectedData.Protect(
                 Encoding.Unicode.GetBytes(input.ToInsecureString()),
-                ApplicationSettings.Current.EntropyValue,
+                CombineEntropy(ApplicationSettings.Current.EntropyValue, entropyValue),
                 DataProtectionScope.LocalMachine);
 
             return Convert.ToBase64String(encryptedData);
@@ -39,8 +40,9 @@ namespace SACS.BusinessLayer.Extensions
         /// Decrypts the provided data back into a SecureString.
         /// </summary>
         /// <param name="encryptedData">The data to decrypt.</param>
+        /// <param name="entropyValue">The entropy value needed to decrypt with.</param>
         /// <returns></returns>
-        public static SecureString DecryptString(this string encryptedData)
+        public static SecureString DecryptString(this string encryptedData, string entropyValue)
         {
             if (encryptedData == null)
             {
@@ -51,7 +53,7 @@ namespace SACS.BusinessLayer.Extensions
             {
                 var decryptedData = ProtectedData.Unprotect(
                     Convert.FromBase64String(encryptedData),
-                    ApplicationSettings.Current.EntropyValue,
+                    CombineEntropy(ApplicationSettings.Current.EntropyValue, entropyValue),
                     DataProtectionScope.LocalMachine);
 
                 return Encoding.Unicode.GetString(decryptedData).ToSecureString();
@@ -107,6 +109,18 @@ namespace SACS.BusinessLayer.Extensions
             {
                 Marshal.ZeroFreeBSTR(ptr);
             }
+        }
+
+        /// <summary>
+        /// Combines a byte array and a string into a new entropy byte array
+        /// </summary>
+        /// <param name="existing">The existing byte array to add to.</param>
+        /// <param name="valueToAdd">The string value to add.</param>
+        /// <returns></returns>
+        private static byte[] CombineEntropy(byte[] existing, string valueToAdd)
+        {
+            byte[] arrayToAdd = Encoding.Unicode.GetBytes(valueToAdd ?? string.Empty);
+            return existing.Union(arrayToAdd).ToArray();
         }
     }
 }
