@@ -49,5 +49,12 @@ namespace SACS.DataAccessLayer.DataAccess.Interfaces
         /// </summary>
         /// <param name="appName">Name of the app.</param>
         void DeleteServiceApp(string appName);
+
+        /// <summary>
+        /// Gets the last start and end date for a service app
+        /// </summary>
+        /// <param name="appName">The app name to get the perf details for.</param>
+        /// <returns></returns>
+        Tuple<DateTime, DateTime?> GetLastRunDate(string appName);
     }
 }

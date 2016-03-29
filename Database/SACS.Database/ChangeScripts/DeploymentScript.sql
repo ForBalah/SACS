@@ -4,7 +4,7 @@ IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
 
 -- Get the version
-IF EXISTS (SELECT OBJECT_ID('tempdb..#Version')) DROP TABLE #Version
+IF OBJECT_ID('tempdb..#Version') IS NOT NULL DROP TABLE #Version
 GO
 
 CREATE TABLE #Version (v INT)
@@ -24,13 +24,13 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[FK_ServiceApplicationServiceApplicationAudit]', 'F') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[FK_ServiceApplicationServiceApplicationAudit]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ServiceApplicationAudit] DROP CONSTRAINT [FK_ServiceApplicationServiceApplicationAudit];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[FK_ServiceApplicationServiceApplicationPerfomance]', 'F') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[FK_ServiceApplicationServiceApplicationPerfomance]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ServiceApplicationPerfomance] DROP CONSTRAINT [FK_ServiceApplicationServiceApplicationPerfomance];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[FK_ServiceApplicationHistoryServiceApplication]', 'F') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[FK_ServiceApplicationHistoryServiceApplication]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ServiceApplicationHistory] DROP CONSTRAINT [FK_ServiceApplicationHistoryServiceApplication];
 GO
 
@@ -38,22 +38,22 @@ GO
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplication]', 'U') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplication]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ServiceApplication];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplicationAudit]', 'U') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplicationAudit]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ServiceApplicationAudit];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[SystemAudit]', 'U') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[SystemAudit]', 'U') IS NOT NULL
     DROP TABLE [dbo].[SystemAudit];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplicationPerfomance]', 'U') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplicationPerfomance]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ServiceApplicationPerfomance];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplicationHistory]', 'U') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[ServiceApplicationHistory]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ServiceApplicationHistory];
 GO
-IF (SELECT v FROM #Version) < 1010000 AND OBJECT_ID(N'[dbo].[SacsVersionSet]', 'U') IS NOT NULL
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000 AND OBJECT_ID(N'[dbo].[SacsVersionSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[SacsVersionSet];
 GO
 
@@ -61,7 +61,7 @@ GO
 -- Creating all tables
 -- --------------------------------------------------
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating table 'ServiceApplication'
 CREATE TABLE [dbo].[ServiceApplication] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE [dbo].[ServiceApplication] (
 );
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating table 'ServiceApplicationAudit'
 CREATE TABLE [dbo].[ServiceApplicationAudit] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE [dbo].[ServiceApplicationAudit] (
 );
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating table 'SystemAudit'
 CREATE TABLE [dbo].[SystemAudit] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE [dbo].[SystemAudit] (
 );
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating table 'ServiceApplicationPerfomance'
 CREATE TABLE [dbo].[ServiceApplicationPerfomance] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE [dbo].[ServiceApplicationPerfomance] (
 );
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating table 'ServiceApplicationHistory'
 CREATE TABLE [dbo].[ServiceApplicationHistory] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -136,7 +136,7 @@ CREATE TABLE [dbo].[ServiceApplicationHistory] (
 );
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating table 'SacsVersion'
 CREATE TABLE [dbo].[SacsVersion] (
     [Id] int IDENTITY(1,1) NOT NULL,
@@ -150,42 +150,42 @@ GO
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating primary key on [Id] in table 'ServiceApplication'
 ALTER TABLE [dbo].[ServiceApplication]
 ADD CONSTRAINT [PK_ServiceApplication]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating primary key on [Id] in table 'ServiceApplicationAudit'
 ALTER TABLE [dbo].[ServiceApplicationAudit]
 ADD CONSTRAINT [PK_ServiceApplicationAudit]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating primary key on [Id] in table 'SystemAudit'
 ALTER TABLE [dbo].[SystemAudit]
 ADD CONSTRAINT [PK_SystemAudit]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating primary key on [Id] in table 'ServiceApplicationPerfomance'
 ALTER TABLE [dbo].[ServiceApplicationPerfomance]
 ADD CONSTRAINT [PK_ServiceApplicationPerfomance]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating primary key on [Id] in table 'ServiceApplicationHistory'
 ALTER TABLE [dbo].[ServiceApplicationHistory]
 ADD CONSTRAINT [PK_ServiceApplicationHistory]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating primary key on [Id] in table 'SacsVersion'
 ALTER TABLE [dbo].[SacsVersion]
 ADD CONSTRAINT [PK_SacsVersion]
@@ -196,7 +196,7 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating foreign key on [ServiceApplicationId] in table 'ServiceApplicationAudit'
 ALTER TABLE [dbo].[ServiceApplicationAudit]
 ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationAudit]
@@ -206,14 +206,14 @@ ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationAudit]
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationServiceApplicationAudit'
 CREATE INDEX [IX_FK_ServiceApplicationServiceApplicationAudit]
 ON [dbo].[ServiceApplicationAudit]
     ([ServiceApplicationId]);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating foreign key on [ServiceApplicationId] in table 'ServiceApplicationPerfomance'
 ALTER TABLE [dbo].[ServiceApplicationPerfomance]
 ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationPerfomance]
@@ -223,14 +223,14 @@ ADD CONSTRAINT [FK_ServiceApplicationServiceApplicationPerfomance]
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationServiceApplicationPerfomance'
 CREATE INDEX [IX_FK_ServiceApplicationServiceApplicationPerfomance]
 ON [dbo].[ServiceApplicationPerfomance]
     ([ServiceApplicationId]);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating foreign key on [ServiceApplicationId] in table 'ServiceApplicationHistory'
 ALTER TABLE [dbo].[ServiceApplicationHistory]
 ADD CONSTRAINT [FK_ServiceApplicationHistoryServiceApplication]
@@ -240,14 +240,14 @@ ADD CONSTRAINT [FK_ServiceApplicationHistoryServiceApplication]
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 -- Creating non-clustered index for FOREIGN KEY 'FK_ServiceApplicationHistoryServiceApplication'
 CREATE INDEX [IX_FK_ServiceApplicationHistoryServiceApplication]
 ON [dbo].[ServiceApplicationHistory]
     ([ServiceApplicationId]);
 GO
 
-IF (SELECT v FROM #Version) < 1010000
+IF (SELECT ISNULL((SELECT v FROM #Version), 0)) < 1010000
 INSERT INTO [dbo].[SacsVersion] ([VersionNumber], [InstallationDate], [Description])
 VALUES ('1.1.0.0', GETDATE(), 'Adds version table and upgrades security.')
 GO

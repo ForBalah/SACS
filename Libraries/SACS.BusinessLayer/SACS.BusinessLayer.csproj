@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="BusinessLogic\Application\AppManager.cs" />
     <Compile Include="BusinessLogic\Application\IAppManager.cs" />
+    <Compile Include="BusinessLogic\Conversions\MhtToHtml.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppErrorEventArgs.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppPerformanceEventArgs.cs" />
     <Compile Include="BusinessLogic\Domain\ServiceAppProcessComparer.cs" />

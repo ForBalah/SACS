@@ -191,12 +191,15 @@ $.AdminLTE.layout = {
     //Set the min-height of the content and sidebar based on the
     //the height of the document.
     if ($("body").hasClass("fixed")) {
-      $(".content-wrapper, .right-side").css('min-height', window_height - $('.main-footer').outerHeight());
+        $(".content-wrapper, .right-side").css('min-height', window_height - $('.main-footer').outerHeight());
+        $(".full-height-content").css('min-height', window_height - $('.main-footer').outerHeight() - $('.content-header').outerHeight() - $('.navbar').outerHeight());
     } else {
       if (window_height >= sidebar_height) {
-        $(".content-wrapper, .right-side").css('min-height', window_height - neg);
+          $(".content-wrapper, .right-side").css('min-height', window_height - neg);
+          $(".full-height-content").css('min-height', window_height - neg - $('.content-header').outerHeight() - $('.navbar').outerHeight());
       } else {
-        $(".content-wrapper, .right-side").css('min-height', sidebar_height);
+          $(".content-wrapper, .right-side").css('min-height', sidebar_height);
+          $(".full-height-content").css('min-height', sidebar_height - $('.content-header').outerHeight() - $('.navbar').outerHeight());
       }
     }
   },

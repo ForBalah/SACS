@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Help";
+    ViewBag.Title = "Help File";
 }
 
 @section Breadcrumbs {
@@ -7,3 +7,7 @@
     <li>@Html.ActionLink("Documentation", "Index", "Help")</li>
     <li class="active"><span class="glyphicon glyphicon-question-sign"></span> Help</li>
 }
+
+<iframe class="full-height-content whitewashed" src="@Url.Content("~/Content/Help/SACSHelp.html")">
+
+</iframe>

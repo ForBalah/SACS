@@ -65,6 +65,10 @@ namespace SACS.DataAccessLayer.DataAccess
 
             SubmitChanges();
 
+            // update the model with the last run date. TODO: should this be here?
+            var lastRun = GetLastRunDate(app.Name);
+            app.LastRun = lastRun.Item1;
+
             return appEntity.EntropyValue2;
         }
 
@@ -182,6 +186,28 @@ namespace SACS.DataAccessLayer.DataAccess
                 });
 
                 this.SubmitChanges();
+            }
+        }
+
+        /// <summary>
+        /// Gets the last start and end date for a service app
+        /// </summary>
+        /// <param name="appName">The app name to get the perf details for.</param>
+        /// <returns></returns>
+        public Tuple<DateTime, DateTime?> GetLastRunDate(string appName)
+        {
+            var startEnd = FindAll<ServiceApplicationPerfomance>(sap => sap.ServiceApplication.Name.ToUpper() == appName.ToUpper())
+                .OrderByDescending(sap => sap.StartTime)
+                .Select(sap => new { sap.StartTime, sap.EndTime })
+                .FirstOrDefault();
+
+            if (startEnd != null)
+            {
+                return new Tuple<DateTime, DateTime?>(startEnd.StartTime, startEnd.EndTime);
+            }
+            else
+            {
+                return new Tuple<DateTime, DateTime?>(default(DateTime), null);
             }
         }
 

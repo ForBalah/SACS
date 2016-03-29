@@ -484,6 +484,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     endTime: performanceObject.endTime.Value as DateTime?,
                     message: performanceObject.message.Value as string);
 
+                // TODO: should this be here?
+                ServiceApp.LastRun = performanceObject.startTime.Value as DateTime?;
+
                 this.Performance(this, args);
             }
         }
@@ -508,7 +511,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             Exception finalException = exception ?? new CustomException(string.Format("Type:{0} Message:\"{0}\" Source:{1}", type, message, source), stackTrace);
 
             // Somehow we are not getting the stack trace from the exception, so it had to be printed manually
-            _log.Warn(string.Format("Uncaught error in {0}{1}{1}{2}{1}{3}", this.ServiceApp.Name, Environment.NewLine, finalException.Message, finalException.StackTrace));
+            _log.Warn(string.Format("Uncaught error in {0}{1}{1}{2}{1}{3}{1}{4}", ServiceApp.Name, Environment.NewLine, finalException.GetType(), finalException.Message, finalException.StackTrace));
 
             if (Error != null)
             {

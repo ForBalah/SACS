@@ -98,6 +98,7 @@
     <Compile Include="TestClasses\BusinessLayer\FieldLogicTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\LogLoaderTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\LogSearchCriteriaTests.cs" />
+    <Compile Include="TestClasses\BusinessLayer\MhtToHtmlTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppProcessCollectionTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ScheduleUtilityTests.cs" />
     <Compile Include="TestClasses\BusinessLayer\ServiceAppProcessTests.cs" />

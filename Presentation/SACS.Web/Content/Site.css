@@ -7,7 +7,7 @@
 }
 
 .service-app-buttons {
-	width: 130px;
+	width: 135px;
 	padding: 0 15px 0 0 !important;
 }
 
@@ -80,4 +80,12 @@
 .table.log tr > th:nth-child(10),
 .table.log tr > td:nth-child(10) {
 	width: 1px;
+}
+
+.full-height-content {
+    width: 100%;
+}
+
+.whitewashed {
+    background-color: #fff;
 }

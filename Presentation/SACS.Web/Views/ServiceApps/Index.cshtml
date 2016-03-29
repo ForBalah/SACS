@@ -80,6 +80,10 @@
 							<strong>Last Message:</strong>
 							@serviceApp.LastMessage
 						</div>
+                        <div>
+                            <strong>Last Run:</strong>
+                            @serviceApp.LastRunString
+                        </div>
 					</div>
 					<div class="col-md-3">
 						<div>
@@ -103,7 +107,7 @@
 							@serviceApp.SacsVersion
 						</div>
 					</div>
-					<div class="col-md-2 text-right pull-right service-app-buttons">
+					<div class="col-md-2 pull-right service-app-buttons">
 						<input type="submit" name="process" value="Start" class="btn btn-xs btn-success" @(serviceApp.CanStart ? "" : "disabled") />
 						<input type="submit" name="process" value="Stop" class="btn btn-xs btn-warning" @(serviceApp.CanStop ? "" : "disabled") />
 						<input type="submit" name="process" value="Run" class="btn btn-xs btn-primary" @(serviceApp.CanRun ? "" : "disabled") />

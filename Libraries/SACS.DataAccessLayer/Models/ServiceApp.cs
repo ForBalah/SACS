@@ -264,6 +264,30 @@ namespace SACS.DataAccessLayer.Models
             }
         }
 
+        /// <summary>
+        /// Gets or sets the last run date.
+        /// </summary>
+        public DateTime? LastRun { get; set; }
+
+        /// <summary>
+        /// Gets the last run date as a string
+        /// </summary>
+        public string LastRunString
+        {
+            get
+            {
+                // TODO: not convinced this should be here.
+                string value = string.Empty;
+
+                if (LastRun.HasValue && LastRun.Value != default(DateTime))
+                {
+                    value = LastRun.Value.ToString();
+                }
+
+                return value;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
