@@ -19,5 +19,6 @@ v1.0.0.1
 v1.1.0.0
 --------
 - Fixed issue of service apps not working when trying to start them as a different user.
-- Emails will get sent if SACS detects that a service app has exited unexpectedly.
+- Added "Last run date" for service apps.
+- Emails will now get sent if SACS detects that a service app has exited unexpectedly.
 - Various stability improvements to the server and service app implementation.

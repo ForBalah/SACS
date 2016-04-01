@@ -8,7 +8,7 @@ builder) and copied into the setup folder.
 
 To build the documentation:
 - Download and install Sandcastle Help File Builder: https://github.com/EWSoftware/SHFB.
-- Open the sacs.implementation.shfbproj file with the program.
+- Open the sacs.implementation.shfbproj file with the GUI.
 - Remove and re-add the SACS.Implementation.dll and SACS.Implementation.xml files on the right. It looks like the location
   of the files is not relative so you may get an error "cannot find sources" even though the source files are clearly 
   visible in the list.
@@ -23,14 +23,13 @@ General Issues
 Presentation Layer - Windows:
 -----------------------------
 Fix disabling of toolbar buttons when the service is inaccessible.
-Configure log4net properly in presentation layer (Elmah maybe?)
+Configure log4net properly in presentation layer (or Elmah maybe?)
 Log detail - Update the column headers
 Redirect metrics to different analytics app
 Fix SACS version column
 Implmement IoC
 Disable the start service app button when it has been clicked
 Add an About section
-Add Last Run column
 Make hitting "refresh" on any button in the server will just refresh everything
 
 Presentation Layer - Web:
@@ -50,7 +49,6 @@ Service layer:
 --------------
 put log debug all over the place
 Send alert if CPU usage remains high for too long?
-Create more useful error messages when the agent fails to start
 
 Data Access Layer:
 ------------------
@@ -59,7 +57,6 @@ Move DAO creation to IoC
 Server:
 -------
 put log debug all over the place
-Implmement IoC
 Create Wizard:
 - Install service as user
 - (optional) Install web (or use a different installer)

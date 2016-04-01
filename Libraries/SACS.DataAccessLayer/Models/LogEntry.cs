@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SACS.Common.Enums;
+using SACS.Common.Extensions;
 
 namespace SACS.DataAccessLayer.Models
 {
@@ -40,7 +37,7 @@ namespace SACS.DataAccessLayer.Models
         {
             get
             {
-                switch (this.Level)
+                switch (Level)
                 {
                     case "ERROR":
                         return LogImageType.Error;
@@ -81,6 +78,18 @@ namespace SACS.DataAccessLayer.Models
         /// The message.
         /// </value>
         public string Message { get; set; }
+
+        /// <summary>
+        /// Gets the short version of the message
+        /// </summary>
+        public string ShortMessage
+        {
+            get
+            {
+                // TODO: The magic number should be in an appsetting, or a behaviour. But meh.
+                return Message.Truncate(50, "...");
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name of the machine.

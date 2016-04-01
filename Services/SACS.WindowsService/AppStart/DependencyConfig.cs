@@ -40,6 +40,7 @@ namespace SACS.WindowsService.AppStart
 
             DaoFactory factory = new DaoFactory();
             factory.RegisterDao<IServiceAppDao, ServiceAppDao>();
+            factory.RegisterDao<ISystemDao, SystemDao>();
             builder.RegisterInstance(factory).As<IDaoFactory>();
 
             //// Factories

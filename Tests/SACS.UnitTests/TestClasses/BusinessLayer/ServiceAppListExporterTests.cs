@@ -12,6 +12,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
     public class ServiceAppListExporterTests
     {
         [Test]
+        [Category("ServiceAppListExporter")]
         public void ExportCsv_CanExportCsvHeadersOnly()
         {
             ServiceAppListExporter exporter = new ServiceAppListExporter();
@@ -22,6 +23,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppListExporter")]
         public void ExportCsv_CanExportCsvWithDetails()
         {
             var list = new List<ServiceApp>

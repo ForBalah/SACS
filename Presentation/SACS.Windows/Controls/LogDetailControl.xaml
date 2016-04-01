@@ -144,7 +144,7 @@
                             </GridViewColumn>
                             <GridViewColumn Header="Level" DisplayMemberBinding="{Binding LogEntry.Level}"/>
                             <GridViewColumn Header="Thread" DisplayMemberBinding="{Binding LogEntry.Thread}"/>
-                            <GridViewColumn Header="Message" DisplayMemberBinding="{Binding LogEntry.Message}" Width="250" />
+                            <GridViewColumn Header="Message" DisplayMemberBinding="{Binding LogEntry.ShortMessage}" Width="250" />
                             <GridViewColumn Header="MachineName" DisplayMemberBinding="{Binding LogEntry.MachineName}"/>
                             <GridViewColumn Header="HostName" DisplayMemberBinding="{Binding LogEntry.HostName}"/>
                             <GridViewColumn Header="UserName" DisplayMemberBinding="{Binding LogEntry.UserName}"/>

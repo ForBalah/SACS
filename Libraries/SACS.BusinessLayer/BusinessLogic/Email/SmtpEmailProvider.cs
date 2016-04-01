@@ -54,9 +54,12 @@ namespace SACS.BusinessLayer.BusinessLogic.Email
 
                 message.Body = email.Body;
 
-                SmtpClient smtp = new SmtpClient();
-                smtp.Send(message);
-                _log.Info(string.Format("Sent '{0}' email to {1} and {2}", email.Subject, string.Join(",", email.ToAddresses), string.Join(",", email.CCAddresses)));
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Send(message);
+                    _log.Info(string.Format("Sent '{0}' email to {1} and {2}", email.Subject, string.Join(",", email.ToAddresses), string.Join(",", email.CCAddresses)));
+                }
+
                 return true;
             }
             catch (SmtpException se)

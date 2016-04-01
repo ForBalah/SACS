@@ -3,9 +3,8 @@ using System.Configuration;
 using System.Diagnostics;
 using log4net;
 using SACS.BusinessLayer.BusinessLogic.Application;
-using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
-using SACS.DataAccessLayer.Factories;
+using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.Scheduler.Service;
 using SACS.WindowsService.Common;
 
@@ -19,6 +18,7 @@ namespace SACS.WindowsService.Components
         private static ILog log = LogManager.GetLogger(typeof(SystemMonitor));
         private static DateTime? loggingStartTime;
         private readonly IAppManager _appManager;
+        private readonly IDaoFactory _daoFactory;
 
         private static PerformanceCounter ramCounter = new PerformanceCounter
             {
@@ -34,9 +34,10 @@ namespace SACS.WindowsService.Components
                 InstanceName = Process.GetCurrentProcess().ProcessName
             };
 
-        public SystemMonitor(IAppManager appManager)
+        public SystemMonitor(IAppManager appManager, IDaoFactory daoFactory)
         {
             _appManager = appManager;
+            _daoFactory = daoFactory;
         }
 
         /// <summary>
@@ -66,9 +67,9 @@ namespace SACS.WindowsService.Components
                 loggingStartTime = DateTime.Now;
             }
 
-            monitorDifference = DateTime.Now - (loggingStartTime ?? DateTime.Now);
+            monitorDifference = DateTime.Now - loggingStartTime.Value;
 
-            decimal? cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
+            decimal cpuValue = Math.Floor((decimal)cpuCounter.NextValue() / (decimal)Environment.ProcessorCount);
             decimal ramValue = ((decimal)ramCounter.NextValue() / 1024m) / 1024m;
 
             // Add on each service app
@@ -89,7 +90,7 @@ namespace SACS.WindowsService.Components
                     ramValue,
                     monitorDifference));
 
-            using (ISystemDao dao = DaoFactory.Create<ISystemDao, SystemDao>())
+            using (ISystemDao dao = _daoFactory.Create<ISystemDao>())
             {
                 dao.LogSystemPerformances(message, cpuValue, ramValue);
             }

@@ -113,6 +113,11 @@ namespace SACS.Windows.Controls
         /// <param name="e">The exception.</param>
         public void ShowException(string title, Exception e)
         {
+            // Originally each control was going to have it's own error message block.
+            // Now it makes sense to have a central "messages" block. Unfortunately, it
+            // resides in this control. Ideally this would raise an event that the main
+            // window captures and prints out the message in the main block. However, 
+            // this still exists because for now the messages still only apply to logs.
             this.LogsErrorLabel.Text = e.Message;
         }
 

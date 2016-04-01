@@ -9,6 +9,7 @@ using SACS.Common.Configuration;
 using SACS.DataAccessLayer.DataAccess;
 using SACS.DataAccessLayer.DataAccess.Interfaces;
 using SACS.DataAccessLayer.Factories;
+using SACS.DataAccessLayer.Factories.Interfaces;
 using SACS.DataAccessLayer.Models;
 using SACS.WindowsService.Common;
 using SACS.WindowsService.Components;
@@ -22,13 +23,14 @@ namespace SACS.WindowsService.WebAPI.Controllers
     {
         private const int SecondsInterval = 90;
         private static ILog log = LogManager.GetLogger(typeof(PerformanceController));
-        private readonly IAppPerformanceDao _perfDao = DaoFactory.Create<IAppPerformanceDao, AppPerformanceDao>(); // TODO: move to DI
-        private readonly ISystemDao _systemDao = DaoFactory.Create<ISystemDao, SystemDao>(); // TODO: move to DI
+        private readonly IAppPerformanceDao _perfDao = DaoFactory.Create<IAppPerformanceDao, AppPerformanceDao>(); // TODO: delete
+        private readonly IDaoFactory _daoFactory;
         private readonly SystemMonitor _systemMonitor;
 
-        public PerformanceController(SystemMonitor systemMonitor)
+        public PerformanceController(SystemMonitor systemMonitor, IDaoFactory daoFactory)
         {
             _systemMonitor = systemMonitor;
+            _daoFactory = daoFactory;
         }
 
         /// <summary>
@@ -85,18 +87,21 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 DateTime fromDate = DateTime.ParseExact(cpuFrom, Constants.DateFormat, CultureInfo.InvariantCulture);
                 DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
-                var data = this._systemDao.GetCpuPerformanceData(fromDate, toDate);
-
-                if (raw != true)
+                using (var dao = _daoFactory.Create<ISystemDao>())
                 {
-                    SystemPerformance.CompactData(data, SecondsInterval);
-                    SystemPerformance.LowerResolution(
-                        data,
-                        ApplicationSettings.Current.PerformanceGraphMaxPoints,
-                        ApplicationSettings.Current.PerformanceGraphThreshold);
-                }
+                    var data = dao.GetCpuPerformanceData(fromDate, toDate);
 
-                return data;
+                    if (raw != true)
+                    {
+                        SystemPerformance.CompactData(data, SecondsInterval);
+                        SystemPerformance.LowerResolution(
+                            data,
+                            ApplicationSettings.Current.PerformanceGraphMaxPoints,
+                            ApplicationSettings.Current.PerformanceGraphThreshold);
+                    }
+
+                    return data;
+                }
             }
             catch (Exception e)
             {
@@ -124,18 +129,21 @@ namespace SACS.WindowsService.WebAPI.Controllers
                 DateTime fromDate = DateTime.ParseExact(memFrom, Constants.DateFormat, CultureInfo.InvariantCulture);
                 DateTime toDate = DateTime.ParseExact(to, Constants.DateFormat, CultureInfo.InvariantCulture);
 
-                var data = this._systemDao.GetMemoryPerformanceData(fromDate, toDate);
-
-                if (raw != true)
+                using (var dao = _daoFactory.Create<ISystemDao>())
                 {
-                    SystemPerformance.CompactData(data, SecondsInterval);
-                    SystemPerformance.LowerResolution(
-                        data,
-                        ApplicationSettings.Current.PerformanceGraphMaxPoints,
-                        ApplicationSettings.Current.PerformanceGraphThreshold);
-                }
+                    var data = dao.GetMemoryPerformanceData(fromDate, toDate);
 
-                return data;
+                    if (raw != true)
+                    {
+                        SystemPerformance.CompactData(data, SecondsInterval);
+                        SystemPerformance.LowerResolution(
+                            data,
+                            ApplicationSettings.Current.PerformanceGraphMaxPoints,
+                            ApplicationSettings.Current.PerformanceGraphThreshold);
+                    }
+
+                    return data;
+                }
             }
             catch (Exception e)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SACS.Common.Extensions;
 
 namespace SACS.BusinessLayer.BusinessLogic.Conversions
 {
@@ -38,6 +39,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Conversions
                 }
             }
 
+            // WORK IN PROGRESS
             return splitContent.First(k => k.Key.Contains(".htm")).Value.Content;
         }
 
@@ -48,32 +50,33 @@ namespace SACS.BusinessLayer.BusinessLogic.Conversions
         /// <returns></returns>
         internal static string GetBoundary(string contents)
         {
-            using (StringReader reader = new StringReader(contents))
+            if (contents != null)
             {
-                var boundRegex = new Regex(@"Content-Type:.* (boundary=""(.*?)"")");
-                var found = false;
-                var line = string.Empty;
-                var result = string.Empty;
-
-                while (!found && (line = reader.ReadLine()) != null)
+                using (StringReader reader = new StringReader(contents))
                 {
-                    var match = boundRegex.Match(line);
-                    if (match.Success)
+                    var boundRegex = new Regex(@"Content-Type:.* (boundary=""(.*?)"")");
+                    var found = false;
+                    var line = string.Empty;
+                    var result = string.Empty;
+
+                    while (!found && (line = reader.ReadLine()) != null)
                     {
-                        result = match.Groups[2].Value;
-                        found = true;
+                        var match = boundRegex.Match(line);
+                        if (match.Success)
+                        {
+                            result = match.Groups[2].Value;
+                            found = true;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        return result;
                     }
                 }
-
-                if (found)
-                {
-                    return result;
-                }
-                else
-                {
-                    throw new InvalidOperationException("boundary not found");
-                }
             }
+
+            throw new InvalidOperationException("boundary not found");
         }
 
         /// <summary>
@@ -131,25 +134,25 @@ namespace SACS.BusinessLayer.BusinessLogic.Conversions
                 match = ContentLocationRegex.Match(content);
                 if (match.Success)
                 {
-                    details.ContentLocation = match.Groups[1].Value.Replace("\r", string.Empty);
+                    details.ContentLocation = match.Groups[1].Value.RemoveNewLines(false);
                 }
 
                 match = ContentTransferEncodingRegex.Match(content);
                 if (match.Success)
                 {
-                    details.ContentTransferEncoding = match.Groups[1].Value.Replace("\r", string.Empty);
+                    details.ContentTransferEncoding = match.Groups[1].Value.RemoveNewLines(false);
                 }
 
                 match = ContentTypeRegex.Match(content);
                 if (match.Success)
                 {
-                    details.ContentType = match.Groups[1].Value.Replace("\r", string.Empty);
+                    details.ContentType = match.Groups[1].Value.RemoveNewLines(false);
                 }
 
                 match = ContentRegex.Match(content);
                 if (match.Success)
                 {
-                    details.Content = match.Groups[2].Value.Replace("\r", string.Empty).Replace("\n", string.Empty);
+                    details.Content = match.Groups[2].Value.RemoveNewLines(false);
                 }
 
                 return details;

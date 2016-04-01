@@ -247,6 +247,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\Help\SACSHelp_files\themedata.thmx" />
+    <None Include="bundleconfig.json" />
     <None Include="Properties\PublishProfiles\ob119.pubxml" />
     <Content Include="SACS.Security.Certificate.pfx" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

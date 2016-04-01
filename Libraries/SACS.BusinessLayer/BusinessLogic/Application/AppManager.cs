@@ -117,7 +117,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
             string errorMessage = string.Empty;
             ServiceAppProcess process = sender as ServiceAppProcess;
 
-            if (sender != null)
+            if (process != null)
             {
                 if (process.IsProcessRunning)
                 {

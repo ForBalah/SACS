@@ -11,12 +11,14 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         private ServiceAppValidator _validator;
 
         [SetUp]
+        [Category("ServiceAppValidator")]
         public void Initialize()
         {
             _validator = new ServiceAppValidator();
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateAppName_InvalidEmptyString()
         {
             bool isValid = _validator.ValidateAppName("");
@@ -25,6 +27,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateAppName_InvalidWhitespaceString()
         {
             bool isValid = _validator.ValidateAppName("     ");
@@ -33,6 +36,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateAppName_InvalidNullString()
         {
             bool isValid = _validator.ValidateAppName(null);
@@ -41,6 +45,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateAppName_InvalidSymbolString()
         {
             bool isValid = _validator.ValidateAppName("\":");
@@ -49,6 +54,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateAppName_InvalidSpaceAtStart()
         {
             bool isValid = _validator.ValidateAppName(" (1)_TestApp");
@@ -57,6 +63,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateAppName_InvalidSpaceString()
         {
             bool isValid = _validator.ValidateAppName("TestApp  2");
@@ -65,6 +72,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateStartupType_InvalidSelection()
         {
             bool isValid = _validator.ValidateStartupType(SACS.Common.Enums.StartupType.NotSet);
@@ -73,6 +81,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateEnvironmentName_InvalidSpaceString()
         {
             bool isValid = _validator.ValidateEnvironmentName("Environment 2");
@@ -81,6 +90,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateEntryFileName_ValidFullPath()
         {
             bool isValid = _validator.ValidateAppFilePath("C:\\fadsf asd\\Hello.exe");
@@ -89,6 +99,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateEntryFileName_InvalidMissingExtension()
         {
             bool isValid = _validator.ValidateAppFilePath("123asdf");
@@ -97,6 +108,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("ServiceAppValidator")]
         public void ValidateEntryFileName_InvalidName()
         {
             bool isValid = _validator.ValidateAppFilePath("~SACS.Test App (3_3).exe");

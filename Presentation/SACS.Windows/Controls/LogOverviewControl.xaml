@@ -12,6 +12,11 @@
             <Button Name="RefreshButton" Width="100" Content="Refresh" Style="{StaticResource ButtonStyle}" Click="RefreshButton_Click" ToolTip="Refresh list of logs." />
             <Button Name="OpenLogButton" Width="100" Content="Open Log" Style="{StaticResource ButtonStyle}" Click="OpenLogButton_Click" ToolTip="Open the selected log." />
         </StackPanel>
-        <TextBlock Name="LogsErrorLabel" Foreground="#FFD31616" FontWeight="Bold" TextWrapping="Wrap" />
+        <Border BorderThickness="1" BorderBrush="#FFA4A4A4">
+            <StackPanel>
+                <Label>Messages:</Label>
+                <TextBlock Name="LogsErrorLabel" Foreground="#FFD31616" FontWeight="Bold" TextWrapping="Wrap" Margin="5" />
+            </StackPanel>
+        </Border>
     </StackPanel>
 </UserControl>

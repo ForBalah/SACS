@@ -23,6 +23,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         };
 
         [Test]
+        [Category("LogSearchCriteria")]
         public void FilterLogs_EmptySearchCriteriaReturnsOriginalList()
         {
             //

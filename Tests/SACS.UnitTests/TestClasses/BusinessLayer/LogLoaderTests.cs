@@ -11,6 +11,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
     public class LogLoaderTests
     {
         [Test]
+        [Category("LogLoader")]
         public void LoadLogsFromXml_CanHandleEmptyStrings()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
@@ -21,6 +22,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("LogLoader")]
         public void LoadLogsFromXml_CanProcessAnXmlEntryCorrectlyNoThrowable()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
@@ -46,6 +48,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("LogLoader")]
         public void LoadLogsFromXml_CanProcessAnXmlEntryCorrectlyWithThrowable()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);
@@ -78,6 +81,7 @@ namespace SACS.UnitTests.TestClasses.BusinessLayer
         }
 
         [Test]
+        [Category("LogLoader")]
         public void LoadLogsFromXml_CanSortDescending()
         {
             LogLoader loader = new LogLoader(LogLoader.DefaultDate);

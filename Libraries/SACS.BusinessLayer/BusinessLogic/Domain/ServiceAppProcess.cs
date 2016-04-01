@@ -34,6 +34,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         private const string WarningMessage = "{0} performance warning: Process could not be found for service app {1}. Check that it started correctly.";
         private const int ProcessWaitLimit = 10000;
         private bool _canRecreateProcess = true;
+        private JsonSerializerSettings _jsonSettings = new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Local };
 
         #endregion Fields
 
@@ -47,7 +48,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             // For use by tests. I'm sure there's a better way, but at the time I didn't
             // want to be concerned with the workings of the process wrapper in the tests that relied
             // on this (and was too lazy to create an abstraction and change usage all over)
-            this.ServiceApp = new ServiceApp { Name = "__Test" };
+            ServiceApp = new ServiceApp { Name = "__Test" };
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             get
             {
-                return this.ServiceApp.CurrentState == ServiceAppState.Error;
+                return ServiceApp.CurrentState == ServiceAppState.Error;
             }
         }
 
@@ -150,14 +151,14 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             get
             {
-                if (this._process == null)
+                if (_process == null)
                 {
                     return false;
                 }
 
                 try
                 {
-                    return this._process.StartTime > default(DateTime) && !this._process.HasExited;
+                    return _process.StartTime > default(DateTime) && !_process.HasExited;
                 }
                 catch (InvalidOperationException)
                 {
@@ -176,7 +177,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             get
             {
-                return this._Messages;
+                return _Messages;
             }
         }
 
@@ -225,9 +226,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <param name="state">The state associated with the message.</param>
         public void AddMessage(string message, ServiceAppState state)
         {
-            this._Messages.Add(new Tuple<string, ServiceAppState>(message, state));
-            this.ServiceApp.CurrentState = state;
-            this.ServiceApp.LastMessage = message;
+            _Messages.Add(new Tuple<string, ServiceAppState>(message, state));
+            ServiceApp.CurrentState = state;
+            ServiceApp.LastMessage = message;
         }
 
         /// <summary>
@@ -235,7 +236,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </summary>
         public virtual void ExecuteServiceApp()
         {
-            this._process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "run" }));
+            _process.StandardInput.WriteLine(JsonConvert.SerializeObject(new { action = "run" }));
         }
 
         /// <summary>
@@ -336,7 +337,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             try
             {
-                PerformanceCounter ramCounter = new PerformanceCounter("Process", "Working Set - Private", this.GetProcessInstanceName());
+                PerformanceCounter ramCounter = new PerformanceCounter("Process", "Working Set - Private", GetProcessInstanceName());
                 decimal value = (decimal)ramCounter.NextValue();
                 return value;
             }
@@ -362,7 +363,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         {
             try
             {
-                PerformanceCounter cpuCounter = new PerformanceCounter("Process", "% Processor Time", this.GetProcessInstanceName());
+                PerformanceCounter cpuCounter = new PerformanceCounter("Process", "% Processor Time", GetProcessInstanceName());
                 decimal value = (decimal)cpuCounter.NextValue();
                 return value;
             }
@@ -391,7 +392,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             bool stopProcessingMessages = false;
             try
             {
-                dynamic messageObject = JsonConvert.DeserializeObject(message);
+                dynamic messageObject = JsonConvert.DeserializeObject(message, _jsonSettings);
                 if (messageObject != null)
                 {
                     if (messageObject.debug != null)
@@ -405,11 +406,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     else if (messageObject.error != null)
                     {
                         ProcessError(
-                            ExceptionHelper.DeserializeException(messageObject.error.exception.Value as string),
-                            messageObject.error.details.type.Value as string,
-                            messageObject.error.details.message.Value as string,
-                            messageObject.error.details.source.Value as string,
-                            messageObject.error.details.stackTrace.Value as string);
+                            exception: ExceptionHelper.DeserializeException(messageObject.error.exception.Value as string),
+                            type: messageObject.error.details.type.Value as string,
+                            message: messageObject.error.details.message.Value as string,
+                            source: messageObject.error.details.source.Value as string,
+                            stackTrace: messageObject.error.details.stackTrace.Value as string);
                     }
                     else if (messageObject.performance != null)
                     {
@@ -458,7 +459,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 using (PerformanceCounter cnt = new PerformanceCounter("Process", "ID Process", instance, true))
                 {
                     int val = (int)cnt.RawValue;
-                    if (val == this._process.Id)
+                    if (val == _process.Id)
                     {
                         return instance;
                     }
@@ -474,7 +475,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <param name="performanceObject">The performace object to process.</param>
         private void ProcessPerformance(dynamic performanceObject)
         {
-            if (this.Performance != null)
+            if (Performance != null)
             {
                 ServiceAppPerformanceEventArgs args = new ServiceAppPerformanceEventArgs(
                     name: performanceObject.name.Value as string,
@@ -487,7 +488,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 // TODO: should this be here?
                 ServiceApp.LastRun = performanceObject.startTime.Value as DateTime?;
 
-                this.Performance(this, args);
+                Performance(this, args);
             }
         }
 
@@ -508,7 +509,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// </remarks>
         private void ProcessError(Exception exception, string type, string message, string source, string stackTrace)
         {
-            Exception finalException = exception ?? new CustomException(string.Format("Type:{0} Message:\"{0}\" Source:{1}", type, message, source), stackTrace);
+            Exception finalException = exception ?? new CustomException(string.Format("Type:{0} Message:\"{1}\" Source:{2}", type, message, source), stackTrace);
 
             // Somehow we are not getting the stack trace from the exception, so it had to be printed manually
             _log.Warn(string.Format("Uncaught error in {0}{1}{1}{2}{1}{3}{1}{4}", ServiceApp.Name, Environment.NewLine, finalException.GetType(), finalException.Message, finalException.StackTrace));
@@ -555,52 +556,52 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             switch (stateName)
             {
                 case "Started":
-                    this.AddMessage(string.Format("{0} has started", this.ServiceApp.Name), ServiceAppState.Ready);
+                    AddMessage(string.Format("{0} has started", ServiceApp.Name), ServiceAppState.Ready);
 
-                    if (this.Started != null)
+                    if (Started != null)
                     {
-                        this.Started(this, new EventArgs());
+                        Started(this, new EventArgs());
                     }
 
                     break;
 
                 case "Executing":
-                    this.AddMessage(string.Format("{0} is executing", this.ServiceApp.Name), ServiceAppState.Executing);
+                    AddMessage(string.Format("{0} is executing", ServiceApp.Name), ServiceAppState.Executing);
 
-                    if (this.Executing != null)
+                    if (Executing != null)
                     {
-                        this.Executing(this, new EventArgs());
+                        Executing(this, new EventArgs());
                     }
 
                     break;
 
                 case "Idle":
-                    this.AddMessage(string.Format("{0} has finished execution", this.ServiceApp.Name), ServiceAppState.Ready);
+                    AddMessage(string.Format("{0} has finished execution", ServiceApp.Name), ServiceAppState.Ready);
 
-                    if (this.Executed != null)
+                    if (Executed != null)
                     {
-                        this.Executed(this, new ServiceAppSuccessEventArgs(this.ServiceApp, DateTime.Now));
+                        Executed(this, new ServiceAppSuccessEventArgs(ServiceApp, DateTime.Now));
                     }
 
                     break;
 
                 case "Stopped":
-                    this.AddMessage(string.Format("{0} has stopped", this.ServiceApp.Name), ServiceAppState.NotLoaded);
+                    AddMessage(string.Format("{0} has stopped", ServiceApp.Name), ServiceAppState.NotLoaded);
 
-                    if (this.Stopped != null)
+                    if (Stopped != null)
                     {
-                        this.Stopped(this, new ServiceAppStopEventArgs(ServiceApp.Name, false));
+                        Stopped(this, new ServiceAppStopEventArgs(ServiceApp.Name, false));
                     }
 
                     forceExit = true;
                     break;
 
                 case "Failed":
-                    this.AddMessage(string.Format("{0} has failed during execution", this.ServiceApp.Name), ServiceAppState.Error);
+                    AddMessage(string.Format("{0} has failed during execution", ServiceApp.Name), ServiceAppState.Error);
 
-                    if (this.Failed != null)
+                    if (Failed != null)
                     {
-                        this.Failed(this, new EventArgs());
+                        Failed(this, new EventArgs());
                     }
 
                     break;
@@ -608,11 +609,11 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (stateName == "Failed")
             {
-                this._log.Warn(this.ServiceApp.LastMessage);
+                _log.Warn(ServiceApp.LastMessage);
             }
             else
             {
-                this._log.Info(this.ServiceApp.LastMessage);
+                _log.Info(ServiceApp.LastMessage);
             }
 
             return forceExit;
@@ -637,7 +638,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
             if (ApplicationSettings.Current.EnableCustomUserLogins)
             {
-                _process.ArgumentObject["name"] = this.ServiceApp.Name;
+                _process.ArgumentObject["name"] = ServiceApp.Name;
                 _process.ArgumentObject["owner"] = sacsProcessId;
             }
             else
@@ -652,7 +653,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                 startInfo.UserName = UserUtilities.GetUserName(ServiceApp.Username);
             }
 
-            this._process.StartInfo = startInfo;
+            _process.StartInfo = startInfo;
         }
 
         /// <summary>

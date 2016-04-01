@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SACS.Common.Extensions
 {
@@ -36,7 +32,7 @@ namespace SACS.Common.Extensions
             }
             else
             {
-                return string.Format("{0}{1}", value.Substring(0, length), replacement);
+                return string.Format("{0}{1}", value.RemoveNewLines(true).Substring(0, length), replacement);
             }
         }
 
@@ -54,6 +50,22 @@ namespace SACS.Common.Extensions
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Removes new lines from the specified string.
+        /// </summary>
+        /// <param name="value">The string to clean.</param>
+        /// <param name="addSpace">Whether single spaces should replace the new lines.</param>
+        /// <returns></returns>
+        public static string RemoveNewLines(this string value, bool addSpace)
+        {
+            if (value == null)
+            {
+                return value;
+            }
+
+            return value.Replace("\r", string.Empty).Replace("\n", addSpace ? " " : string.Empty);
         }
     }
 }
