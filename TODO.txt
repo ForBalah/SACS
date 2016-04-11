@@ -3,7 +3,7 @@ BUILDING THE DOCUMENTATION FILE
 Sandcastle Help File Builder is used to generate the documetation for SACS.Implementation. The .shfbproj file resides in the 
 SolutionItems folder.
 
-If any changes are made to the SACS implementation file, the documentation should be rebuild (manually, using the help file 
+If any changes are made to the SACS implementation file, the documentation should be rebuilt (manually, using the help file 
 builder) and copied into the setup folder.
 
 To build the documentation:
@@ -12,7 +12,7 @@ To build the documentation:
 - Remove and re-add the SACS.Implementation.dll and SACS.Implementation.xml files on the right. It looks like the location
   of the files is not relative so you may get an error "cannot find sources" even though the source files are clearly 
   visible in the list.
-- Build the project - this will generate the help file. Replace the .chm file in the SACS.Setup/lib folder.
+- Build the project - this will generate the help file and will place it in a 'Help' subfolder in SolutionItems. Replace the .chm file in the SACS.Setup/lib folder.
 
 ISSUES
 ======
@@ -26,7 +26,6 @@ Fix disabling of toolbar buttons when the service is inaccessible.
 Configure log4net properly in presentation layer (or Elmah maybe?)
 Log detail - Update the column headers
 Redirect metrics to different analytics app
-Fix SACS version column
 Implmement IoC
 Disable the start service app button when it has been clicked
 Add an About section
@@ -37,9 +36,7 @@ Presentation Layer - Web:
 Configure elmah in web project
 Redirect metrics to different analytics app
 Setup profiler - either MiniProfiler or Glimpse.
-Fix SACS version column
 Implmement IoC
-Add Last Run column
 
 Business Layer:
 ---------------
@@ -52,7 +49,7 @@ Send alert if CPU usage remains high for too long?
 
 Data Access Layer:
 ------------------
-Move DAO creation to IoC
+Move remaining DAO creation to IoC
 
 Server:
 -------

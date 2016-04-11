@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using SACS.Implementation.Execution;
 
@@ -27,7 +23,7 @@ namespace SACS.Implementation.Utils
 
         public JsonMessageProvider()
         {
-            this.serializer = new JavaScriptSerializer();
+            serializer = new JavaScriptSerializer();
         }
 
         #endregion Constructors and Destructors
@@ -39,9 +35,9 @@ namespace SACS.Implementation.Utils
         /// </summary>
         /// <param name="message">The message to serialize.</param>
         /// <returns></returns>
-        internal override string SerializeAsInfo(string message)
+        public override string SerializeAsInfo(string message)
         {
-            return this.serializer.Serialize(new { info = message });
+            return serializer.Serialize(new { info = message });
         }
 
         /// <summary>
@@ -49,9 +45,9 @@ namespace SACS.Implementation.Utils
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        internal override string SerializeAsPerformance(ServiceAppContext context)
+        public override string SerializeAsPerformance(ServiceAppContext context)
         {
-            return this.serializer.Serialize(new
+            return serializer.Serialize(new
             {
                 performance = new
                 {
@@ -70,9 +66,9 @@ namespace SACS.Implementation.Utils
         /// </summary>
         /// <param name="message">The message to serialize.</param>
         /// <returns></returns>
-        internal override string SerializeAsDebug(string message)
+        public override string SerializeAsDebug(string message)
         {
-            return this.serializer.Serialize(new { debug = message });
+            return serializer.Serialize(new { debug = message });
         }
 
         /// <summary>
@@ -80,9 +76,9 @@ namespace SACS.Implementation.Utils
         /// </summary>
         /// <param name="ex">The exception to serialize.</param>
         /// <returns></returns>
-        internal override string SerializeAsError(Exception ex)
+        public override string SerializeAsError(Exception ex)
         {
-            return this.serializer.Serialize(new
+            return serializer.Serialize(new
             {
                 error = new
                 {
@@ -102,9 +98,9 @@ namespace SACS.Implementation.Utils
         /// Serializes the enum as a state message.
         /// </summary>
         /// <param name="state">The state.</param>
-        internal override string SerializeAsState(Enums.State state)
+        public override string SerializeAsState(Enums.State state)
         {
-            return this.serializer.Serialize(new { state = Enum.GetName(typeof(Enums.State), state) });
+            return serializer.Serialize(new { state = Enum.GetName(typeof(Enums.State), state) });
         }
 
         /// <summary>
@@ -113,9 +109,19 @@ namespace SACS.Implementation.Utils
         /// </summary>
         /// <param name="message">The message to serialize.</param>
         /// <returns></returns>
-        internal override string SerializeAsResult(string message)
+        public override string SerializeAsResult(string message)
         {
-            return this.serializer.Serialize(new { result = message });
+            return serializer.Serialize(new { result = message });
+        }
+
+        /// <summary>
+        /// Serializes the version as a string.
+        /// </summary>
+        /// <param name="version">The version to serialize.</param>
+        /// <returns></returns>
+        public override string SerializeAsVersion(Version version)
+        {
+            return serializer.Serialize(new { version = version.ToString() });
         }
 
         #endregion Methods

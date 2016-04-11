@@ -100,6 +100,8 @@ namespace SACS.Implementation
         {
             get
             {
+                // Makes sense to change this also to the Version object instead of returning string.
+                // However, for now the app version is determined elsewhere.
                 return Assembly.GetAssembly(this.GetType()).GetName().Version.ToString();
             }
         }
@@ -107,11 +109,11 @@ namespace SACS.Implementation
         /// <summary>
         /// Gets the version of SACS.Implementation this is using.
         /// </summary>
-        public string SacsVersion
+        public Version SacsVersion
         {
             get
             {
-                return Assembly.GetAssembly(typeof(ServiceAppBase)).GetName().Version.ToString();
+                return Assembly.GetAssembly(typeof(ServiceAppBase)).GetName().Version;
             }
         }
 
@@ -372,6 +374,7 @@ namespace SACS.Implementation
                     FileLogger.Log("Startup args: " + startupArgs);
                     this.ExecutionMode = mode;
 
+                    EmitSacsVersion();
                     Messages.WriteDebug("Starting {0}. Execution mode: {1}", this.DisplayName, this.ExecutionMode);
                     this.Initialize();
                     this.IsLoaded = true;
@@ -555,7 +558,7 @@ namespace SACS.Implementation
         /// </summary>
         private void EmitSacsVersion()
         {
-            Messages.WriteResult(this.SacsVersion);
+            Messages.WriteVersion(this.SacsVersion);
         }
 
         /// <summary>

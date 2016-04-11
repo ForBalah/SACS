@@ -424,6 +424,10 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
                     {
                         ProcessResult(messageObject.result.Value as string);
                     }
+                    else if (messageObject.version != null)
+                    {
+                        ProcessVersion(messageObject.version.Value as string);
+                    }
                 }
                 else
                 {
@@ -617,6 +621,22 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             }
 
             return forceExit;
+        }
+
+        /// <summary>
+        /// Processes the version value from the service app.
+        /// </summary>
+        /// <param name="version">The result message to process.</param>
+        private void ProcessVersion(string version)
+        {
+            try
+            {
+                ServiceApp.SacsVersion = new Version(version);
+            }
+            catch
+            {
+                ServiceApp.SacsVersion = null;
+            }
         }
 
         /// <summary>

@@ -88,6 +88,16 @@ namespace SACS.Implementation.Utils
         }
 
         /// <summary>
+        /// Writes the proviced version as a string to the standard output stream.
+        /// </summary>
+        /// <param name="version">The version to write to the stream.</param>
+        internal static void WriteVersion(Version version)
+        {
+            Console.WriteLine(Provider.SerializeAsVersion(version));
+            FileLogger.Log("Sent version: " + version.ToString());
+        }
+
+        /// <summary>
         /// Writes the provided string as a "result" message to the standard output stream.
         /// </summary>
         /// <param name="format">The format.</param>

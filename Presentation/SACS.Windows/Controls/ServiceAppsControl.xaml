@@ -74,6 +74,7 @@
                         <GridViewColumn Header="Startup" Width="70" DisplayMemberBinding="{Binding Path=StartupTypeEnum}" />
                         <GridViewColumn Header="Last Run" Width="150" DisplayMemberBinding="{Binding Path=LastRunString}" />
                         <GridViewColumn Header="App Version" Width="80" DisplayMemberBinding="{Binding Path=AppVersion}" />
+                        <GridViewColumn Header="SACS Version" Width="80" DisplayMemberBinding="{Binding Path=SacsVersion}" />
                         <GridViewColumn Header="Send Success Notification" Width="170" DisplayMemberBinding="{Binding Path=SendSuccessNotification}" />
                     </GridView>
                 </ListView.View>
