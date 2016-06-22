@@ -347,7 +347,8 @@ namespace SACS.Common.Runtime
                 _process.StartInfo.Arguments = JsonConvert.SerializeObject(new
                     {
                         name = ArgumentObject["name"],
-                        owner = ArgumentObject["owner"]
+                        owner = ArgumentObject["owner"],
+                        parameters = ArgumentObject["parameters"]
                     });
                 successfulStart = _process.Start();
             }

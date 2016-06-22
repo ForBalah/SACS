@@ -10,8 +10,11 @@ using SACS.DataAccessLayer.Models;
 namespace SACS.UnitTests.TestClasses.DataAccessLayer
 {
     [TestFixture]
+    [Category("AppListDao")]
     public class AppListDaoTests
     {
+        // This represented the old way that things were done. And should not be
+        // used as a future reference.
         private string xml = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
 <appList>
   <collection>
@@ -47,8 +50,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
          schedule=""* * * * *""
          username=""username""
          password=""password""></serviceApp>";
-
-        [Category("AppListDaoTests")]
+        
         [Test]
         public void FindAll_CanReturnAllServiceApps()
         {
@@ -57,8 +59,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
 
             Assert.AreEqual(2, apps.Count());
         }
-
-        [Category("AppListDaoTests")]
+        
         [Test]
         public void FindAll_CanReturnServiceAppByName()
         {
@@ -75,7 +76,6 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             Assert.AreEqual("", app.Password);
         }
 
-        [Category("AppListDaoTests")]
         [Test]
         public void CastToServiceApp_CanCastWithoutIdentity()
         {
@@ -93,8 +93,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
 
             Assert.Pass();
         }
-
-        [Category("AppListDaoTests")]
+        
         [Test]
         public void CastToServiceApp_CanCastWithIdentity()
         {
@@ -112,8 +111,7 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
 
             Assert.Pass();
         }
-
-        [Category("AppListDaoTests")]
+        
         [Test]
         public void PersistServiceApp_CanAddUserNameAndPassword()
         {
@@ -135,6 +133,10 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
             ServiceApp savedApp = dao.FindAll(sa => sa.Name == "TestApp1").FirstOrDefault();
             Assert.AreEqual("NewUsername", savedApp.Username);
             Assert.AreEqual("NewPassword", savedApp.Password);
+        }
+
+        public void PersistServiceApp_CanSaveParameters()
+        {
         }
     }
 }

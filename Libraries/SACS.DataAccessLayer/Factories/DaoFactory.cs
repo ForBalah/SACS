@@ -9,7 +9,7 @@ using SACS.DataAccessLayer.Factories.Interfaces;
 namespace SACS.DataAccessLayer.Factories
 {
     /// <summary>
-    /// The default DAO factory.
+    /// The default DAO factory. TODO: move to IoC ASAP
     /// </summary>
     public class DaoFactory : IDaoFactory
     {

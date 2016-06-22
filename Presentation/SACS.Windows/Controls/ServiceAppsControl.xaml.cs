@@ -28,12 +28,8 @@ namespace SACS.Windows.Controls
     /// </summary>
     public partial class ServiceAppsControl : UserControl, IServiceAppView
     {
-        //// ApplicationCommands
-        //// ComponentCommands
-        //// MediaCommands.
-        //// NavigationCommands
-        //// SystemCommands
         private List<ServiceApp> _serviceApps = new List<ServiceApp>();
+        private ServiceAppValidator _validator = new ServiceAppValidator();
 
         private bool _inEditMode = false;
         private ServiceApp _selectedServiceApp;
@@ -412,6 +408,7 @@ namespace SACS.Windows.Controls
                     StartupTypeEnum = (Enums.StartupType)this.StartupTypeComboBox.SelectedValue,
                     Environment = this.ServiceAppEnvironmentTextBox.Text,
                     Description = this.DescriptionTextBox.Text,
+                    Parameters = (this.ParameterTextBox.Text ?? string.Empty).Trim(),
                     AppFilePath = this.AppFilePathTextBox.Text,
                     SendSuccessNotification = this.SendSuccessCheckBox.IsChecked ?? false,
                     Username = this.IdentityLabel.Text,
@@ -490,6 +487,7 @@ namespace SACS.Windows.Controls
             this.StartupTypeComboBox.SelectedValue = serviceApp.StartupTypeEnum;
             this.ServiceAppDescriptionLabel.Text = this.DescriptionTextBox.Text = serviceApp.Description;
             this.ServiceAppEnvironmentLabel.Text = this.ServiceAppEnvironmentTextBox.Text = serviceApp.Environment;
+            this.ServiceAppParameterLabel.Text = this.ParameterTextBox.Text = serviceApp.Parameters;
             this.AppFilePathLabel.Text = this.AppFilePathTextBox.Text = serviceApp.AppFilePath;
             this.AppFilePathViewButton.IsEnabled = !string.IsNullOrWhiteSpace(serviceApp.AppFilePath);
             this.SendSuccessCheckBox.IsChecked = serviceApp.SendSuccessNotification;
@@ -508,6 +506,7 @@ namespace SACS.Windows.Controls
         /// <param name="isEdit">If set to <c>true</c> [is edit].</param>
         private void UpdateInputFieldsVisibility(bool isEdit)
         {
+            // This isn't mvvm but I was young and inexperienced when I wrote this.
             this.ServiceAppListView.IsEnabled = !isEdit;
             this.StartServiceAppButton.IsEnabled = false;
             this.StopServiceAppButton.IsEnabled = false;
@@ -520,7 +519,9 @@ namespace SACS.Windows.Controls
             this.ServiceAppEnvironmentLabel.Visibility = MapVisibility(!isEdit);
             this.ServiceAppEnvironmentTextBox.Visibility = MapVisibility(isEdit);
             this.ServiceAppDescriptionLabel.Visibility = MapVisibility(!isEdit);
+            this.ServiceAppParameterLabel.Visibility = MapVisibility(!isEdit);
             this.DescriptionTextBox.Visibility = MapVisibility(isEdit);
+            this.ParameterTextBox.Visibility = MapVisibility(isEdit);
             this.AppFilePathReadOnlyDockPanel.Visibility = MapVisibility(!isEdit);
             this.AppFilePathDockPanel.Visibility = MapVisibility(isEdit);
             this.SendSuccessCheckBox.IsEnabled = isEdit;
@@ -544,17 +545,16 @@ namespace SACS.Windows.Controls
         /// <returns></returns>
         private bool ValidateInput()
         {
-            ServiceAppValidator validator = new ServiceAppValidator();
-            validator.ValidateAppName(this.ServiceAppNameTextBox.Text);
-            validator.ValidateStartupType((Enums.StartupType)this.StartupTypeComboBox.SelectedValue);
-            validator.ValidateEnvironmentName(this.ServiceAppEnvironmentTextBox.Text);
-            validator.ValidateDescription(this.DescriptionTextBox.Text);
-            validator.ValidateAppFilePath(this.AppFilePathTextBox.Text);
-            validator.ValidateSchedule(this.ScheduleHiddenLabel.Text);
+            _validator.ValidateAppName(this.ServiceAppNameTextBox.Text);
+            _validator.ValidateStartupType((Enums.StartupType)this.StartupTypeComboBox.SelectedValue);
+            _validator.ValidateEnvironmentName(this.ServiceAppEnvironmentTextBox.Text);
+            _validator.ValidateDescription(this.DescriptionTextBox.Text);
+            _validator.ValidateAppFilePath(this.AppFilePathTextBox.Text);
+            _validator.ValidateSchedule(this.ScheduleHiddenLabel.Text);
 
-            if (validator.ErrorMessages.Any())
+            if (_validator.ErrorMessages.Any())
             {
-                MessageBox.Show("• " + string.Join(Environment.NewLine + "• ", validator.ErrorMessages), "The following validation errors occured", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("• " + string.Join(Environment.NewLine + "• ", _validator.ErrorMessages), "The following validation errors occured", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 

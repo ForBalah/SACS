@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SACS.DataAccessLayer.Models
 {
     /// <summary>
-    /// The app performance class
+    /// The app performance class.  In hindsight this should have been in a separate models project.
     /// </summary>
     public class AppPerformance
     {

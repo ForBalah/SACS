@@ -109,6 +109,9 @@
                             <Button Name="AppFilePathSelectButton" Content="Browse..." Width="65" DockPanel.Dock="Right" Click="AppFilePathSelectButton_Click" />
                             <TextBox Name="AppFilePathTextBox" />
                         </DockPanel>
+                        <Label Content="Parameters:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="Custom parameter string to send to the app." />
+                        <TextBlock Name="ServiceAppParameterLabel" Margin="0,0,0,10" TextWrapping="Wrap" />
+                        <TextBox Name="ParameterTextBox" Visibility="Collapsed" TextWrapping="Wrap" MinLines="3" Margin="0,0,0,5" />
                         <Label Content="Notifications:" BorderThickness="0,0,0,1" BorderBrush="Black" ToolTip="Flags dealing with the types of notifications to send." />
                         <CheckBox Name="SendSuccessCheckBox" Margin="5,5,5,5">
                             <TextBlock>Send Success notification</TextBlock>

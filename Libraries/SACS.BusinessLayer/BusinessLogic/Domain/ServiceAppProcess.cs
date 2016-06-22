@@ -660,11 +660,16 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             {
                 _process.ArgumentObject["name"] = ServiceApp.Name;
                 _process.ArgumentObject["owner"] = sacsProcessId;
+                if (!string.IsNullOrWhiteSpace(ServiceApp.Parameters))
+                {
+                    _process.ArgumentObject["parameters"] = ServiceApp.Parameters;
+                }
             }
             else
             {
                 // keeping this older feature until testing is complete.
-                startInfo.Arguments = JsonConvert.SerializeObject(new { name = ServiceApp.Name, action = "hide", owner = sacsProcessId });
+                var arguments = new { name = ServiceApp.Name, action = "hide", owner = sacsProcessId, parameters = ServiceApp.Parameters };
+                startInfo.Arguments = JsonConvert.SerializeObject(arguments);
             }
 
             if (!string.IsNullOrWhiteSpace(ServiceApp.Username))

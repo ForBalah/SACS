@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using NCrontab;
 using SACS.Common.Configuration;
 using SACS.Common.Enums;
 using SACS.Common.Helpers;
@@ -125,6 +124,7 @@ namespace SACS.DataAccessLayer.DataAccess
                 new XAttribute("description", app.Description),
                 new XAttribute("environment", app.Environment),
                 new XAttribute("appFilePath", app.AppFilePath),
+                new XAttribute("parameters", app.Parameters ?? string.Empty),
                 new XAttribute("startupType", app.StartupType),
                 new XAttribute("sendSuccess", app.SendSuccessNotification),
                 new XAttribute("schedule", app.Schedule),
@@ -207,6 +207,7 @@ namespace SACS.DataAccessLayer.DataAccess
                 Description = element.Attribute("description").Value,
                 Environment = element.Attribute("environment").Value,
                 AppFilePath = element.Attribute("appFilePath").Value,
+                Parameters = element.Attribute("parameters").EmptyIfNull("parameters").Value,
                 SendSuccessNotification = sendSuccess,
                 StartupTypeEnum = EnumHelper.Parse<StartupType>(element.Attribute("startupType").Value),
                 Schedule = element.Attribute("schedule").Value,

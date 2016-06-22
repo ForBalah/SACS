@@ -32,7 +32,11 @@ namespace SACS.TestApp
         public override void Execute(ref ServiceAppContext context)
         {
             // Will write to the console when in debug mode, and will write to the SAC that it is hosted in.
-            Console.WriteLine(string.Format("User {0}. Message: {1}", Environment.UserName, ConfigurationManager.AppSettings["Message"]));
+            Console.WriteLine(
+                "User {0}. Message: {1}. Parameters: {2}", 
+                Environment.UserName, 
+                ConfigurationManager.AppSettings["Message"],
+                Implementation.Utils.Settings.Parameters);
 
             bool throwEx;
             if (bool.TryParse(ConfigurationManager.AppSettings["ThrowException"], out throwEx) && throwEx)
