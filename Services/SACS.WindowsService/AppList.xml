@@ -2,6 +2,6 @@
 <appList>
   <collection>
     <!-- different domain test -->
-    <serviceApp name="TestApp1_Home" description="Shows how SACS works. (Home)" environment="Home" appFilePath="E:\Development\SACS\Head\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe" startupType="Automatic" schedule="* * * * *"></serviceApp>
+    <serviceApp name="TestApp1_Dev" description="Shows how SACS works." environment="Development" appFilePath="..\..\..\..\Tests\SACS.TestApp\bin\Debug\SACS.TestApp.exe" startupType="Automatic" schedule="* * * * *" parameters="Use this to send any app specific parameters"></serviceApp>
   </collection>
 </appList>

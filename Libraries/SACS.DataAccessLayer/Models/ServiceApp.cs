@@ -288,6 +288,8 @@ namespace SACS.DataAccessLayer.Models
             }
         }
 
+        public string Parameters { get; set; }
+
         #endregion Properties
 
         #region Methods
@@ -311,6 +313,7 @@ namespace SACS.DataAccessLayer.Models
                 (this.Description ?? string.Empty).Equals(comp.Description, StringComparison.OrdinalIgnoreCase) &&
                 (this.Environment ?? string.Empty).Equals(comp.Environment, StringComparison.OrdinalIgnoreCase) &&
                 (this.AppFilePath ?? string.Empty).Equals(comp.AppFilePath, StringComparison.OrdinalIgnoreCase) &&
+                (this.Parameters ?? string.Empty).Equals(comp.Parameters, StringComparison.OrdinalIgnoreCase) &&
                 this.SendSuccessNotification == comp.SendSuccessNotification &&
                 this.StartupType == comp.StartupType &&
                 (this.Schedule ?? string.Empty).Equals(comp.Schedule) &&

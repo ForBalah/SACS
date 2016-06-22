@@ -80,7 +80,7 @@ namespace SACS.Implementation
                 .ForArgs<string>(this.RedirectConsoleError);
 
             this._commandProcessor.HoistWith<DirectiveHandler>("parameters")
-                .ForArgs<string>(this.SetSettingsParameters);
+                .ForArgs<string>(this.SetParameters);
 
             this._commandProcessor.HoistWith<ArgsHandler>()
                 .For("exit", () => this.Stop());
@@ -616,7 +616,7 @@ namespace SACS.Implementation
         /// Sets the parameters in the Settings class.
         /// </summary>
         /// <param name="value">The parameters to set.</param>
-        private void SetSettingsParameters(string value)
+        private void SetParameters(string value)
         {
             Settings.SetParameters(value);
         }

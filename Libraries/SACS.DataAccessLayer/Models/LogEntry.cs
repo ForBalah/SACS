@@ -5,7 +5,7 @@ using SACS.Common.Extensions;
 namespace SACS.DataAccessLayer.Models
 {
     /// <summary>
-    /// The model representing a log entry
+    /// The model representing a log entry. In hindsight this should have been in a separate models project.
     /// </summary>
     public class LogEntry
     {

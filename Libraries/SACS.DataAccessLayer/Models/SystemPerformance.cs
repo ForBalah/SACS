@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SACS.Common.Extensions;
 
 namespace SACS.DataAccessLayer.Models
 {
     /// <summary>
-    /// The system performance model.
+    /// The system performance model.  In hindsight this should have been in a separate models project.
     /// </summary>
     public class SystemPerformance
     {

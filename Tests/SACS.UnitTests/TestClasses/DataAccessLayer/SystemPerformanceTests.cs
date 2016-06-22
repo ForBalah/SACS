@@ -196,6 +196,8 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
         [TestCase(5, 1, 4)] // with zero threshold, all points should be returned
         public void LowerResolution_MaxPointsWorksWithSixItemsInTheList(int maxPoints, decimal threshold, int expectedValuesIndex)
         {
+            // These aren't great tests - they're looking at way too much data to test.
+            // TODO: Rework this test into smaller tests and manybe use the TestCaseSource
             var expectedValues = new List<List<TimeValue>>
             {
                 new List<TimeValue>
@@ -277,6 +279,8 @@ namespace SACS.UnitTests.TestClasses.DataAccessLayer
         [TestCase(1, 0.075, 1)] // 7.5% threshold
         public void LowerResolution_ThresholdWorksWithEightPoints(int maxPoints, decimal threshold, int expectedValuesIndex)
         {
+            // These aren't great tests - they're looking at way too much data to test.
+            // TODO: Rework this test into smaller tests and manybe use the TestCaseSource
             var expectedValues = new List<List<TimeValue>>
             {
                 new List<TimeValue>

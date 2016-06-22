@@ -9,6 +9,7 @@ namespace SACS.DataAccessLayer.Models
     /// <summary>
     /// The metrics summarizing class for app metrics
     /// </summary>
+    [Obsolete("Different metrics system will be used.")]
     public class AppMetrics
     {
         /*
