@@ -18,9 +18,8 @@
     <HtmlHelpName>SACS.Implementation Docs</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\Libraries\SACS.Implementation\bin\Release\SACS.Implementation.XML" />
       <DocumentationSource sourceFile="..\Libraries\SACS.Implementation\bin\Release\SACS.Implementation.dll" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="..\Libraries\SACS.Implementation\bin\Release\SACS.Implementation.xml" /></DocumentationSources>
     <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <IndentHtml>False</IndentHtml>

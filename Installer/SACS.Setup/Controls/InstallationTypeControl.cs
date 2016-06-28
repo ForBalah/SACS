@@ -89,13 +89,11 @@ namespace SACS.Setup.Controls
                 if (this.InstallRadioButton.Checked)
                 {
                     WizardManager.Current.UpdateTabNavigation("Installation Type", "Install / Upgrade");
-                    WizardManager.Current.UpdateTabNavigation("Welcome", "Install / Upgrade");
                     WizardManager.Current.UpdateTabNavigation("Install / Upgrade", "Configure");
                 }
                 else if (this.ConfigureRadioButton.Checked)
                 {
                     WizardManager.Current.UpdateTabNavigation("Installation Type", "Configure");
-                    WizardManager.Current.UpdateTabNavigation("Welcome", "Configure");
                 }
             }
         }

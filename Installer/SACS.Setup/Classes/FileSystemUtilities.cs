@@ -73,10 +73,10 @@ namespace SACS.Setup.Classes
         /// <param name="backupName">Name of the backup.</param>
         public static void BackupDirectory(string targetPath, string backupName)
         {
+            _logger.Log(string.Format("Backing up directory {0} to {1}", targetPath, backupName));
+
             Debug.Assert(!string.IsNullOrWhiteSpace(targetPath));
             Debug.Assert(!string.IsNullOrWhiteSpace(backupName));
-
-            _logger.Log(string.Format("Backing up directory {0} to {1}", targetPath, backupName));
 
             if (!Directory.Exists(targetPath) ||
                 Directory.GetFiles(targetPath).Length == 0 ||
@@ -259,6 +259,7 @@ namespace SACS.Setup.Classes
                 {
                     archive.ExtractToDirectory(destination);
                 }
+                _logger.Log("Extracted files");
             }
             else
             {
@@ -329,10 +330,23 @@ namespace SACS.Setup.Classes
                 return shortcutFilename;
             }
 
-            string pathOnly = System.IO.Path.GetDirectoryName(shortcutFilename);
-            string filenameOnly = System.IO.Path.GetFileName(shortcutFilename);
+            string pathOnly = Path.GetDirectoryName(shortcutFilename);
+            string filenameOnly = Path.GetFileName(shortcutFilename);
 
-            Shell shell = new Shell();
+            dynamic shell = null;
+
+            try
+            {
+                shell = new Shell();
+            }
+            catch (InvalidCastException ice)
+            {
+                // This happens on Windows 10 machines (but not in server 2012 machines)
+                _logger.Log("Failed to interface with Windows to get shortcuts. Trying again...", ice);
+                Type t = Type.GetTypeFromProgID("Shell.Application");
+                shell = Activator.CreateInstance(t);
+            }
+
             Folder folder = shell.NameSpace(pathOnly);
             FolderItem folderItem = folder.ParseName(filenameOnly);
             if (folderItem != null)

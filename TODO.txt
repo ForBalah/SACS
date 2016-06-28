@@ -12,13 +12,25 @@ To build the documentation:
 - Remove and re-add the SACS.Implementation.dll and SACS.Implementation.xml files on the right. It looks like the location
   of the files is not relative so you may get an error "cannot find sources" even though the source files are clearly 
   visible in the list.
-- Build the project - this will generate the help file and will place it in a 'Help' subfolder in SolutionItems. Replace the .chm file in the SACS.Setup/lib folder.
+- Build the project - this will generate the help file and will place it in a 'Help' subfolder in SolutionItems.
+- Replace the .chm file in the SACS.Setup/lib folder.
+
+FIRST BUILD ISSUES ON WINDOWS 10
+================================
+The Certificate needs to be installed on the target PC before the solution will build.
+
+To fix it, open the command prompt and enter the following:
+sn -i "[Location of pfx file in the porject]" [Name of key container name in error message]
+
+e.g.
+sn -i "C:\Development\Projects\SACS\Libraries\SACS.Common\SACS.Security.Certificate.pfx" VS_KEY_3A18F820AE4E3836
 
 ISSUES
 ======
 
 General Issues
 --------------
+
 
 Presentation Layer - Windows:
 -----------------------------

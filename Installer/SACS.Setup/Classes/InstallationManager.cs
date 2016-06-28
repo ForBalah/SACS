@@ -554,6 +554,7 @@ namespace SACS.Setup.Classes
                     wizard.ShowProgressDialog();
                     wizard.UpdateProgressValue(0);
 
+                    wizard.UpdateProgressText("Extracting files...");
                     FileSystemUtilities.ExtractFromResource("SACS.Setup.Resources.SACS.Windows.zip", tempPath, "SACS.Windows");
                     wizard.UpdateProgressValue(0.2m);
                     Thread.Sleep(300);
