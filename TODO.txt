@@ -70,9 +70,6 @@ Create Wizard:
 - Install service as user
 - (optional) Install web (or use a different installer)
 
-Issues to address:
-- allow going back to the select install type screen.
-
 Configuration:
 --------------
 Set the username in log4net if an exception occurs within a service

@@ -209,6 +209,10 @@
     <EmbeddedResource Include="..\..\Presentation\SACS.Windows\bin\zip\SACS.Windows.zip">
       <Link>Resources\SACS.Windows.zip</Link>
     </EmbeddedResource>
+    <None Include="..\..\SolutionItems\SACS Help.mht">
+      <Link>lib\SACS Help.mht</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -252,6 +256,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BuildSetupHelp.txt" />
+    <Content Include="Images\help-icon.png" />
     <Content Include="Images\info icon 1.png" />
     <Content Include="install1.ico" />
     <Content Include="refresh.png" />

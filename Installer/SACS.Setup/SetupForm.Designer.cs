@@ -40,6 +40,7 @@
             this.ConfigureTabPage = new System.Windows.Forms.TabPage();
             this.ChecklistTabPage = new System.Windows.Forms.TabPage();
             this.CompleteTabPage = new System.Windows.Forms.TabPage();
+            this.ReleaseNotesButton = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -53,7 +54,8 @@
             this.InstallUpgradeLabel = new System.Windows.Forms.Label();
             this.ConfigureLabel = new System.Windows.Forms.Label();
             this.UninstallLabel = new System.Windows.Forms.Label();
-            this.ReleaseNotesButton = new System.Windows.Forms.Button();
+            this.HelpButton = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.MainNavigationButtons = new SACS.Setup.Controls.NavigationButtons();
             this.MainInstallationTypeControl = new SACS.Setup.Controls.InstallationTypeControl();
             this.MainInstallUpdateControl = new SACS.Setup.Controls.InstallUpdateControl();
@@ -67,6 +69,7 @@
             this.ChecklistTabPage.SuspendLayout();
             this.CompleteTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // MainSetupTabControl
@@ -198,6 +201,16 @@
             this.CompleteTabPage.Text = "Complete";
             this.CompleteTabPage.UseVisualStyleBackColor = true;
             // 
+            // ReleaseNotesButton
+            // 
+            this.ReleaseNotesButton.Location = new System.Drawing.Point(16, 233);
+            this.ReleaseNotesButton.Name = "ReleaseNotesButton";
+            this.ReleaseNotesButton.Size = new System.Drawing.Size(127, 23);
+            this.ReleaseNotesButton.TabIndex = 4;
+            this.ReleaseNotesButton.Text = "View Release Notes";
+            this.ReleaseNotesButton.UseVisualStyleBackColor = true;
+            this.ReleaseNotesButton.Click += new System.EventHandler(this.ReleaseNotesButton_Click);
+            // 
             // label9
             // 
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -251,6 +264,8 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(141)))), ((int)(((byte)(188)))));
+            this.panel1.Controls.Add(this.pictureBox1);
+            this.panel1.Controls.Add(this.HelpButton);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -343,15 +358,27 @@
             this.UninstallLabel.TabIndex = 12;
             this.UninstallLabel.Text = "Uninstall";
             // 
-            // ReleaseNotesButton
+            // HelpButton
             // 
-            this.ReleaseNotesButton.Location = new System.Drawing.Point(16, 233);
-            this.ReleaseNotesButton.Name = "ReleaseNotesButton";
-            this.ReleaseNotesButton.Size = new System.Drawing.Size(127, 23);
-            this.ReleaseNotesButton.TabIndex = 4;
-            this.ReleaseNotesButton.Text = "View Release Notes";
-            this.ReleaseNotesButton.UseVisualStyleBackColor = true;
-            this.ReleaseNotesButton.Click += new System.EventHandler(this.ReleaseNotesButton_Click);
+            this.HelpButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.HelpButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.HelpButton.Location = new System.Drawing.Point(648, 3);
+            this.HelpButton.Name = "HelpButton";
+            this.HelpButton.Size = new System.Drawing.Size(124, 44);
+            this.HelpButton.TabIndex = 3;
+            this.HelpButton.Text = "Help";
+            this.HelpButton.UseVisualStyleBackColor = true;
+            this.HelpButton.Click += new System.EventHandler(this.HelpButton_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(737, 9);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(32, 32);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // MainNavigationButtons
             // 
@@ -404,7 +431,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(784, 562);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.UninstallLabel);
             this.Controls.Add(this.ConfigureLabel);
             this.Controls.Add(this.InstallUpgradeLabel);
@@ -435,6 +462,7 @@
             this.CompleteTabPage.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -471,6 +499,8 @@
         private System.Windows.Forms.Label UninstallLabel;
         private Controls.ConfigureControl configureControl1;
         private System.Windows.Forms.Button ReleaseNotesButton;
+        private System.Windows.Forms.Button HelpButton;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

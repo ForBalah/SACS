@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using SACS.Setup.Classes;
@@ -264,6 +265,16 @@ namespace SACS.Setup
             Process.Start(FileSystemUtilities.ReleaseNotesTempPath);
         }
 
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            ShowError();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            ShowError();
+        }
+
         #endregion Event Handlers
 
         #region Methods
@@ -275,6 +286,13 @@ namespace SACS.Setup
         public void ShowError(Exception e)
         {
             MessageBox.Show(e.Message, "Unhandled exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void ShowError()
+        {
+            string assemblyLoc = Assembly.GetAssembly(this.GetType()).Location;
+            string helpLoc = string.Format(@"{0}\lib\SACS Help.mht", System.IO.Path.GetDirectoryName(assemblyLoc));
+            Process.Start("file:///" + helpLoc);
         }
 
         /// <summary>
