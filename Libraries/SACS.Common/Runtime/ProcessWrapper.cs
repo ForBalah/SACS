@@ -348,7 +348,7 @@ namespace SACS.Common.Runtime
                     {
                         name = ArgumentObject["name"],
                         owner = ArgumentObject["owner"],
-                        parameters = ArgumentObject["parameters"]
+                        parameters = ArgumentObject.ContainsKey("parameters") ? ArgumentObject["parameters"] : string.Empty
                     });
                 successfulStart = _process.Start();
             }

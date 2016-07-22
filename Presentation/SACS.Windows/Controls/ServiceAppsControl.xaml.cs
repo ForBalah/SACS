@@ -545,6 +545,7 @@ namespace SACS.Windows.Controls
         /// <returns></returns>
         private bool ValidateInput()
         {
+            _validator.ErrorMessages.Clear();
             _validator.ValidateAppName(this.ServiceAppNameTextBox.Text);
             _validator.ValidateStartupType((Enums.StartupType)this.StartupTypeComboBox.SelectedValue);
             _validator.ValidateEnvironmentName(this.ServiceAppEnvironmentTextBox.Text);
