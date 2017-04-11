@@ -20,7 +20,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
     public class AppManager : IAppManager
     {
         #region Fields
-        
+
         private readonly ILog _log = LogManager.GetLogger(typeof(AppManager)); // TODO: inject
         private IDaoFactory _daoFactory;
         private EmailProvider _emailer;
@@ -114,32 +114,40 @@ namespace SACS.BusinessLayer.BusinessLogic.Application
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ServiceAppProcess_Started(object sender, EventArgs e)
         {
-            string errorMessage = string.Empty;
-            ServiceAppProcess process = sender as ServiceAppProcess;
-
-            if (process != null)
+            // TODO: this is so bad! but there's a bug here that disappeared as soon as I added this :(
+            try
             {
-                if (process.IsProcessRunning)
-                {
-                    using (var dao = _daoFactory.Create<IServiceAppDao>())
-                    {
-                        dao.RecordServiceAppStart(process.ServiceApp.Name);
-                    }
+                string errorMessage = string.Empty;
+                ServiceAppProcess process = sender as ServiceAppProcess;
 
-                    if (process.ServiceApp.StartupTypeEnum == StartupType.Automatic)
+                if (process != null)
+                {
+                    if (process.IsProcessRunning)
                     {
-                        errorMessage = _schedulingService.ScheduleServiceApp(process);
+                        using (var dao = _daoFactory.Create<IServiceAppDao>())
+                        {
+                            dao.RecordServiceAppStart(process.ServiceApp.Name);
+                        }
+
+                        if (process.ServiceApp.StartupTypeEnum == StartupType.Automatic)
+                        {
+                            errorMessage = _schedulingService.ScheduleServiceApp(process);
+                        }
+                    }
+                    else
+                    {
+                        errorMessage = string.Format("Failed to initialize ServiceApp '{0}'", process.ServiceApp.Name);
                     }
                 }
-                else
+
+                if (!string.IsNullOrWhiteSpace(errorMessage))
                 {
-                    errorMessage = string.Format("Failed to initialize ServiceApp '{0}'", process.ServiceApp.Name);
+                    this._log.Warn(errorMessage);
                 }
             }
-
-            if (!string.IsNullOrWhiteSpace(errorMessage))
+            catch (Exception ex)
             {
-                this._log.Warn(errorMessage);
+                _log.Error("ServiceAppProcess_Started event failed", ex);
             }
         }
 

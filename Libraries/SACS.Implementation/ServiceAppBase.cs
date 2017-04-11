@@ -340,6 +340,7 @@ namespace SACS.Implementation
             while (this.IsLoaded)
             {
                 string command = Console.ReadLine();
+                FileLogger.Log("Received: " + command);
                 this._commandProcessor.Process(command);
             }
         }

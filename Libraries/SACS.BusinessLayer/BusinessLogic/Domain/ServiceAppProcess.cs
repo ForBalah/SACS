@@ -251,7 +251,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// <summary>
         /// Stops the associated service app.
         /// </summary>
-        /// <param name="isApplicationExiting">Set to true to prevent the service app from recovering from a dirty 
+        /// <param name="isApplicationExiting">Set to true to prevent the service app from recovering from a dirty
         /// state on stop since the application will be exiting.</param>
         public virtual void Stop(bool isApplicationExiting)
         {
@@ -263,8 +263,8 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
 
                 // we will need to be doubly sure that the process has ended.
                 // ---
-                // Would have preferred Process.WaitForExit but we also need to synchronize with the other thread 
-                // to process the "I have stopped" state change from the process. There probably is a better way 
+                // Would have preferred Process.WaitForExit but we also need to synchronize with the other thread
+                // to process the "I have stopped" state change from the process. There probably is a better way
                 // of doing this...
                 int attempts = 5;
                 while (attempts > 0)
@@ -720,7 +720,9 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
             {
                 try
                 {
+                    _log.Debug("Waiting for message from: " + ServiceApp.Name);
                     string message = _process.StandardOutput.ReadLine();
+                    _log.Debug(ServiceApp.Name + " message: " + message);
                     exitCheck = ProcessMessage(message);
                 }
                 catch (ObjectDisposedException)
