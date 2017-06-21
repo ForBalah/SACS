@@ -333,7 +333,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Gets the current Memory performance
         /// </summary>
         /// <returns></returns>
-        internal virtual decimal GetCurrentRamValue()
+        public virtual decimal GetCurrentRamValue()
         {
             try
             {
@@ -359,7 +359,7 @@ namespace SACS.BusinessLayer.BusinessLogic.Domain
         /// Gets the current CPU performance
         /// </summary>
         /// <returns></returns>
-        internal virtual decimal GetCurrentCpuValue()
+        public virtual decimal GetCurrentCpuValue()
         {
             try
             {
